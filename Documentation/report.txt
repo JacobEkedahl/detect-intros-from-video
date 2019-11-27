@@ -1,1 +1,19 @@
-First text
+Titel
+
+Underrubrik (svenska och engelska)
+
+Jacob Ekedahl
+Tiago Redaelli
+
+1. Inledning
+
+1.1 Problemformulering
+
+1.2 Målsättning
+
+1.3 Avgräsningar
+
+1.4 Författarnas bidrag till examensarbetet
+
+
+2. Teori och bakgrund
