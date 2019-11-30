@@ -1,19 +1,34 @@
-Titel
+Title
 
 Underrubrik (svenska och engelska)
 
 Jacob Ekedahl
 Tiago Redaelli
 
-1. Inledning
+1. Introduction
 
-1.1 Problemformulering
+1.1 Problem definition
 
-1.2 Målsättning
+1.2 Objectives
 
-1.3 Avgräsningar
+1.3 Delimitations
 
-1.4 Författarnas bidrag till examensarbetet
+1.4 Authors contribution
 
+2. Background
 
-2. Teori och bakgrund
+2.1 Relevant film sequences
+
+2.1.1 Title sequence
+2.1.2 Previous sequence
+2.1.3 Outro sequence
+
+2.2 Computer Vision
+
+2.2.1 Text Recognition
+2.2.2 Scene Detection
+2.2.3 Audio/mood
+
+3 Testing Methodology
+
+4 Analysis
