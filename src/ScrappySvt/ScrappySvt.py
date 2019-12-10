@@ -6,8 +6,8 @@
 #                                                                           #
 # Notice:                                                                   #
 # 1. You can specify multiple genres.                                       #
-# 2. If you don't provide any output directory it will use a default one    #   
-# 3. Any genres specified after -cwdir will be ignored                      #
+# 2. If you don't provide any output directory it will use a default one.   #   
+# 3. Any genres specified after -cwdir will be ignored.                     #
 # ------------------------------------------------------------------------- #
 
 from bs4 import BeautifulSoup
