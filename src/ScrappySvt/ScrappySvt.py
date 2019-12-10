@@ -1,6 +1,6 @@
 # ------------------------------------------------------------------------- #
 # Scrapes svtplay.se for all seasons and episodes belonging to the provided #
-# genres.                                                                    #
+# genres.                                                                   #
 #                                                                           #
 # Example usage: py ScrappySvt.py serier -cwdir C:/your-output-directory    #
 #                                                                           #
