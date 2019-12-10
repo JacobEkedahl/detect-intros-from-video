@@ -7,13 +7,13 @@ import re
 import json
 import os
 
-# -----------------------------------------------------------------
-# Change to modify the output directory 
-# -----------------------------------------------------------------
+# ----------------------------------------------------------------- #
+# Change to modify the output directory                             #
+# ----------------------------------------------------------------- #
 
 WORKING_DIR = os.getcwd()
 
-#-----------------------------------------------------------------
+# ----------------------------------------------------------------- #
 
 class Video:
     def __init__(self, title, season, episode, url):
@@ -59,19 +59,16 @@ def scrape_show(show, genre):
                 video.season = 0
                 video.episode = 0
         elif k.startswith('$Episode:') and k.endswith('urls'):
-            video_url = data[k]['svtplay']
-            if video_url != "":
-                video.url = SVT_URL + video_url
-                #
-                # if episode or season was not detected then try extracting it from the video url
-                #
-                #if video.season == 0 or video.episode == 0: 
-                #    data = video.url.split('-')
-                #    for i in range(0, len(data) - 1): 
-                #        if data[i] == "sasong" and video.season == 0: 
-                #            video.season = int(data[i + 1])                 
-                #        elif data[i] == "avsnitt" and video.episode == 0:
-                #            video.episode = int(data[i + 1])                
+            video.url = data[k]['svtplay']
+            if video.url != "":
+                video.url = SVT_URL + video.url
+                if video.season == 0 or video.episode == 0: 
+                    arr = video.url.split('-')
+                    for i in range(0, len(arr) - 1):
+                        if arr[i] == "sasong" and i + 1 < len(arr):
+                            video.season = int(arr[i + 1])
+                        elif arr[i] == "avsnitt" and i + 1 < len(arr):
+                            video.episode = int(arr[i + 1])
                 file.write("\'%s\' S%02d E%02d \'%s\'\n" % (video.title, video.season, video.episode, video.url))
                 json_data['videos'].append({
                     'show': show.title,
@@ -79,7 +76,6 @@ def scrape_show(show, genre):
                     's': video.season,
                     'e': video.episode,
                 })
-                #print(s)
                 global genre_video_count
                 genre_video_count = genre_video_count + 1
             video.url = ""
@@ -105,7 +101,7 @@ def scrape_genre(genre):
         print("Could not find genre: " + genre)
         return
 
-    # Below loop fetches the title and link of all presented TV-series
+    # Below loop fetches the title and link of all presented shows
     global genre_video_count
     genre_video_count = 0
     i = 0
@@ -120,14 +116,13 @@ def scrape_genre(genre):
         i = i + 1
 
     file.write("\n" + genre + " videos = %d" % genre_video_count)
-
-
-os.chdir(WORKING_DIR)
     
+
 if len(sys.argv) - 1 < 1:
     print("No genres specified in the argument list.")
     exit()
-    
+
+os.chdir(WORKING_DIR)
 for i in range(1, len(sys.argv)):
     file = open(sys.argv[i] + ".txt", "w")
     scrape_genre(sys.argv[i])
