@@ -1,3 +1,15 @@
+# ------------------------------------------------------------------------- #
+# Scrapes svtplay.se for all seasons and episodes belonging to the provided #
+# genres.                                                                    #
+#                                                                           #
+# Example usage: py ScrappySvt.py serier -cwdir C:/your-output-directory    #
+#                                                                           #
+# Notice:                                                                   #
+# 1. You can specify multiple genres.                                       #
+# 2. If you don't provide any output directory it will use a default one    #   
+# 3. Any genres specified after -cwdir will be ignored                      #
+# ------------------------------------------------------------------------- #
+
 from bs4 import BeautifulSoup
 
 import lxml
@@ -7,13 +19,9 @@ import re
 import json
 import os
 
-# ----------------------------------------------------------------- #
-# Change to modify the output directory                             #
-# ----------------------------------------------------------------- #
-
+# Change to modify the default working directory
 WORKING_DIR = os.getcwd()
 
-# ----------------------------------------------------------------- #
 
 class Video:
     def __init__(self, title, season, episode, url):
@@ -123,7 +131,19 @@ if len(sys.argv) - 1 < 1:
     exit()
 
 os.chdir(WORKING_DIR)
+
+genres = []
+
 for i in range(1, len(sys.argv)):
-    file = open(sys.argv[i] + ".txt", "w")
-    scrape_genre(sys.argv[i])
+    if sys.argv[i] == "-cwdir":
+        if i + 1 < len(sys.argv):
+            print("Changed working directory to: " + sys.argv[i + 1])
+            os.chdir(sys.argv[i + 1])
+        break
+    else:
+        genres.append(sys.argv[i])
+
+for genre in genres: 
+    file = open(genre + ".txt", "w")
+    scrape_genre(genre)
     file.close()

@@ -1302,6 +1302,9 @@
 
 70: Svensson, Svensson, https://www.svtplay.se/svensson-svensson
 
+'2. "Rör inte min Volvo!"' S01 E02 'https://www.svtplay.se/video/13906324/svensson-svensson/svensson-svensson-sasong-1-ror-inte-min-volvo'
+'3. En tupp vid namn Rolf' S01 E03 'https://www.svtplay.se/video/13906168/svensson-svensson/svensson-svensson-sasong-1-en-tupp-vid-namn-rolf'
+'4. Mutor och magdans' S01 E04 'https://www.svtplay.se/video/13906196/svensson-svensson/svensson-svensson-sasong-1-mutor-och-magdans'
 '5. London tur och retur' S01 E05 'https://www.svtplay.se/video/13907576/svensson-svensson/svensson-svensson-sasong-1-london-tur-och-retur'
 '6. Ett slagskott för kärleken' S01 E06 'https://www.svtplay.se/video/13906180/svensson-svensson/svensson-svensson-sasong-1-ett-slagskott-for-karleken'
 '7. Ju mer vi är tillsammans' S01 E07 'https://www.svtplay.se/video/13906088/svensson-svensson/svensson-svensson-sasong-1-ju-mer-vi-ar-tillsammans'
@@ -1493,4 +1496,4 @@
 81: World on Fire, https://www.svtplay.se/world-on-fire
 
 
-serier videos = 1248
+serier videos = 1251
