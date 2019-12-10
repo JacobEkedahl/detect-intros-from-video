@@ -30,45 +30,49 @@ class Video:
         self.episode = episode
         self.url = url
 
-
 class Show:
     def __init__(self, title, url):
         self.title = title
         self.url = url
 
 SVT_URL = "https://www.svtplay.se"
-genre_video_count = 0
 
 json_data = {}
 json_data['videos'] = []
+
 
 # Extract all seasons episodes from a given show
 def scrape_show(show, genre):
 
     data = json.loads(re.findall(r"root\['__svtplay_apollo'\] = (\{.*?\});", requests.get(show.url).text)[0])
     video = Video("", "", "", "")
-    for k in data:
-        if k.startswith('Episode:'):
-            # pprint(data[k])   # display meta-data as json
-            video.title = data[k]['name']
-            pos = data[k]['positionInSeason']
+    # Iterate through the entire json array, where half of the data is split between metadata and videourl data
+    # 
+    for element in data:
+        # Extracting from metadata 
+        if element.startswith('Episode:'):    
+            # pprint(data[element])   # display meta-data as json
+            video.title = data[element]['name']
+            pos = data[element]['positionInSeason']
             if pos != "":
                 try:
                     video.season = int(pos.split("Säsong ")[1].split(" —")[0])
                 except:
-                    print("Failed to read season: " + pos)
                     video.season = 0
                 try:
                     video.episode = int(pos.split("Avsnitt ")[1])
                 except:
-                    print("Failed to read episode: " + pos)
                     video.episode = 0
             else:
                 video.season = 0
                 video.episode = 0
-        elif k.startswith('$Episode:') and k.endswith('urls'):
-            video.url = data[k]['svtplay']
+        # Extracting video url if present
+        elif element.startswith('$Episode:') and element.endswith('urls'):
+            video.url = data[element]['svtplay']
             if video.url != "":
+                # Saves all the video-links in a separate file
+                videoLinkFile.write(SVT_URL + video.url + "\n")
+                #
                 video.url = SVT_URL + video.url
                 if video.season == 0 or video.episode == 0: 
                     arr = video.url.split('-')
@@ -84,8 +88,6 @@ def scrape_show(show, genre):
                     's': video.season,
                     'e': video.episode,
                 })
-                global genre_video_count
-                genre_video_count = genre_video_count + 1
             video.url = ""
             video.title = ""
             video.season = 0
@@ -110,8 +112,6 @@ def scrape_genre(genre):
         return
 
     # Below loop fetches the title and link of all presented shows
-    global genre_video_count
-    genre_video_count = 0
     i = 0
     for article in grid.find_all('article', class_='play_content-item play_grid__item'):
         meta = article.find('div', class_='play_content-item__meta')
@@ -123,8 +123,7 @@ def scrape_genre(genre):
         scrape_show(show, genre)
         i = i + 1
 
-    file.write("\n" + genre + " videos = %d" % genre_video_count)
-    
+
 
 if len(sys.argv) - 1 < 1:
     print("No genres specified in the argument list.")
@@ -144,6 +143,8 @@ for i in range(1, len(sys.argv)):
         genres.append(sys.argv[i])
 
 for genre in genres: 
+    videoLinkFile = open("video-" + genre + ".txt", "w")
     file = open(genre + ".txt", "w")
     scrape_genre(genre)
     file.close()
+    videoLinkFile.close()
