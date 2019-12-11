@@ -8,29 +8,29 @@ import numpy as np
 
 # ---  will save videos in outputDir which is under under home directory ---
 
-def downloadVideo(url, nameOfFolder):
-    downloadPath = os.path.join(str(Path.home()), nameOfFolder)
-    command = ["sh", "lib/runSvtPlay.sh", url, "--config", "lib/svtplay-dl.yaml", "--output", downloadPath]
+def download_video(url, name_folder):
+    download_path = os.path.join(str(Path.home()), name_folder)
+    command = ["sh", "lib/runSvtPlay.sh", url, "--config", "lib/svtplay-dl.yaml", "--output", download_path]
     output = subprocess.call(command, shell=True) 
     # add step to mux and cut here
     print(output)
 
-def downloadVideos(urls, nameOfFolder):
-    downloadPath = os.path.join(str(Path.home()), nameOfFolder)
-    command = ["sh", "lib/runSvtPlay.sh"] + urls + ["--config", "lib/svtplay-dl.yaml", "--output", downloadPath]
+def download_videos(urls, name_folder):
+    download_path = os.path.join(str(Path.home()), name_folder)
+    command = ["sh", "lib/runSvtPlay.sh"] + urls + ["--config", "lib/svtplay-dl.yaml", "--output", download_path]
     output = subprocess.call(command, shell=True)
     print(output)
 
-def startDownload(urls, nameOfFolder, numberOfEpisodes):
-    numEpisodes = int(numberOfEpisodes)
-    if (numEpisodes < 1):
+def start_download(urls, name_folder, number_of_episodes):
+    num_epi = int(number_of_episodes)
+    if (num_epi < 1):
         print("specify number of episodes")
         exit()
-    if numEpisodes < len(urls):
-        urls = urls[:-len(urls)+numEpisodes]
-    downloadVideos(urls, nameOfFolder)
+    if num_epi < len(urls):
+        urls = urls[:-len(urls)+num_epi]
+    download_videos(urls, name_folder)
 
-def start(nameOfTextFile, nameOfFolder, numberOfEpisodes):
-    textFilePath = os.path.join(str(Path.home()), nameOfTextFile)
-    urls = [line.rstrip('\n') for line in open(textFilePath)]
-    startDownload(urls, nameOfFolder, numberOfEpisodes)
+def start(name_textfile, name_folder, number_of_episodes):
+    text_file_path = os.path.join(str(Path.home()), name_textfile)
+    urls = [line.rstrip('\n') for line in open(text_file_path)]
+    start_download(urls, name_folder, number_of_episodes)
