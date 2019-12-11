@@ -2,4 +2,4 @@ default:
     path: ~/svt-tvseries
     subtitle: true
     subfolder: true
-    filename: "{title}.s{season}e{episode}.{ext}"
+    filename: "{title}.s{season}e{episode}.{episodename}.{ext}"
