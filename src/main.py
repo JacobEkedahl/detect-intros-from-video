@@ -14,14 +14,14 @@ if __name__ == "__main__":
             exit()
 
         if (s.argv[2] == "--file"):
-            fileName = s.argv[3]
-            nameOfFolder =  s.argv[4]
-            numberOfEpisodes = s.argv[5]
-            svtplaywrapper.start(fileName, nameOfFolder, numberOfEpisodes)
+            name_textfile = s.argv[3]
+            name_folder =  s.argv[4]
+            number_of_episodes = s.argv[5]
+            svtplaywrapper.start(name_textfile, name_folder, number_of_episodes)
         elif (s.argv[2] == "--url"):
-            urlpath = s.argv[3]
-            nameOfFolder = s.argv[4]
-            svtplaywrapper.downloadVideo(urlpath, nameOfFolder)
+            url_path = s.argv[3]
+            name_folder = s.argv[4]
+            svtplaywrapper.download_video(url_path, name_folder)
 
         print("finnished downloading!")
         exit()
