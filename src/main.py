@@ -22,7 +22,6 @@ if __name__ == "__main__":
             url_path = s.argv[3]
             name_folder = s.argv[4]
             svtplaywrapper.download_video(url_path, name_folder)
-
         print("finnished downloading!")
         exit()
 

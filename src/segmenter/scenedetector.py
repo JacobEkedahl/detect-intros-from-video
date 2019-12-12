@@ -26,9 +26,6 @@ from scenedetect.detectors import ContentDetector
 
 def main(video_file):
 
-    # Create a video_manager point to video file testvideo.mp4. Note that multiple
-    # videos can be appended by simply specifying more file paths in the list
-    # passed to the VideoManager constructor. Note that appending multiple videos
     # requires that they all have the same frame size, and optionally, framerate.
     video_manager = VideoManager([video_file])
     stats_manager = StatsManager()
@@ -38,6 +35,7 @@ def main(video_file):
     base_timecode = video_manager.get_base_timecode()
 
     try:
+        # Uses the video file path and replaces .mp4 with another ending
         stats_file_path = video_file.replace('.mp4', '') + '.stats.cvs'
         # If stats file exists, load it.
         if os.path.exists(stats_file_path):
@@ -45,10 +43,10 @@ def main(video_file):
             with open(stats_file_path, 'r') as stats_file:
                 stats_manager.load_from_csv(stats_file, base_timecode)
 
-        start_time = base_timecode + 20     # 00:00:00.667
-        end_time = base_timecode + 480.0     #00:08:00
+        start_time = base_timecode + 20     # 00:00:00.00
+        end_time = base_timecode + 600      # 00:10:00
         
-        # Set video_manager duration to read frames from 00:00:00 to 00:00:20.
+        # Set video_manager duration to read frames from [start_time] to [end_time].
         video_manager.set_duration(start_time=start_time, end_time=end_time)
 
         # Set downscale factor to improve processing speed (no args means default).
