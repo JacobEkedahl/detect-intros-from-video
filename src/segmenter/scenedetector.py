@@ -30,6 +30,9 @@ from scenedetect.frame_timecode import FrameTimecode
 from scenedetect.stats_manager import StatsManager
 from scenedetect.detectors import ContentDetector
 
+DEFAULT_START_TIME = 0.0        # 00:00:00.00
+DEFAULT_END_TIME = 600.0        # 00:10:00.00
+
 def segment_video(video_file):
 
     # requires that they all have the same frame size, and optionally, framerate.
@@ -49,8 +52,8 @@ def segment_video(video_file):
             with open(stats_file_path, 'r') as stats_file:
                 stats_manager.load_from_csv(stats_file, base_timecode)
 
-        start_time = base_timecode + 20     # 00:00:00.00
-        end_time = base_timecode + 600      # 00:10:00
+        start_time = base_timecode + DEFAULT_START_TIME      
+        end_time = base_timecode + DEFAULT_END_TIME   
         
         # Set video_manager duration to read frames from [start_time] to [end_time].
         video_manager.set_duration(start_time=start_time, end_time=end_time)
@@ -69,7 +72,7 @@ def segment_video(video_file):
         # Like FrameTimecodes, each scene in the scene_list can be sorted if the
         # list of scenes becomes unsorted.
 
-        print('List of scenes obtained:')
+        print('List of scenes obtained from %s:' % video_file)
 
         json_data = {}
         json_data['scenes'] = []
@@ -119,5 +122,5 @@ else:
     max = len(video_files)
     for video_file in video_files: 
         segment_video(video_file)
-        print("segmented %d/%d..." % (i, max))
+        print("segmented %d/%d" % (i, max))
         i = i + 1
