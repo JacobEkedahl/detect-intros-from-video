@@ -99,6 +99,7 @@ def segment_video(video_file):
     finally:
         video_manager.release()
 
+
 def get_all_paths(fullPath):
     files = []
     for file in os.listdir(fullPath):
