@@ -3,9 +3,16 @@
 # a json file containing information about all detected scenes, as well as  #
 # a cvs file containing a statistical analysis of all the frames.           #                                            
 #                                                                           #
-# Example usage:                                                            #        
+# Example usage 1:                                                          #        
 #   py SceneDetector.py myvideo.mp4                                         #
 #                                                                           # 
+# Example usage 2:                                                          # 
+#   py SceneDetector.py c:/users/home/videos                                #
+#                                                                           #
+# Notice:                                                                   #
+# You can either provide a single .mp4 file or a directory. If a full path  # 
+# to a directory is provided every single video will be processed           #
+#                                                                           #
 # ------------------------------------------------------------------------- #
 
 # Source: https://pyscenedetect.readthedocs.io/en/latest/examples/usage-python/
@@ -23,8 +30,7 @@ from scenedetect.frame_timecode import FrameTimecode
 from scenedetect.stats_manager import StatsManager
 from scenedetect.detectors import ContentDetector
 
-
-def main(video_file):
+def segment_video(video_file):
 
     # requires that they all have the same frame size, and optionally, framerate.
     video_manager = VideoManager([video_file])
@@ -93,11 +99,24 @@ def main(video_file):
     finally:
         video_manager.release()
 
+def get_all_paths(fullPath):
+    files = []
+    for file in os.listdir(fullPath):
+        if file.endswith(".mp4"):
+            files.append(file)
+    return files
 
 if len(sys.argv) - 1 < 1:
     print("No arguments found")
     exit()
 if (".mp4") in sys.argv[1]: 
-    main(sys.argv[1])
+    segment_video(sys.argv[1])
 else:
-    print("Invalid videofile")
+    video_files = get_all_paths(sys.argv[1])
+    os.chdir(sys.argv[1])
+    i = 1
+    max = len(video_files)
+    for video_file in video_files: 
+        segment_video(video_file)
+        print("segmented %d/%d..." % (i, max))
+        i = i + 1
