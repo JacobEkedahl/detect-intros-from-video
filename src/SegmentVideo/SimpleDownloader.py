@@ -27,7 +27,7 @@ def get_first_video_file(directory):
 
 # Downloads a video into a temp folder and returns the filename.
 # Precondition no folder with the name '/temp' must exist    
-def download_video(url, target_directory):
+def download_video(url):
     os.mkdir('temp')
     parentDirectory = os.getcwd()
     directory = parentDirectory + "/temp"
@@ -74,10 +74,8 @@ if __name__ == "__main__":
             except:
                 print("Failed to convert %s into seconds " % sys.argv[i + 1])
                 exit()
-        elif sys.argv[i] == "-dir" and i + 1 < len(sys.argv):
-            target_directory = sys.argv[i + 1]
 
-    video_file = download_video(video_url, target_directory)
+    video_file = download_video(video_url)
     print("download completed: %s" % video_file)
 
     if video_file != "":
