@@ -1,7 +1,8 @@
 numpy
 imageio-ffmpeg
+
 scenedetect[opencv,progress_bar]
-opencv                             
+opencv-python                         
 Click
 tqdm        
 pathlib
