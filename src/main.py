@@ -6,7 +6,6 @@ from segmenter import scenedetector
 
 if __name__ == "__main__":
     file_handler.create_folderstructure_if_not_exists()
-
     if (len(s.argv) -1 < 1):
         print("need more arguments! (--dlv --file nameOfTxtFile numberOfEpisodes)")
         exit()
