@@ -122,7 +122,6 @@ if len(sys.argv) - 1 < 1:
     exit()
 
 if sys.argv[1].endswith(".mp4"):
-    video_file = sys.argv[1]
-    segment_video(video_file)
+    segment_video(sys.argv[1])
 else:
     segment_all_videos_in_dir(sys.argv[1])
