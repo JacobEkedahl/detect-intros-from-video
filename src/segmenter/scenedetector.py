@@ -4,10 +4,10 @@
 # a cvs file containing a statistical analysis of all the frames.           #                                            
 #                                                                           #
 # Example usage 1:                                                          #        
-#   scenedetector.execute("myvideo.mp4")                                    #
+#   py scenedetector.py myvideo.mp4                                         #
 #                                                                           # 
 # Example usage 2:                                                          # 
-#   scenedetector.execute("/somepath/")                                     #
+#   py scenedetector.py c:/users/home/videos                                #
 #                                                                           #
 # Notice:                                                                   #
 # You can either provide a single .mp4 file or a directory. If a full path  # 
@@ -17,18 +17,19 @@
 
 # Source: https://pyscenedetect.readthedocs.io/en/latest/examples/usage-python/
 
-import scenedetect 
-import numpy
-import cv2
-import os 
-import sys 
-import json 
+import json
+import os
+import sys
 
-from scenedetect.video_manager import VideoManager
-from scenedetect.scene_manager import SceneManager
-from scenedetect.frame_timecode import FrameTimecode
-from scenedetect.stats_manager import StatsManager
+import numpy
+
+import cv2
+import scenedetect
 from scenedetect.detectors import ContentDetector
+from scenedetect.frame_timecode import FrameTimecode
+from scenedetect.scene_manager import SceneManager
+from scenedetect.stats_manager import StatsManager
+from scenedetect.video_manager import VideoManager
 
 DEFAULT_START_TIME = 0.0        # 00:00:00.00
 DEFAULT_END_TIME = 600.0        # 00:10:00.00
@@ -54,11 +55,14 @@ def segment_video(video_file):
 
         start_time = base_timecode + DEFAULT_START_TIME      
         end_time = base_timecode + DEFAULT_END_TIME   
+        
+        # Set video_manager duration to read frames from [start_time] to [end_time].
         video_manager.set_duration(start_time=start_time, end_time=end_time)
 
         # Set downscale factor to improve processing speed (no args means default).
         video_manager.set_downscale_factor()
 
+        # Start video_manager.
         video_manager.start()
 
         # Perform scene detection on video_manager.
@@ -104,24 +108,24 @@ def get_all_paths(fullPath):
     files = []
     for file in os.listdir(fullPath):
         if file.endswith(".mp4"):
-            files.append(fullPath + file)
+            files.append(file)
     return files
 
+# C:\Users\tiago\Desktop\Exjobb\detect-intros-from-video\temp\Videos
 
-def segment_all_videos_in_dir(target_directory):
-    video_files = get_all_paths(target_directory)
+if len(sys.argv) - 1 < 1:
+    print("No arguments found")
+    exit()
+
+if sys.argv[1].endswith(".mp4"):
+    video_file = sys.argv[1]
+    segment_video(video_file)
+else:
+    video_files = get_all_paths(sys.argv[1])
+    os.chdir(sys.argv[1])
     i = 1
     max = len(video_files)
     for video_file in video_files: 
         segment_video(video_file)
         print("segmented %d/%d" % (i, max))
         i = i + 1
-
-def execute(argv): 
-    if len(argv) - 1 < 2:
-        print("No file or directory specified.")
-        return
-    if argv[2].endswith(".mp4"):
-        segment_video(sys.argv[2])
-    else:
-        segment_all_videos_in_dir(argv[2])
