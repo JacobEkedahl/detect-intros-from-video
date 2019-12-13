@@ -14,7 +14,7 @@
 import os
 import sys 
 import subprocess
-import SceneDetector
+import scenedetector
 import random
 import string
 
@@ -59,7 +59,7 @@ def extract_opening_from_video(video_file, cut_off_time_in_seconds):
 
 # Addon for performing basic scene detection on the video 
 def scene_detect(video_file):
-    SceneDetector.main(video_file)
+    scenedetector.segment_video(video_file)
 
 if len(sys.argv) - 1 < 1:
     print("No arguments found")

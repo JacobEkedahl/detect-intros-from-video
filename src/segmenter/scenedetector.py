@@ -107,10 +107,18 @@ def get_all_paths(fullPath):
     files = []
     for file in os.listdir(fullPath):
         if file.endswith(".mp4"):
-            files.append(file)
+            files.append(fullPath + file)
     return files
 
-# C:\Users\tiago\Desktop\Exjobb\detect-intros-from-video\temp\Videos
+
+def segment_all_videos_in_dir(target_directory):
+    video_files = get_all_paths(target_directory)
+    i = 1
+    max = len(video_files)
+    for video_file in video_files: 
+        segment_video(video_file)
+        print("segmented %d/%d" % (i, max))
+        i = i + 1
 
 if len(sys.argv) - 1 < 1:
     print("No arguments found")
@@ -120,11 +128,4 @@ if sys.argv[1].endswith(".mp4"):
     video_file = sys.argv[1]
     segment_video(video_file)
 else:
-    video_files = get_all_paths(sys.argv[1])
-    os.chdir(sys.argv[1])
-    i = 1
-    max = len(video_files)
-    for video_file in video_files: 
-        segment_video(video_file)
-        print("segmented %d/%d" % (i, max))
-        i = i + 1
+    segment_all_videos_in_dir(sys.argv[1])
