@@ -11,21 +11,13 @@ import utils.file_handler as file_handler
 from . import videoMerger
 
 
-def download_video(url, name_folder):
-    download_path = file_handler.get_full_path_folder(name_folder)
-    print(download_path)
-    command = ["sh", "lib/runSvtPlay.sh", url, "--subfolder", "--output", download_path]
+def download_video(url):
+    command = ["sh", "lib/runSvtPlay.sh", "--config", "lib/svtplay-dl.yaml", url]
     output = subprocess.call(command, shell=True) 
-    videoMerger.mergeImageAndAudio(download_path)
+    videoMerger.mergeImageAndAudio(file_handler.get_full_path_videos())
     print(output)
 
-def download_videos(urls, name_folder):
-    download_path = file_handler.get_full_path_folder(name_folder)
-    command = ["sh", "lib/runSvtPlay.sh"] + urls + ["--config", "lib/svtplay-dl.yaml", "--subfolder", "--output", download_path]
-    output = subprocess.call(command, shell=True)
-    print(output)
-
-def start_download(urls, name_folder, number_of_episodes):
+def start_download(urls, number_of_episodes):
     num_epi = int(number_of_episodes)
     if (num_epi < 1):
         print("specify number of episodes")
@@ -34,8 +26,8 @@ def start_download(urls, name_folder, number_of_episodes):
         urls = urls[:-len(urls)+num_epi]
 
     for url in urls:
-        download_video(url, name_folder)
+        download_video(url)
 
-def start(name_textfile, name_folder, number_of_episodes):
+def start(name_textfile, number_of_episodes):
     urls = file_handler.get_all_urls_from_file(name_textfile)
-    start_download(urls, name_folder, number_of_episodes)
+    start_download(urls, number_of_episodes)

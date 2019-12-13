@@ -21,9 +21,8 @@ import json
 import os
 import sys
 
-import numpy
-
 import cv2
+import numpy
 import scenedetect
 from scenedetect.detectors import ContentDetector
 from scenedetect.frame_timecode import FrameTimecode
@@ -31,11 +30,21 @@ from scenedetect.scene_manager import SceneManager
 from scenedetect.stats_manager import StatsManager
 from scenedetect.video_manager import VideoManager
 
+import utils.file_handler as file_handler
+
 DEFAULT_START_TIME = 0.0        # 00:00:00.00
 DEFAULT_END_TIME = 600.0        # 00:10:00.00
 
-def segment_video(video_file):
+def segment_all_videos():
+    video_files = file_handler.get_all_mp4_files()
+    i = 1
+    max = len(video_files)
+    for file in video_files:
+        segment_video(str(file))
+        print("segmented %d/%d" % (i, max))
+        i = i + 1
 
+def segment_video(video_file):
     # requires that they all have the same frame size, and optionally, framerate.
     video_manager = VideoManager([video_file])
     stats_manager = StatsManager()
@@ -45,34 +54,18 @@ def segment_video(video_file):
     base_timecode = video_manager.get_base_timecode()
 
     try:
-        # Uses the video file path and replaces .mp4 with another ending
         stats_file_path = video_file.replace('.mp4', '') + '.stats.cvs'
-        # If stats file exists, load it.
         if os.path.exists(stats_file_path):
-            # Read stats from CSV file opened in read mode:
             with open(stats_file_path, 'r') as stats_file:
                 stats_manager.load_from_csv(stats_file, base_timecode)
 
         start_time = base_timecode + DEFAULT_START_TIME      
         end_time = base_timecode + DEFAULT_END_TIME   
-        
-        # Set video_manager duration to read frames from [start_time] to [end_time].
         video_manager.set_duration(start_time=start_time, end_time=end_time)
-
-        # Set downscale factor to improve processing speed (no args means default).
         video_manager.set_downscale_factor()
-
-        # Start video_manager.
         video_manager.start()
-
-        # Perform scene detection on video_manager.
         scene_manager.detect_scenes(frame_source=video_manager)
-
-        # Obtain list of detected scenes.
         scene_list = scene_manager.get_scene_list(base_timecode)
-        # Like FrameTimecodes, each scene in the scene_list can be sorted if the
-        # list of scenes becomes unsorted.
-
         print('List of scenes obtained from %s:' % video_file)
 
         json_data = {}
@@ -95,37 +88,9 @@ def segment_video(video_file):
         with open(video_file.replace('.mp4', '') + '.json', 'w') as outfile:
             json.dump(json_data, outfile)
 
-        # We only write to the stats file if a save is required:
         if stats_manager.is_save_required():
             with open(stats_file_path, 'w') as stats_file:
                 stats_manager.save_to_csv(stats_file, base_timecode)
 
     finally:
         video_manager.release()
-
-
-def get_all_paths(fullPath):
-    files = []
-    for file in os.listdir(fullPath):
-        if file.endswith(".mp4"):
-            files.append(file)
-    return files
-
-# C:\Users\tiago\Desktop\Exjobb\detect-intros-from-video\temp\Videos
-
-if len(sys.argv) - 1 < 1:
-    print("No arguments found")
-    exit()
-
-if sys.argv[1].endswith(".mp4"):
-    video_file = sys.argv[1]
-    segment_video(video_file)
-else:
-    video_files = get_all_paths(sys.argv[1])
-    os.chdir(sys.argv[1])
-    i = 1
-    max = len(video_files)
-    for video_file in video_files: 
-        segment_video(video_file)
-        print("segmented %d/%d" % (i, max))
-        i = i + 1

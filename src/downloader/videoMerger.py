@@ -11,7 +11,7 @@ def mergeImageAndAudio(fullPath):
     files = getAllPaths(fullPath)
     for file in files:
         print(file.audioName + " : " + file.videoName)
-        output = file.fileName + ".mkv"
+        output = file.fileName + ".mp4"
         command = [ffmpeg._utils.get_ffmpeg_exe.__call__(), "-i", file.audioName, "-i", file.videoName, "-c", "copy", "-t", "00:10:00.0", "-y", output]
         output = subprocess.call(command, shell=True) 
         os.remove(file.audioName)
