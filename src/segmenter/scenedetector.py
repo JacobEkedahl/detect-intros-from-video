@@ -7,7 +7,7 @@
 #   py scenedetector.py myvideo.mp4                                         #
 #                                                                           # 
 # Example usage 2:                                                          # 
-#   py scenedetector.py c:/users/home/videos/                               #
+#   py scenedetector.py c:/somepath/                                        #
 #                                                                           #
 # Notice:                                                                   #
 # You can either provide a single .mp4 file or a directory. If a full path  # 
@@ -54,14 +54,11 @@ def segment_video(video_file):
 
         start_time = base_timecode + DEFAULT_START_TIME      
         end_time = base_timecode + DEFAULT_END_TIME   
-        
-        # Set video_manager duration to read frames from [start_time] to [end_time].
         video_manager.set_duration(start_time=start_time, end_time=end_time)
 
         # Set downscale factor to improve processing speed (no args means default).
         video_manager.set_downscale_factor()
 
-        # Start video_manager.
         video_manager.start()
 
         # Perform scene detection on video_manager.
