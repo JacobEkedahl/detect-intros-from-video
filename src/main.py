@@ -26,7 +26,7 @@ if __name__ == "__main__":
             svtplaywrapper.download_video(url_path, name_folder)
         print("finnished downloading!")
         exit()
-    # C:\Users\tiago\Desktop\Exjobb\detect-intros-from-video\temp
+
     elif (s.argv[1] == "--seg"):
         scenedetector.execute(s.argv)
         exit()
