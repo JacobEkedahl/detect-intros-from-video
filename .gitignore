@@ -1,5 +1,6 @@
 # Directories
 temp/
+!lib/**
 
 # Video and audio
 *.mkv
