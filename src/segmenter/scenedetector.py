@@ -7,7 +7,7 @@
 #   py scenedetector.py myvideo.mp4                                         #
 #                                                                           # 
 # Example usage 2:                                                          # 
-#   py scenedetector.py c:/users/home/videos                                #
+#   py scenedetector.py c:/users/home/videos/                               #
 #                                                                           #
 # Notice:                                                                   #
 # You can either provide a single .mp4 file or a directory. If a full path  # 
