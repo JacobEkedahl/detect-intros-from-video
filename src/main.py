@@ -1,6 +1,8 @@
 import sys as s
 
 from downloader import svtplaywrapper
+from segmenter import scenedetector
+
 
 if __name__ == "__main__":
     if (len(s.argv) -1 < 1):
@@ -23,6 +25,10 @@ if __name__ == "__main__":
             name_folder = s.argv[4]
             svtplaywrapper.download_video(url_path, name_folder)
         print("finnished downloading!")
+        exit()
+    # C:\Users\tiago\Desktop\Exjobb\detect-intros-from-video\temp
+    elif (s.argv[1] == "--seg"):
+        scenedetector.execute(s.argv)
         exit()
 
     print("no valid arguments found")

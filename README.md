@@ -9,5 +9,9 @@
 - python main.py --downloadvideos video-serier.txt svtplay-dir 2
 
 
+## Run Scene Detector:
+- python main.py --seg temp/
+- python main.py --seg temp/myvideo.mp4
+
 ## Extra
 Make sure that the textfile of all urls to download is in your home directory

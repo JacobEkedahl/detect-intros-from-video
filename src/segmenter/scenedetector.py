@@ -117,11 +117,11 @@ def segment_all_videos_in_dir(target_directory):
         print("segmented %d/%d" % (i, max))
         i = i + 1
 
-if len(sys.argv) - 1 < 1:
-    print("No arguments found")
-    exit()
-
-if sys.argv[1].endswith(".mp4"):
-    segment_video(sys.argv[1])
-else:
-    segment_all_videos_in_dir(sys.argv[1])
+def execute(argv): 
+    if len(argv) - 1 < 1:
+        print("No arguments found")
+        return
+    if argv[2].endswith(".mp4"):
+        segment_video(sys.argv[2])
+    else:
+        segment_all_videos_in_dir(argv[2])
