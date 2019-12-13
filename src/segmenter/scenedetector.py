@@ -4,10 +4,10 @@
 # a cvs file containing a statistical analysis of all the frames.           #                                            
 #                                                                           #
 # Example usage 1:                                                          #        
-#   py scenedetector.py myvideo.mp4                                         #
+#   scenedetector.execute("myvideo.mp4")                                    #
 #                                                                           # 
 # Example usage 2:                                                          # 
-#   py scenedetector.py c:/somepath/                                        #
+#   scenedetector.execute("/somepath/")                                     #
 #                                                                           #
 # Notice:                                                                   #
 # You can either provide a single .mp4 file or a directory. If a full path  # 
