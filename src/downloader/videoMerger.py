@@ -5,17 +5,20 @@ from glob import glob
 
 import imageio_ffmpeg as ffmpeg
 
+from segmenter import scenedetector
+
 audioVideoTranslator = {".audio.ts": ".ts", ".m4a": ".mp4"}
 
 def mergeImageAndAudio(fullPath):
     files = getAllPaths(fullPath)
     for file in files:
         print(file.audioName + " : " + file.videoName)
-        output = file.fileName + ".mp4"
-        command = [ffmpeg._utils.get_ffmpeg_exe.__call__(), "-i", file.audioName, "-i", file.videoName, "-c", "copy", "-t", "00:10:00.0", "-y", output]
-        output = subprocess.call(command, shell=True) 
+        output = file.fileName + "-converted.mp4"
+        command = [ffmpeg._utils.get_ffmpeg_exe.__call__(), "-i", file.audioName, "-i", file.videoName, "-c", "copy", "-t", "00:08:00.0", "-y", output]
+        subprocess.call(command, shell=True) 
         os.remove(file.audioName)
         os.remove(file.videoName)
+        scenedetector.segment_video(output)
 
 def getAllPaths(fullPath):
     files = []

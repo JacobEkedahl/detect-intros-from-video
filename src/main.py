@@ -10,7 +10,10 @@ if __name__ == "__main__":
         print("need more arguments! (--dlv --file nameOfTxtFile numberOfEpisodes)")
         exit()
 
-    if (s.argv[1] == "--dlv"):
+    if (s.argv[1] == "--start"):
+        svtplaywrapper.download_and_segment()
+        
+    elif (s.argv[1] == "--dlv"):
         noOfArgs = len(s.argv) - 1
         if (noOfArgs < 2):
             print("need more arguments!")

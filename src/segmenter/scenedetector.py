@@ -62,7 +62,7 @@ def segment_video(video_file):
         start_time = base_timecode + DEFAULT_START_TIME      
         end_time = base_timecode + DEFAULT_END_TIME   
         video_manager.set_duration(start_time=start_time, end_time=end_time)
-        video_manager.set_downscale_factor()
+        video_manager.set_downscale_factor(10)
         video_manager.start()
         scene_manager.detect_scenes(frame_source=video_manager)
         scene_list = scene_manager.get_scene_list(base_timecode)

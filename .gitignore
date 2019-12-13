@@ -1,6 +1,12 @@
 # Directories
-temp/*
+temp/
 
+# Video and audio
+*.mkv
+*.mp4
+*.srt
+*.m4a
+*.ts
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -9,6 +15,7 @@ __pycache__/
 
 # C extensions
 *.so
+
 
 # Distribution / packaging
 .Python
