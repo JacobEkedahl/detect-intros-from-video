@@ -1,3 +1,10 @@
 default:
-    subtitle: true
-    filename: "{title}.s{season}e{episode}.{episodename}.{ext}"
+    path: temp/videos
+
+service:
+    svtplay:
+        path: temp/videos
+        subtitle: true
+        subfolder: true
+        merge_subtitle: false
+        filename: "{title}.s{season}e{episode}.{episodename}.{ext}"
