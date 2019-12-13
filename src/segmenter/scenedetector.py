@@ -4,10 +4,10 @@
 # a cvs file containing a statistical analysis of all the frames.           #                                            
 #                                                                           #
 # Example usage 1:                                                          #        
-#   py SceneDetector.py myvideo.mp4                                         #
+#   py scenedetector.py myvideo.mp4                                         #
 #                                                                           # 
 # Example usage 2:                                                          # 
-#   py SceneDetector.py c:/users/home/videos                                #
+#   py scenedetector.py c:/users/home/videos                                #
 #                                                                           #
 # Notice:                                                                   #
 # You can either provide a single .mp4 file or a directory. If a full path  # 
@@ -110,11 +110,15 @@ def get_all_paths(fullPath):
             files.append(file)
     return files
 
+# C:\Users\tiago\Desktop\Exjobb\detect-intros-from-video\temp\Videos
+
 if len(sys.argv) - 1 < 1:
     print("No arguments found")
     exit()
-if (".mp4") in sys.argv[1]: 
-    segment_video(sys.argv[1])
+
+if sys.argv[1].endswith(".mp4"):
+    video_file = sys.argv[1]
+    segment_video(video_file)
 else:
     video_files = get_all_paths(sys.argv[1])
     os.chdir(sys.argv[1])
