@@ -6,12 +6,12 @@
 - pip install -r requirements.txt
 
 ## Run svtplaydownloader:
-- python main.py --downloadvideos video-serier.txt svtplay-dir 2
-
+- python main.py --dlv --url "url from svt video"
 
 ## Run Scene Detector:
-- python main.py --seg temp/
+- python main.py --seg
 - python main.py --seg temp/myvideo.mp4
 
 ## Extra
-Make sure that the textfile of all urls to download is in your home directory
+- Run command from root folder (same directory as lib, src exists)
+- All video files will be stored inside temp/videos
