@@ -118,8 +118,8 @@ def segment_all_videos_in_dir(target_directory):
         i = i + 1
 
 def execute(argv): 
-    if len(argv) - 1 < 1:
-        print("No arguments found")
+    if len(argv) - 1 < 2:
+        print("No file or directory specified.")
         return
     if argv[2].endswith(".mp4"):
         segment_video(sys.argv[2])
