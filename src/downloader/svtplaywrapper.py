@@ -14,7 +14,7 @@ from . import videoMerger
 def download_video(url):
     command = ["sh", "lib/runSvtPlay.sh", "--config", "lib/svtplay-dl.yaml", url]
     output = subprocess.call(command, shell=True) 
-    videoMerger.mergeImageAndAudio(file_handler.get_full_path_videos())
+    videoMerger.mergeImageAndAudio()
     print(output)
 
 def start_download(urls, number_of_episodes):

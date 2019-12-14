@@ -34,5 +34,26 @@ def get_all_mp4_files():
     for filename in Path(get_full_path_videos()).rglob('*.mp4'):
         print(filename)
         files.append(filename)
-        
     return files
+
+def get_all_unmerged_files():
+    files = []
+    types = ["*.audio.ts", "*.m4a"] #find audio files and match with videofiles
+
+    for ext in types:
+        audioExtNoStar = ext[1:]
+        for audioName in Path(get_full_path_videos()).rglob(ext):
+            audioName = str(audioName)
+            print("audioname: " + audioName)
+            videoName = audioName.replace(audioExtNoStar, audioVideoTranslator[audioExtNoStar], 1)
+            fileName = audioName.replace(audioExtNoStar,  '', 1)
+            files.append(FileInfo(fileName, audioName, videoName ))
+    return files
+
+
+audioVideoTranslator = {".audio.ts": ".ts", ".m4a": ".mp4"}
+class FileInfo:
+    def __init__(self, fileName, audioName, videoName):
+        self.fileName = fileName
+        self.audioName = audioName
+        self.videoName = videoName
