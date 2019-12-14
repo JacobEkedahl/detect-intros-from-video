@@ -24,7 +24,8 @@ def get_all_urls_from_temp():
 
 def get_all_urls_from_file(file_name):
     text_file_path = os.path.join(get_full_path_temp(), file_name)
-    return [line.rstrip('\n') for line in open(text_file_path)]
+    urls = [line.rstrip('\n') for line in open(text_file_path)]
+    return [item for item in urls if item.startswith("http")]
 
 def get_all_mp4_files():
     files = []
