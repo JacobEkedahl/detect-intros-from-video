@@ -10,7 +10,6 @@ from segmenter import scenedetector
 audioVideoTranslator = {".audio.ts": ".ts", ".m4a": ".mp4"}
 
 def mergeImageAndAudio(fullPath):
-    print(fullPath)
     files = getAllPaths(fullPath)
     for file in files:
         print(file.audioName + " : " + file.videoName)

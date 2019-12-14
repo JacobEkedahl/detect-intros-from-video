@@ -13,7 +13,7 @@ def create_folderstructure_if_not_exists():
         os.makedirs(get_full_path_videos())
 
 def get_full_path_videos():
-    return norm_path(os.path.join(get_full_path_temp(), c.VIDEOFOLDERNAME))
+    return norm_path(os.path.join(str(os.getcwd()), c.VIDEOFOLDERNAME))
 
 def get_full_path_temp():
     return norm_path(os.path.join(str(os.getcwd()), c.TEMPFOLDERNAME))
