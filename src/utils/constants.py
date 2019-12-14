@@ -1,0 +1,3 @@
+TEMPFOLDERNAME = "temp"
+VIDEOFOLDERNAME = "videos"
+URLSTEXTFILENAME = "video-serier.txt"

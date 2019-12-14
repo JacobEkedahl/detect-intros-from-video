@@ -1,9 +1,8 @@
 import os
 from pathlib import Path
 
-TEMPFOLDERNAME = "temp"
-VIDEOFOLDERNAME = "videos"
-URLSTEXTFILENAME = "video-serier.txt"
+from . import constants as c
+
 
 def create_folderstructure_if_not_exists():
     ##scrape svt and fetch urls, save in temp
@@ -11,16 +10,16 @@ def create_folderstructure_if_not_exists():
         os.makedirs(get_full_path_videos())
 
 def get_full_path_videos():
-    return os.path.join(get_full_path_temp(), VIDEOFOLDERNAME)
+    return os.path.join(get_full_path_temp(), c.VIDEOFOLDERNAME)
 
 def get_full_path_temp():
-    return os.path.join(str(os.getcwd()), TEMPFOLDERNAME)
+    return os.path.join(str(os.getcwd()), c.TEMPFOLDERNAME)
 
 def get_full_path_folder(folder_name):
     return os.path.join(get_full_path_temp(), folder_name)
 
 def get_all_urls_from_temp():
-    return get_all_urls_from_file(URLSTEXTFILENAME)
+    return get_all_urls_from_file(c.URLSTEXTFILENAME)
 
 def get_all_urls_from_file(file_name):
     text_file_path = os.path.join(get_full_path_temp(), file_name)
