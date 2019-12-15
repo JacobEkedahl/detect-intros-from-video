@@ -1,9 +1,9 @@
 default:
-    path: videos
+    path: temp/videos
 
 service:
     svtplay:
-        path: videos
+        path: temp/videos
         subtitle: true
         subfolder: true
         remux: false
