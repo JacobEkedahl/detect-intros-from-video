@@ -6,37 +6,32 @@ from pathlib import Path
 
 import numpy as np
 
+import utils.file_handler as file_handler
+
 from . import videoMerger
 
-# ---  will save videos in outputDir which is under under home directory ---
 
-def download_video(url, name_folder):
-    download_path = os.path.join(str(Path.home()), name_folder)
-    command = ["sh", "lib/runSvtPlay.sh", url, "--config", "lib/svtplay-dl.yaml", "--output", download_path]
-    print(command)
+def download_video(url):
+    command = ["sh", "lib/runSvtPlay.sh", "--config", "lib/svtplay-dl.yaml", url]
     output = subprocess.call(command, shell=True) 
-    videoMerger.mergeImageAndAudio(download_path)
+    videoMerger.mergeImageAndAudio()
     print(output)
 
-def download_videos(urls, name_folder):
-    download_path = os.path.join(str(Path.home()), name_folder)
-    command = ["sh", "lib/runSvtPlay.sh"] + urls + ["--config", "lib/svtplay-dl.yaml", "--output", download_path]
-    output = subprocess.call(command, shell=True)
-    print(output)
-
-def start_download(urls, name_folder, number_of_episodes):
+def start_download(urls, number_of_episodes):
     num_epi = int(number_of_episodes)
     if (num_epi < 1):
         print("specify number of episodes")
         exit()
     if num_epi < len(urls):
         urls = urls[:-len(urls)+num_epi]
-
     for url in urls:
-       # print(url)
-        download_video(url, name_folder)
+        download_video(url)
 
-def start(name_textfile, name_folder, number_of_episodes):
-    text_file_path = os.path.join(str(Path.home()), name_textfile)
-    urls = [line.rstrip('\n') for line in open(text_file_path)]
-    start_download(urls, name_folder, number_of_episodes)
+def download_and_segment():
+    urls = file_handler.get_all_urls_from_temp()
+    for url in urls:
+        download_video(url)
+
+def start(name_textfile, number_of_episodes):
+    urls = file_handler.get_all_urls_from_file(name_textfile)
+    start_download(urls, number_of_episodes)

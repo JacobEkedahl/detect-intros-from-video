@@ -1,5 +1,11 @@
 default:
-    path: ~/svt-tvseries
-    subtitle: true
-    subfolder: true
-    filename: "{title}.s{season}e{episode}.{episodename}.{ext}"
+    path: temp/videos
+
+service:
+    svtplay:
+        path: temp/videos
+        subtitle: true
+        subfolder: true
+        remux: false
+        merge_subtitle: false
+        filename: "{title}.s{season}e{episode}.{episodename}.{ext}"
