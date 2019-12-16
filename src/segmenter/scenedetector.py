@@ -24,11 +24,14 @@ import sys
 import cv2
 import numpy
 import scenedetect
-from scenedetect.detectors import ContentDetector
+
 from scenedetect.frame_timecode import FrameTimecode
 from scenedetect.scene_manager import SceneManager
 from scenedetect.stats_manager import StatsManager
 from scenedetect.video_manager import VideoManager
+
+from scenedetect.detectors import ContentDetector
+from scenedetect.detectors import ThresholdDetector
 
 import utils.file_handler as file_handler
 
@@ -49,10 +52,15 @@ def segment_video(video_file):
     video_manager = VideoManager([video_file])
     stats_manager = StatsManager()
     scene_manager = SceneManager(stats_manager)
-    # Add ContentDetector algorithm (constructor takes detector options like threshold).
-    scene_manager.add_detector(ContentDetector())
+
+    contentDetector = ContentDetector()
+    scene_manager.add_detector(contentDetector)
+    threshholdDetector = ThresholdDetector()
+    scene_manager.add_detector(threshholdDetector)
+    
     base_timecode = video_manager.get_base_timecode()
 
+    print("Starting scene detection...")
     try:
         stats_file_path = video_file.replace('.mp4', '') + '.stats.cvs'
         if os.path.exists(stats_file_path):
@@ -61,8 +69,11 @@ def segment_video(video_file):
 
         start_time = base_timecode + DEFAULT_START_TIME      
         end_time = base_timecode + DEFAULT_END_TIME   
+
+
         video_manager.set_duration(start_time=start_time, end_time=end_time)
-         # Set downscale factor to improve processing speed (no args means default).
+         # Set downscale factor to improve processing speed (no args means default).k
+
         video_manager.set_downscale_factor(10)
         video_manager.start()
         scene_manager.detect_scenes(frame_source=video_manager)
