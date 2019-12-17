@@ -50,7 +50,7 @@ def read_result(filePath, tag, filter):
                 line = line + "--\t\t"
             if 'startError' in data[tag]:
                 line = line + ("%f" % data[tag]['startError']) + "\t\t"
-                startError = data[tag]['startError']
+                startError = abs(data[tag]['startError'])
                 if filter != "":
                     if filter == "lt" and startError < filterValue:
                         passedFilter = True
@@ -68,7 +68,7 @@ def read_result(filePath, tag, filter):
                 line = line + "--\t\t"
             if 'endError' in data[tag]:
                 line = line + ("%f" % data[tag]['endError']) + "\t"
-                endError = data[tag]['endError']
+                endError = abs(data[tag]['endError'])
                 if filter != "":
                     if filter == "lt" and endError < filterValue:
                         passedFilter = True
@@ -79,9 +79,9 @@ def read_result(filePath, tag, filter):
             line = line + "" + os.path.splitext(filePath)[0]
     if line != "" and passedFilter:
         if startError is not None:
-            start_errors.append(abs(startError))
+            start_errors.append(startError)
         if endError is not None:
-            end_errors.append(abs(endError))
+            end_errors.append(endError)
         print(line)
 
 
