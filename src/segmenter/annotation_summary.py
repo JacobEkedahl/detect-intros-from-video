@@ -5,7 +5,8 @@
 # Example usage 1:                                                                 
 #   py annotation_summary.py --result -tag 'intro'                                                                 
 #         
-#   Reviews the result for all intro annotations inside temp/
+#   Reviews the result for all intro annotations inside temp/. Notice: The intro arg is set by default 
+#   so the -tag command is not necessary in this scenario.
                                                          
 # Example usage 2:                                                                 
 #   py annotation_summary.py --result -tag 'intro' -path temp/videos                                                                 
@@ -109,7 +110,7 @@ def execute(argv):
                     except:
                         print("Error: less than filter must contain a float or integer")
                         return
-                elif (argv[i + 1] == "gt"):
+                elif (argv[i + 1] == "gt"): 
                     try:
                         f = float(argv[i + 2])
                         filter = "gt " + ("%f" % f)
