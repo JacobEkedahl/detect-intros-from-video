@@ -17,6 +17,11 @@
 #         
 #   Same as before but filters for errors less than 1. Filters are: lt (less than) and gt (greater than)
 
+# Example usage 4:                                                                 
+#   py annotation_summary.py --result -tag 'intro' -contains allt-jag-inte-minns                                                          
+#         
+#   Same as before but now it will only include files which contain 'allt-jag-inte-minns' as a substring.  
+
 import json 
 import os 
 import statistics 
@@ -89,6 +94,7 @@ def execute(argv):
     path = file_handler.get_full_path_temp()
     tag = 'intro'
     filter = ""
+    contains = ""
     for i in range(1, len(argv)):
         if (argv[i] == "-path" or argv[i] == "-p") and i + 1 < len(argv):
             path = argv[i + 1]
@@ -116,16 +122,22 @@ def execute(argv):
             else: 
                 print("Error: Not enough arguments provided for filter.")
                 return
+        elif (argv[i] == "-contains" or argv[i] == "-c") and i + 1 < len(argv):
+            contains = argv[i + 1]
 
     files = file_handler.get_all_files_by_type(path, 'json')
     print("Start\t\tSceneStart\t\tStartError\t\tEnd\t\t SceneEnd\t\tEndError\tFile")
+    
     for file in files: 
-        read_result(file, tag, filter)
+        if contains in os.path.splitext(file)[0]: 
+            read_result(file, tag, filter)
     print("")
-    print("Start Error avg:     %f" % statistics.mean(start_errors))
-    print("Start Error median:  %f" % statistics.median(start_errors))
-    print("Start Error stdev:   %f" % statistics.stdev(start_errors))
-    print("End Error avg:       %f" % statistics.mean(end_errors))
-    print("End Error median:    %f" % statistics.median(start_errors))
-    print("End Error stdev:     %f" % statistics.stdev(start_errors))
+    if len(start_errors) > 0:
+        print("Start Error avg:     %f" % statistics.mean(start_errors))
+        print("Start Error median:  %f" % statistics.median(start_errors))
+        print("Start Error stdev:   %f" % statistics.stdev(start_errors))
+    if len(end_errors) > 0:
+        print("End Error avg:       %f" % statistics.mean(end_errors))
+        print("End Error median:    %f" % statistics.median(start_errors))
+        print("End Error stdev:     %f" % statistics.stdev(start_errors)) 
 
