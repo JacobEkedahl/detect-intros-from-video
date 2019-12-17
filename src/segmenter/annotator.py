@@ -35,7 +35,8 @@ def annotate_strict_scenes(annotation, data, annotationStart, annotationEnd, dis
     for scene in data['scenes']:
         sceneStart = time.H_M_S_to_seconds(scene['start'])
         sceneEnd = time.H_M_S_to_seconds(scene['end'])
-        scene[annotation] = False 
+        if annotation not in scene: 
+            scene[annotation] = False 
         if (sceneStart >= annotationStart and sceneEnd <= annotationEnd) or (sceneStart < annotationStart and annotationEnd <= sceneEnd):
             scene[annotation] = True 
             if annotationInterval.firstScene is None: 
@@ -55,8 +56,13 @@ def annotate_loose_scenes(annotation, data, annotationStart, annotationEnd, disp
     for scene in data['scenes']:
         sceneStart = time.H_M_S_to_seconds(scene['start'])
         sceneEnd = time.H_M_S_to_seconds(scene['end'])
-        scene[annotation] = False 
-        if ((sceneStart <= annotationStart) and (annotationStart < sceneEnd)) or ((sceneStart <= annotationEnd) and annotationEnd < sceneEnd):
+        if annotation not in scene: 
+            scene[annotation] = False 
+        if (
+            sceneStart <= annotationStart and annotationStart < sceneEnd) or ( 
+            sceneStart <= annotationEnd and annotationEnd < sceneEnd) or (      
+            annotationStart < sceneStart and sceneEnd < annotationEnd         
+        ):
             scene[annotation] = True 
             if annotationInterval.firstScene is None: 
                 annotationInterval.firstScene = scene 
@@ -181,7 +187,7 @@ def annotate_intro_segments(filePath, startTimeStr, endTimeStr, displayAllFlag):
     return annotate_segments_loose("intro", filePath, startTimeStr, endTimeStr, True)
 
 
-def delete_annotation(annotation, filePath, displayAllFlag):
+def delete_annotation(annotation, filePath):
     with open(filePath) as json_file:
         data = json.load(json_file)
         for scene in data['scenes']:
@@ -214,6 +220,7 @@ def execute(argv):
     displayAllScenes = False 
     deleteAnnotation = False
     strictAnnotationBounds = False
+    overridePrevAnnotation = False
 
     for i in range(1, len(argv)):
         if (argv[i] == "-s" or argv[i] == "-start") and i + 1 < len(argv):
@@ -228,6 +235,8 @@ def execute(argv):
             deleteAnnotation = True
         elif (argv[i] == "-strict"):
             strictAnnotationBounds = True
+        elif (argv[i] == "-force"):
+            overridePrevAnnotation = True
 
     filePath = argv[2]
     if not os.path.isfile(filePath):
@@ -243,7 +252,7 @@ def execute(argv):
         return
 
     if deleteAnnotation: 
-        delete_annotation(annotationTag, filePath, displayAllScenes)
+        delete_annotation(annotationTag, filePath)
         return
 
     if (startTime == ""):
@@ -253,6 +262,9 @@ def execute(argv):
         print("Error: end time must be provided (-e or -end)")
         return
     
+    if overridePrevAnnotation:
+         delete_annotation(annotationTag, filePath)
+
     if strictAnnotationBounds:
         annotate_segments_strict(annotationTag.lower(), filePath, startTime, endTime, displayAllScenes)
     else:
