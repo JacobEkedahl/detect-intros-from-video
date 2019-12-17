@@ -4,6 +4,7 @@ import utils.file_handler as file_handler
 from downloader import svtplaywrapper
 from segmenter import scenedetector
 from segmenter import annotator
+from segmenter import annotation_summary
 
 if __name__ == "__main__":
     file_handler.create_folderstructure_if_not_exists()
@@ -40,6 +41,10 @@ if __name__ == "__main__":
 
     elif (s.argv[1] == "--ann"):
         annotator.execute(s.argv)
+        exit()
+
+    elif (s.argv[1] == "--result"):
+        annotation_summary.execute(s.argv)
         exit()
 
     else:

@@ -29,7 +29,15 @@ def get_all_urls_from_file(file_name):
     urls = [line.rstrip('\n') for line in open(text_file_path)]
     return [item for item in urls if item.startswith("http")]
 
+def get_all_files_by_type(path, fileType):
+    files = []
+    fileType = '*.' + fileType
+    for filename in Path(path).rglob(fileType):
+        files.append(filename)
+    return files
+
 def get_all_mp4_files():
+    # TODO: test and replace with --- return get_all_files_by_type(get_full_path_videos(), 'mp4')
     files = []
     for filename in Path(get_full_path_videos()).rglob('*.mp4'):
         print(filename)

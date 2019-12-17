@@ -1,23 +1,32 @@
 # 
 # Allows for scene annotation based on scenes within a given interval.                                                       
-#                                                                          
+#   
+                                                                       
 # Example usage 1:                                                                 
 #   py annotator.py --ann al-pitcher-pa-paus.json -s 00:00:00 -e 00:00:15 -t intro                                                                  
-#                                                                                 
-# Example usage 2:                                                              
+#         
+#   Set 'intro' = true for scenes between start and end     
+                                                         
+# Example usage 3:                                                              
 #   py annotator.py --ann al-pitcher-pa-paus.json -s 00:00:00 -e 00:00:15 -t intro -print                                                            
-#                                                                            
-# Example usage 3:                                                                  
-#   py annotator.py --ann al-pitcher-pa-paus.json -print                    
-#                                                                                                                                            
-# Example usage 4:                                                                
-#   py annotator.py --ann al-pitcher-pa-paus.json -delete -tag intro                    
-#                                                                           
-# Notice:                                                                         
-# 1. Some times no scene is truly within the provided timestamp and it may  
-# be necessary to tweak the input slightly or do a manual edit.         
-#     
+#   
+#   Same as before but will also print out all scenes
 
+# Example usage 3:                                                                 
+#   py annotator.py --ann al-pitcher-pa-paus.json -s 00:00:00 -e 00:00:15 -t intro -force
+#   
+#   Same as before but will now override any previous annotations 
+                                                                         
+# Example usage 4:                                                                  
+#   py annotator.py --ann al-pitcher-pa-paus.json -print      
+# 
+#   Debug command for simply printing all scenes
+                                                                                                                                       
+# Example usage 5:                                                                
+#   py annotator.py --ann al-pitcher-pa-paus.json -delete -tag intro                    
+#    
+#   Deletes the tag from all scenes and any associated metadata
+                                                                       
 import os
 import json 
 
@@ -49,7 +58,6 @@ def annotate_strict_scenes(annotation, data, annotationStart, annotationEnd, dis
         if displayAllFlag: 
             print(scene)
     return annotationInterval
-
 
 def annotate_loose_scenes(annotation, data, annotationStart, annotationEnd, displayAllFlag):
     annotationInterval = AnnotationInterval(None, None)
@@ -136,6 +144,7 @@ def annotate_segments_loose(annotation, filePath, startTimeStr, endTimeStr, disp
         with open(filePath, 'w') as outfile:
             json.dump(data, outfile)
  
+
  # This is legacy annotation boundary, can still be accessed with -strict argument
  # If the new implementation is proven to be better this will be phased out.
 def annotate_segments_strict(annotation, filePath, startTimeStr, endTimeStr, displayAllFlag):
