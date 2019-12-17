@@ -13,9 +13,9 @@
 #   Reviews the result for all intro annotations inside temp/videos or any other directory of your choice
 
 # Example usage 3:                                                                 
-#   py annotation_summary.py --result -tag 'intro' -lt 1                                                               
+#   py annotation_summary.py --result -tag 'intro' -filter lt 1                                                             
 #         
-#   Same as before but filters for errors less than 1. Filters are: -lt (less than) and -gt (greater than)
+#   Same as before but filters for errors less than 1. Filters are: lt (less than) and gt (greater than)
 
 import json 
 import os 
