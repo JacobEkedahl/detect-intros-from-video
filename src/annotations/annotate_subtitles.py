@@ -1,3 +1,12 @@
+# 
+# Merges the subtitle files with the scene annotation file                                                  
+
+# Example usage 1:                                                                 
+#   py annotate_subtitles.py --subs subtitles.srt annotationfile.json -print
+# 
+# Note: print is optional                                                  
+#         
+
 import json
 
 from utils import srt_to_json
