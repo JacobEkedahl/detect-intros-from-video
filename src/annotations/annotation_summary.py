@@ -32,6 +32,8 @@ import utils.file_handler as file_handler
 start_errors = []
 end_errors = []
 
+
+# Extracts the metadata from the json file
 def read_result(filePath, tag, filter):
     global start_errors
     global end_errors
