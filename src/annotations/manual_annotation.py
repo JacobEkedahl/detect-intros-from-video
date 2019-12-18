@@ -31,70 +31,39 @@ import os
 import json 
 
 import utils.time_handler as time
-
-# Contains the first and last scenes within for a given annotation interval 
-class AnnotationInterval:
-    def __init__(self, firstScene, lastScene):
-        self.firstScene = firstScene
-        self.lastScene = lastScene
+from .annotate import set_presence_of_interval
+from .annotate import TimeInterval
 
 
-def annotate_strict_scenes(annotation, data, annotationStart, annotationEnd, displayAllFlag):
-    annotationInterval = AnnotationInterval(None, None)
-    for scene in data['scenes']:
-        sceneStart = time.H_M_S_to_seconds(scene['start'])
-        sceneEnd = time.H_M_S_to_seconds(scene['end'])
-        if annotation not in scene: 
-            scene[annotation] = False 
-        if (sceneStart >= annotationStart and sceneEnd <= annotationEnd) or (sceneStart < annotationStart and annotationEnd <= sceneEnd):
-            scene[annotation] = True 
-            if annotationInterval.firstScene is None: 
-                annotationInterval.firstScene = scene 
-                annotationInterval.lastScene = scene 
-            else:
-                 annotationInterval.lastScene = scene
-            if not displayAllFlag:
-                print(scene)
-        if displayAllFlag: 
-            print(scene)
-    return annotationInterval
+# Annotates all scenes that intersect with the start and end time
 
-def annotate_loose_scenes(annotation, data, annotationStart, annotationEnd, displayAllFlag):
-    annotationInterval = AnnotationInterval(None, None)
-    for scene in data['scenes']:
-        sceneStart = time.H_M_S_to_seconds(scene['start'])
-        sceneEnd = time.H_M_S_to_seconds(scene['end'])
-        if annotation not in scene: 
-            scene[annotation] = False 
-        if (
-            sceneStart <= annotationStart and annotationStart < sceneEnd) or ( 
-            sceneStart <= annotationEnd and annotationEnd < sceneEnd) or (      
-            annotationStart < sceneStart and sceneEnd < annotationEnd         
-        ):
-            scene[annotation] = True 
-            if annotationInterval.firstScene is None: 
-                annotationInterval.firstScene = scene 
-                annotationInterval.lastScene = scene 
-            else:
-                 annotationInterval.lastScene = scene
-            if not displayAllFlag:
-                print(scene)
-        if displayAllFlag: 
-            print(scene)
-    return annotationInterval
-    
-
-def annotate_segments_loose(annotation, filePath, startTimeStr, endTimeStr, displayAllFlag):
-    annotationStart = time.H_M_S_to_seconds(startTimeStr)
-    annotationEnd = time.H_M_S_to_seconds(endTimeStr)
+def annotate_segments_loose(annotation, filePath, startTimeStr, endTimeStr, displayScenes):
+    annotationStart = time.timestamp(startTimeStr)
+    annotationEnd = time.timestamp(endTimeStr)
     if (annotationEnd < annotationStart):
         return
-    annotationInterval = None
     with open(filePath) as json_file:
         data = json.load(json_file)
-        annotationInterval = annotate_loose_scenes(annotation, data, annotationStart, annotationEnd, displayAllFlag)
-        firstScene = annotationInterval.firstScene
-        lastScene = annotationInterval.lastScene
+
+        for scene in data['scenes']:
+            scene[annotation] = False 
+
+        # Annotate
+        set_presence_of_interval(annotation, data['scenes'], startTimeStr, endTimeStr)
+
+        # Metadata
+        firstScene = None
+        lastScene = None
+        for scene in data['scenes']:
+            if (displayScenes):
+                print(scene)
+            if (scene[annotation] == True):
+                if firstScene is None: 
+                    firstScene = scene
+                    lastScene = scene 
+                else:
+                    lastScene = scene
+
         if firstScene is None: 
             print("Error: failed to find any intersecting scenes.")
             print("Input: %s to %s" % (startTimeStr, endTimeStr))
@@ -104,27 +73,27 @@ def annotate_segments_loose(annotation, filePath, startTimeStr, endTimeStr, disp
                 'success': False
             }
         else: 
-            s1_start = time.H_M_S_to_seconds(firstScene['start'])
-            s1_end = time.H_M_S_to_seconds(firstScene['end'])
+            s1_start = time.timestamp(firstScene['start'])
+            s1_end = time.timestamp(firstScene['end'])
             s1_start_diff = abs(s1_start - annotationStart) 
             s1_end_diff = abs(s1_end - annotationStart) 
             if (s1_start_diff <= s1_end_diff):
                 suggestedStartStr = firstScene['start']
-                startError = -s1_start_diff
+                startError = -s1_start_diff/1000
             else:
                 suggestedStartStr = firstScene['end']
-                startError = s1_end_diff
+                startError = s1_end_diff/1000
 
-            s2_start = time.H_M_S_to_seconds(lastScene['start'])
-            s2_end = time.H_M_S_to_seconds(lastScene['end'])
+            s2_start = time.timestamp(lastScene['start'])
+            s2_end = time.timestamp(lastScene['end'])
             s2_start_diff = abs(s2_start - annotationEnd) 
             s2_end_diff = abs(s2_end - annotationEnd) 
             if (s2_start_diff <= s2_end_diff):
                 suggestedEndStr = lastScene['start']
-                endError = -s2_start_diff
+                endError = -s2_start_diff/1000
             else:
                 suggestedEndStr = lastScene['end']
-                endError = s2_end_diff
+                endError = s2_end_diff/1000
             data[annotation] = {
                 'start': startTimeStr,
                 'suggestedStart': suggestedStartStr,
@@ -139,50 +108,10 @@ def annotate_segments_loose(annotation, filePath, startTimeStr, endTimeStr, disp
             print("StartError: %f" % (startError))
             print("EndError: %f" % (endError))
 
-
-
+        # Save
         with open(filePath, 'w') as outfile:
             json.dump(data, outfile)
- 
 
- # This is legacy annotation boundary, can still be accessed with -strict argument
- # If the new implementation is proven to be better this will be phased out.
-def annotate_segments_strict(annotation, filePath, startTimeStr, endTimeStr, displayAllFlag):
-    annotationStart = time.H_M_S_to_seconds(startTimeStr)
-    annotationEnd = time.H_M_S_to_seconds(endTimeStr)
-    if (annotationEnd < annotationStart):
-        return
-    annotationInterval = None
-    with open(filePath) as json_file:
-        data = json.load(json_file)
-        annotationInterval = annotate_strict_scenes(annotation, data, annotationStart, annotationEnd, displayAllFlag)
-        firstScene = annotationInterval.firstScene
-        lastScene = annotationInterval.lastScene
-        if firstScene is None: 
-            print("Error: failed to find any true intersecting scenes.")
-            print("Input: %s to %s" % (startTimeStr, endTimeStr))
-            data[annotation] = {
-                'start': startTimeStr,
-                'end': endTimeStr,
-                'success': False
-            }
-        else: 
-            data[annotation] = {
-                'start': startTimeStr,
-                'suggestedStart': firstScene['start'],
-                'startError': time.H_M_S_to_seconds(firstScene['start']) - annotationStart,
-                'end': endTimeStr,
-                'suggestedEnd': lastScene['end'],
-                'endError': time.H_M_S_to_seconds(lastScene['end']) - annotationEnd,
-                'success': True
-            }
-            print("Input: %s to %s" % (startTimeStr, endTimeStr))
-            print("Suggested: %s to %s" % (firstScene['start'], lastScene['end']))
-            print("StartError: %f" % (time.H_M_S_to_seconds(firstScene['start']) - annotationStart))
-            print("EndError: %f" % (time.H_M_S_to_seconds(lastScene['end']) - annotationEnd))
-        with open(filePath, 'w') as outfile:
-            json.dump(data, outfile)
-   
 
 def annotate_previous_segments(filePath, startTimeStr, endTimeStr, displayAllFlag):
     return annotate_segments_loose("previous", filePath, startTimeStr, endTimeStr, True)
@@ -228,7 +157,6 @@ def execute(argv):
     annotationTag = ""
     displayAllScenes = False 
     deleteAnnotation = False
-    strictAnnotationBounds = False
     overridePrevAnnotation = False
 
     for i in range(1, len(argv)):
@@ -242,8 +170,6 @@ def execute(argv):
             annotationTag = argv[i + 1]
         elif (argv[i] == "-delete"):
             deleteAnnotation = True
-        elif (argv[i] == "-strict"):
-            strictAnnotationBounds = True
         elif (argv[i] == "-force"):
             overridePrevAnnotation = True
 
@@ -274,7 +200,4 @@ def execute(argv):
     if overridePrevAnnotation:
          delete_annotation(annotationTag, filePath)
 
-    if strictAnnotationBounds:
-        annotate_segments_strict(annotationTag.lower(), filePath, startTime, endTime, displayAllScenes)
-    else:
-        annotate_segments_loose(annotationTag.lower(), filePath, startTime, endTime, displayAllScenes)
+    annotate_segments_loose(annotationTag.lower(), filePath, startTime, endTime, displayAllScenes)

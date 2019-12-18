@@ -3,8 +3,9 @@ import sys as s
 import utils.file_handler as file_handler
 from downloader import svtplaywrapper
 from segmenter import scenedetector
-from segmenter import annotator
-from segmenter import annotation_summary
+from annotations import manual_annotation
+from annotations import annotation_summary
+from annotations import annotate_subtitles
 
 if __name__ == "__main__":
     file_handler.create_folderstructure_if_not_exists()
@@ -40,11 +41,15 @@ if __name__ == "__main__":
             scenedetector.segment_video(video_file)
 
     elif (s.argv[1] == "--ann"):
-        annotator.execute(s.argv)
+        manual_annotation.execute(s.argv)
         exit()
 
     elif (s.argv[1] == "--result"):
         annotation_summary.execute(s.argv)
+        exit()
+
+    elif (s.argv[1] == "--subs"):
+        annotate_subtitles.execute(s.argv)
         exit()
 
     else:

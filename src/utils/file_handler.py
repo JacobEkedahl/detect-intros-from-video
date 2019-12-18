@@ -31,18 +31,12 @@ def get_all_urls_from_file(file_name):
 
 def get_all_files_by_type(path, fileType):
     files = []
-    fileType = '*.' + fileType
-    for filename in Path(path).rglob(fileType):
+    for filename in Path(path).rglob('*.' + fileType):
         files.append(filename)
     return files
 
 def get_all_mp4_files():
-    # TODO: test and replace with --- return get_all_files_by_type(get_full_path_videos(), 'mp4')
-    files = []
-    for filename in Path(get_full_path_videos()).rglob('*.mp4'):
-        print(filename)
-        files.append(filename)
-    return files
+    return get_all_files_by_type(get_full_path_videos(), 'mp4')
 
 def get_all_unmerged_files():
     files = []
