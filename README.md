@@ -5,18 +5,37 @@
 - cd detect-intros-from-video
 - pip install -r requirements.txt
 
+## Build a dataset
+- python src/main.py --build <fromStep> <toStep>
+- fromStep, toStep = ["--start", "--frames", "--sim", "--end"]
+- example: python src/main.py --build --start --end 
+
 ## Run svtplaydownloader:
-- python main.py --dlv --url "url from svt video"
+- python src/main.py --dlv --url "url"
 
 ## Run Scene Detector:
-- python main.py --seg
-- python main.py --seg temp/myvideo.mp4
+- python src/main.py --seg
+- python src/main.py --seg temp/myvideo.mp4
 
 ## Run downloader and segmentor at once
 - Move the file of all videos to download under temp/ in root called video-serier.txt
-- python main.py --start
+- python src/main.py --start
+
+## Extract frames from video and save in folders
+- python src/main.py --frames
+
+## Clean frames connected to video (can be done after extracting frames)
+- py src/main.py --rframes "video_file_path"
+
+## Find matching frames
+- py src/main.py --match --files "video_file_path_A" "video_file_path_B"
+- py src/main.py --match --files "video_file_path_A" "video_file_path_B"
+
+## Compare similarities between two images (default algorithm is using the hash of images)
+- py src/main.py --images "image_file_path_A" "image_file_path_B" --ssim<optinal> --print<optional>
+- Types of similarity algorithms - (--orb, --ssim, --mse, --hash)
 
 ## Extra
 - Run command from root folder (same directory as lib, src exists)
 - All video files will be stored inside temp/videos
-
+- Different types of constants values such as thresholds or paths for videos are defined in constants.py

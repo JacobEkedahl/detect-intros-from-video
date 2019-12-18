@@ -19,3 +19,4 @@ def mergeImageAndAudio():
         os.remove(file.audioName)
         os.remove(file.videoName)
         scenedetector.segment_video(output)
+    return output
