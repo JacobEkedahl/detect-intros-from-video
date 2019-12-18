@@ -144,6 +144,16 @@ def print_all_scenes(filePath):
             print(scene)
 
 
+def save_url(filePath, url):
+    with open(filePath) as json_file:
+        data = json.load(json_file)
+        if 'url' in data:
+            print("Warning: Overwriting previously saved url: %s with %s" % (url, data['url']))
+        data['url'] = url
+        with open(filePath, 'w') as outfile:
+            json.dump(data, outfile)
+
+
 def execute(argv):
     if len(argv) - 1 <= 1:
         print("Error: No arguments provided.")
@@ -152,6 +162,7 @@ def execute(argv):
         print("Error: Need to specify json file.")
         return
 
+    url = ""
     startTime = ""
     endTime = ""
     annotationTag = ""
@@ -172,13 +183,22 @@ def execute(argv):
             deleteAnnotation = True
         elif (argv[i] == "-force"):
             overridePrevAnnotation = True
+        elif (argv[i] == "-url") and i + 1 < len(argv):
+            url = argv[i + 1] 
+
+
 
     filePath = argv[2]
     if not os.path.isfile(filePath):
         print("Error: invalid file path provided (%s)" % filePath)
         return
+    
+    if (url != ""):
+        save_url(filePath, url)
+        if startTime == "" and endTime == "" and annotationTag == "" and not displayAllScenes:
+            return
 
-    if (startTime == "" and endTime == "" and displayAllScenes and annotationTag == ""): 
+    if (displayAllScenes and startTime == "" and endTime == "" and annotationTag == ""): 
         print_all_scenes(filePath)
         return 
 
@@ -196,8 +216,9 @@ def execute(argv):
     if (endTime == ""):
         print("Error: end time must be provided (-e or -end)")
         return
-    
+
     if overridePrevAnnotation:
          delete_annotation(annotationTag, filePath)
 
-    annotate_segments_loose(annotationTag.lower(), filePath, startTime, endTime, displayAllScenes)
+    annotate_segments_loose(annotationTag.lower(), filePath, startTime, endTime, displayAllScenes)    
+    
