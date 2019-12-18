@@ -35,6 +35,30 @@
 - py src/main.py --images "image_file_path_A" "image_file_path_B" --ssim<optinal> --print<optional>
 - Types of similarity algorithms - (--orb, --ssim, --mse, --hash)
 
+## Annotator 
+
+- Manual annotations 
+
+Annotate a file with a intro, intro can be replaced with any word. Optional arguments -print and -force
+
+    py src/main.py --ann al-pitcher-pa-paus.json -s 00:00:00 -e 00:00:15 -t intro                                                      
+                                                    
+Delete annotation of 'intro' from a file
+
+    py src/main.py --ann al-pitcher-pa-paus.json -delete -t intro 
+
+- Statistics
+
+Prints the results of all files annotated with 'intro inside temp/. You can specify other directories by using -path followed by the directory.
+
+    py src/main.py --result -tag 'intro'                    
+
+Filters: 
+
+    -filter lt 1                    // Only include errors that are less than 1.0 seconds
+    -filter gt 1                    // Only include errors that are greater than 1.0 seconds
+    -contains allt-jag-inte-mins    // Only includes files that contain the substring in their name
+                                                                                                                        
 ## Extra
 - Run command from root folder (same directory as lib, src exists)
 - All video files will be stored inside temp/videos

@@ -91,13 +91,11 @@ if __name__ == "__main__":
             scenedetector.segment_video(video_file)
 
     elif (s.argv[1] == "--ann"):
-        manual_annotation.execute(s.argv)
+        if (s.argv[2] == "--result"):
+            annotation_summary.execute(s.argv)
+        else:
+            manual_annotation.execute(s.argv)
         exit()
-
-    elif (s.argv[1] == "--result"):
-        annotation_summary.execute(s.argv)
-        exit()
-
     elif (s.argv[1] == "--subs"):
         annotate_subtitles.execute(s.argv)
         exit()
