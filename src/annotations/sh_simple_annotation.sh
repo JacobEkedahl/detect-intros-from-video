@@ -1,11 +1,10 @@
 #!/bin/sh
 
-url="https://www.svtplay.se/video/24897218/world-on-fire/world-on-fire-sasong-1-avsnitt-3?start=auto"
+url="https://www.svtplay.se/video/23885163/vaster-om-friheten/vaster-om-friheten-sasong-1-avsnitt-5?start=auto"
 
-start="00:00:31" 
+start="00:03:45"
 
-end="00:01:15"
+end="00:04:44"
 
 tag="intro"
-
 py src/annotations/simple_annotation.py -tag $tag -s $start -e $end -url $url
