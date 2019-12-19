@@ -7,6 +7,7 @@
 import imagehash
 from PIL import Image
 
+import segmenter.annotator as ann
 import utils.constants as c
 import utils.file_handler as file_handler
 
@@ -53,5 +54,37 @@ def find_all_matches(file_A):
             if count not in matches:
                 matches[count] = {"numberMatches": 0, "sec": matched_item["sec"]}
             matches[count]["numberMatches"] += 1
+    sequences = extract_sequences(matches)
+    # loop through sequences and annotate
+
+# Will find sequences of matches and filter out unrelevant sequences
+
+def extract_sequences(matches): 
+    list_matches = []
+    recorded_sequences = []
+
     for k, v in matches.items():
-        print(str(k) + " - " + str(v))
+        list_matches.append(v["sec"])
+    list_matches.sort()
+
+    current_sequence = {}
+    prev_time = 0
+
+    for match in list_matches:
+        #print(match)
+        if not current_sequence:
+            current_sequence = {"start": match, "end": None}
+        elif prev_time + c.SEQUENCE_THRESHOLD >= match:
+            current_sequence["end"] = match
+        else:
+            if current_sequence["end"] != None and current_sequence["end"] - current_sequence["start"] > c.MIN_LENGTH_SEQUENCE:
+                recorded_sequences.append(current_sequence)
+                current_sequence = {"start": match, "end": match}
+            else:
+                current_sequence = {"start": match, "end": None}
+        prev_time = match
+
+    for recorded in recorded_sequences:
+        print(recorded)
+
+    return recorded_sequences
