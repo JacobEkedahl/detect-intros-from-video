@@ -4,13 +4,25 @@ import sys
 import json 
 import os 
 
+
+def query_yes_or_no(): 
+    yes = {'yes','y', 'ye', ''}
+    no = {'no','n'}
+
+    choice = input().lower()
+    if choice in yes:
+        return True
+    elif choice in no:
+        return False
+    else:
+        sys.stdout.write("Please respond with 'yes' or 'no'")
+
 argv = sys.argv
 start = ""
 end = ""
 tag = "intro"
 path = "temp/simple_annotation.json"
 url = ""
-
 
 def manual_annotation(path, url, tag, start, end):
     if not os.path.exists(path):
@@ -27,8 +39,12 @@ def manual_annotation(path, url, tag, start, end):
         else:
             for value in data[tag]:
                 if (value['url'] == url):
-                    found = value
                     print("Warning: %s was saved previously with %s - %s." % (value['url'], value['start'], value['end']))
+                    print("Do you want to override it? y/n")
+                    response = query_yes_or_no()
+                    if not response: 
+                        return
+                    found = value
                     found['url'] = url 
                     found['start'] = start 
                     found['end'] = end

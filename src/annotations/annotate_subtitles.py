@@ -29,7 +29,7 @@ def annotate_srt_on_scenes(srtFile, segmentationFile):
             scene['subtitles'] = False
         set_presence_of_time_interval('subtitles', data['scenes'], subtitleTimeIntervals)
         with open(segmentationFile, 'w') as outfile:
-            json.dump(data, outfile)
+            json.dump(data, outfile, indent=4, sort_keys=False)
 
 
 def execute(argv):
