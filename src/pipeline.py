@@ -30,7 +30,7 @@ def build_dataset_from_step(fromStep, toStep):
             if toStep == "--frames":
                 exit()
             video_to_frames.video_to_frames_check(file_name)
-           # frame_cleaner.remove_similar_frames(file_name)
+            #frame_cleaner.remove_similar_frames(file_name)
 
         if toStep == "--sim":
             exit()

@@ -24,15 +24,13 @@ import sys
 import cv2
 import numpy
 import scenedetect
-
+from scenedetect.detectors import ContentDetector, ThresholdDetector
 from scenedetect.frame_timecode import FrameTimecode
 from scenedetect.scene_manager import SceneManager
 from scenedetect.stats_manager import StatsManager
 from scenedetect.video_manager import VideoManager
 
-from scenedetect.detectors import ContentDetector
-from scenedetect.detectors import ThresholdDetector
-
+import utils.constants as c
 import utils.file_handler as file_handler
 
 DEFAULT_START_TIME = 0.0        # 00:00:00.00
@@ -69,7 +67,7 @@ def segment_video(video_file):
         video_manager.set_duration(start_time=start_time, end_time=end_time)
          # Set downscale factor to improve processing speed (no args means default).k
 
-        video_manager.set_downscale_factor(10)
+        video_manager.set_downscale_factor(c.DOWNSCALE_FACTOR)
         video_manager.start()
         scene_manager.detect_scenes(frame_source=video_manager)
         scene_list = scene_manager.get_scene_list(base_timecode)
