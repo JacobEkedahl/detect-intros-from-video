@@ -9,7 +9,7 @@ from frame_matcher import frame_comparer as comparer
 from frame_matcher import video_matcher as v_matcher
 from frame_matcher import video_to_frames as vf
 from segmenter import scenedetector
-from annotations import manual_annotation
+from annotations import scene_annotation
 from annotations import annotation_summary
 from annotations import annotate_subtitles
 
@@ -94,7 +94,7 @@ if __name__ == "__main__":
         if (s.argv[2] == "--result"):
             annotation_summary.execute(s.argv)
         else:
-            manual_annotation.execute(s.argv)
+            scene_annotation.execute(s.argv)
         exit()
     elif (s.argv[1] == "--subs"):
         annotate_subtitles.execute(s.argv)

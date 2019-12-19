@@ -110,7 +110,7 @@ def annotate_segments_loose(annotation, filePath, startTimeStr, endTimeStr, disp
 
         # Save
         with open(filePath, 'w') as outfile:
-            json.dump(data, outfile)
+            json.dump(data, outfile, indent=4, sort_keys=False)
 
 
 def annotate_previous_segments(filePath, startTimeStr, endTimeStr, displayAllFlag):
@@ -134,7 +134,7 @@ def delete_annotation(annotation, filePath):
         if annotation in data: 
             data.pop(annotation)
     with open(filePath, 'w') as outfile:
-        json.dump(data, outfile)
+        json.dump(data, outfile, indent=4, sort_keys=False)
 
 
 def print_all_scenes(filePath):
@@ -151,8 +151,7 @@ def save_url(filePath, url):
             print("Warning: Overwriting previously saved url: %s with %s" % (url, data['url']))
         data['url'] = url
         with open(filePath, 'w') as outfile:
-            json.dump(data, outfile)
-
+            json.dump(data, outfile, indent=4, sort_keys=False)
 
 def execute(argv):
     if len(argv) - 1 <= 1:
