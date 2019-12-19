@@ -1,15 +1,34 @@
 import time
+import re 
 
+def timestamp(time_string):
+    if ',' in time_string:
+        hours = int(re.findall(r'(\d+):\d+:\d+,\d+', time_string)[0])
+        minutes = int(re.findall(r'\d+:(\d+):\d+,\d+', time_string)[0])
+        seconds = int(re.findall(r'\d+:\d+:(\d+),\d+', time_string)[0])
+        milliseconds = int(re.findall(r'\d+:\d+:\d+,(\d+)', time_string)[0])
+    elif '.' in time_string: 
+        hours = int(re.findall(r'(\d+):\d+:\d+.\d+', time_string)[0])
+        minutes = int(re.findall(r'\d+:(\d+):\d+.\d+', time_string)[0])
+        seconds = int(re.findall(r'\d+:\d+:(\d+).\d+', time_string)[0])
+        milliseconds = int(re.findall(r'\d+:\d+:\d+.(\d+)', time_string)[0])
+    else:
+        hours = int(re.findall(r'(\d+):\d+:\d+', time_string)[0])
+        minutes = int(re.findall(r'\d+:(\d+):\d+', time_string)[0])
+        seconds = int(re.findall(r'\d+:\d+:(\d+)', time_string)[0])
+        milliseconds = 0
+    return (hours*3600 + minutes*60 + seconds) * 1000 + milliseconds
 
-def H_M_S_to_seconds(str):
-    t0 = time.strptime(str.split('.')[0],'%H:%M:%S')
-    try:
-        t1 = str.split('.')[1]
-        f1 = float(t1[0:3])
-    except:
-        f1 = 0.0
-    return t0.tm_hour*3600 + t0.tm_min*60 + t0.tm_sec + f1/1000
-
-
-def seconds_to_H_M_S(seconds):
-    return time.strftime('%H:%M:%S', time.gmtime(seconds))
+def timestamp_to_str(timestamp):
+    milliseconds = timestamp%1000
+    milliseconds = int(milliseconds)
+    print(milliseconds)
+    seconds = (timestamp/1000)%60
+    seconds = int(seconds)
+    minutes = (timestamp/(1000*60))%60
+    minutes= (timestamp/(1000*60))%60
+    minutes = int(minutes)
+    hours= (timestamp/(1000*60*60))%24
+    if milliseconds > 0:
+        return "%02d:%02d:%02d.%03d" % (hours, minutes, seconds, milliseconds)
+    return "%02d:%02d:%02d" % (hours, minutes, seconds)

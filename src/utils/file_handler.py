@@ -51,11 +51,14 @@ def get_all_urls_from_file(file_name):
     urls = [line.rstrip('\n') for line in open(text_file_path)]
     return [item for item in urls if item.startswith("http")]
 
-def get_all_mp4_files():
+def get_all_files_by_type(path, fileType):
     files = []
-    for filename in Path(get_full_path_videos()).rglob('*.mp4'):
-        files.append(str(filename))
+    for filename in Path(path).rglob('*.' + fileType):
+        files.append(filename)
     return files
+
+def get_all_mp4_files():
+    return get_all_files_by_type(get_full_path_videos(), 'mp4')
 
 def get_all_unmerged_files():
     files = []
