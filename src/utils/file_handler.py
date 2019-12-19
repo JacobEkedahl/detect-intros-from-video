@@ -38,8 +38,9 @@ def get_all_other_videos_in_series(video_file):
     parent_dir = os.path.dirname(video_file)
     for file in os.listdir(parent_dir):
         if file.endswith(".mp4"):
-            result.append(str(os.path.join(parent_dir,file)))
-    result.remove(video_file)
+            full_path = str(os.path.join(parent_dir,file))
+            if not str(video_file) == full_path:
+                result.append(str(os.path.join(parent_dir,file)))
     return result
 
 def is_dir_for_frames_empty(video_file):
