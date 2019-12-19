@@ -16,6 +16,7 @@ def query_yes_or_no():
         return False
     else:
         sys.stdout.write("Please respond with 'yes' or 'no'")
+        return query_yes_or_no()
 
 argv = sys.argv
 start = ""
