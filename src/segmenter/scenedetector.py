@@ -62,11 +62,6 @@ def segment_video(video_file):
 
     print("Starting scene detection...")
     try:
-        stats_file_path = video_file.replace('.mp4', '') + '.stats.cvs'
-        if os.path.exists(stats_file_path):
-            with open(stats_file_path, 'r') as stats_file:
-                stats_manager.load_from_csv(stats_file, base_timecode)
-
         start_time = base_timecode + DEFAULT_START_TIME      
         end_time = base_timecode + DEFAULT_END_TIME   
 
@@ -99,10 +94,6 @@ def segment_video(video_file):
 
         with open(video_file.replace('.mp4', '') + '.json', 'w') as outfile:
             json.dump(json_data, outfile)
-
-        if stats_manager.is_save_required():
-            with open(stats_file_path, 'w') as stats_file:
-                stats_manager.save_to_csv(stats_file, base_timecode)
 
     finally:
         video_manager.release()
