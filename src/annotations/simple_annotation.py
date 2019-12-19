@@ -1,3 +1,5 @@
+# py src/annotations/simple_annotation.py https://www.svtplay.se/video/23587842/kvalster/kvalster-avsnitt-3?start=auto -s 00:00:00 -e 00:00:15 -t intro
+
 import sys
 import json 
 import os 
@@ -7,7 +9,7 @@ start = ""
 end = ""
 tag = "intro"
 path = "temp/simple_annotation.json"
-url = argv[1]
+url = ""
 
 
 def manual_annotation(path, url, tag, start, end):
@@ -38,7 +40,7 @@ def manual_annotation(path, url, tag, start, end):
                 'end': end
             })
         with open(path, 'w') as outfile:
-            json.dump(data, outfile, indent=4, sort_keys=False)
+            json.dump(data, outfile, indent=4, sort_keys=True)
         print("%s saved for %s as (%s - %s)" % (tag, url, start, end))
 
 
@@ -51,8 +53,10 @@ for i in range(1, len(argv)):
         tag = argv[i + 1]
     elif (argv[i] == "-p" or argv[i] == "-path") and i + 1 < len(argv):
         path = argv[i + 1]
+    elif (argv[i] == "-url") and i + 1 < len(argv):
+        url = argv[i + 1]
 
-if (tag != "" and start != "" and end != "" and path != ""):
+if (url != "" and tag != "" and start != "" and end != "" and path != ""):
     manual_annotation(path, url, tag, start, end)
 else:
-    print("Error: Not enough arguments provided")
+    print("Error: Not enough arguments provided") 
