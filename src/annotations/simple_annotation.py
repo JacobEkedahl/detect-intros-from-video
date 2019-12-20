@@ -3,7 +3,28 @@
 import sys
 import json 
 import os 
+import re
 
+def validate_time_input(t):
+
+    if not (t[0].isdigit() and t[1].isdigit() and t[2] == ':' and t[3].isdigit() and t[4].isdigit() and t[5] == ':' and t[6].isdigit() and t[7].isdigit()):
+        return False 
+    if len(t) == 8:
+        return True
+    if ',' in t:
+        t = t.split(',')[1]
+        for c in t: 
+            if not c.isdigit():
+                return False
+    elif '.' in t: 
+        t = t.split('.')[1]
+        for c in t: 
+            if not c.isdigit():
+                return False
+    
+    return True 
+    
+    
 
 def query_yes_or_no(): 
     yes = {'yes','y', 'ye', ''}
@@ -26,14 +47,21 @@ path = "temp/simple_annotation.json"
 url = ""
 
 def manual_annotation(path, url, tag, start, end):
+
+    if not validate_time_input(start) or not validate_time_input(end):
+        print("Error: Invalid time format.")
+        return
+
     if not os.path.exists(path):
         with open(path, 'w') as outfile:
             data = { }
             json.dump(data, outfile)
-    url = url.replace('?start=auto', '')
+    
+    if "?start=auto" in url: 
+        url = url.split("?start=auto")[0]
+
     with open(path) as json_file:
         data = json.load(json_file)
-
         found = None
         if not tag in data: 
             data[tag] = []
@@ -60,6 +88,7 @@ def manual_annotation(path, url, tag, start, end):
             json.dump(data, outfile, indent=4, sort_keys=True)
         print("%s saved for %s as (%s - %s)" % (tag, url, start, end))
 
+doCount = False 
 
 for i in range(1, len(argv)):
     if (argv[i] == "-s" or argv[i] == "-start") and i + 1 < len(argv):
@@ -72,8 +101,18 @@ for i in range(1, len(argv)):
         path = argv[i + 1]
     elif (argv[i] == "-url") and i + 1 < len(argv):
         url = argv[i + 1]
+    elif(argv[i] == "-count"):
+        doCount = True
 
 if (url != "" and tag != "" and start != "" and end != "" and path != ""):
     manual_annotation(path, url, tag, start, end)
 else:
     print("Error: Not enough arguments provided") 
+
+if doCount:
+    count = 0
+    with open(path) as json_file:
+        data = json.load(json_file)
+        for value in data[tag]:
+            count = count + 1
+    print("Total %s count: %d" % (tag, count))
