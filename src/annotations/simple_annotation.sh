@@ -1,10 +1,10 @@
 #!/bin/sh
 
-url="https://www.svtplay.se/video/20373262/en-engelsk-skandal/en-engelsk-skandal-sasong-1-avsnitt-3?start=auto"
+url="https://www.svtplay.se/video/23578398/hamnd-och-karlek/hamnd-och-karlek-sasong-1-avsnitt-5?start=auto"
 
-start="00:02:33"
+start="00:00:00"
 
-end="00:03:09"
+end="00:00:22"
 
 tag="intro"
 

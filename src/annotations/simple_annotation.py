@@ -43,7 +43,7 @@ argv = sys.argv
 start = ""
 end = ""
 tag = "intro"
-path = "temp/simple_annotation.json"
+path = "data/dataset.json"
 url = ""
 
 def manual_annotation(path, url, tag, start, end):
