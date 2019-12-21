@@ -7,7 +7,9 @@
 import imagehash
 from PIL import Image
 
-import segmenter.annotator as ann
+import annotations.annotate as ann
+from annotations.annotate import TimeInterval
+
 import utils.constants as c
 import utils.file_handler as file_handler
 
@@ -55,7 +57,17 @@ def find_all_matches(file_A):
                 matches[count] = {"numberMatches": 0, "sec": matched_item["sec"]}
             matches[count]["numberMatches"] += 1
     sequences = extract_sequences(matches)
+    
     # loop through sequences and annotate
+    
+    # timeIntervals = []
+    # for ... 
+    #timeIntervals.append(TimeInterval("00:00:00", "00:00:00"))
+    #scenes = None
+    #with open(segmentationFile) as json_file:
+    #        data = json.load(json_file)
+    #        scenes = data['scenes']
+    #ann.set_presence_of_time_interval("fmatch, ", scenes, timeIntervals)
 
 # Will find sequences of matches and filter out unrelevant sequences
 
