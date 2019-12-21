@@ -1,0 +1,1 @@
+This folder contains useful shell scripts for both production and testing purposes. The scripts can also be read as a sort of tutorial on how to use the program. 
