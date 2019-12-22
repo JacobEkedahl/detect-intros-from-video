@@ -11,7 +11,6 @@ from segmenter import scenedetector
 
 def mergeImageAndAudio():
     files = file_handler.get_all_unmerged_files()
-    file_names = []
     for file in files:
         print(file.audioName + " : " + file.videoName)
         output = file.fileName + "-converted.mp4"
@@ -19,5 +18,5 @@ def mergeImageAndAudio():
         subprocess.call(command, shell=True) 
         os.remove(file.audioName)
         os.remove(file.videoName)
-        file_names.append(output)
-    return file_names[0] #return just the first one atm
+        scenedetector.segment_video(output)
+    return output

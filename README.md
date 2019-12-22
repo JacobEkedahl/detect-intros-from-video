@@ -7,7 +7,7 @@
 
 ## Build a dataset
 - python src/main.py --build <fromStep> <toStep>
-- fromStep, toStep = ["--start", "--frames", "--sim", "--seg", "--end"]
+- fromStep, toStep = ["--start", "--frames", "--sim", "--end"]
 - example: python src/main.py --build --start --end 
 
 ## Run svtplaydownloader:

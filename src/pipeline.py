@@ -25,8 +25,6 @@ def build_dataset_from_step(fromStep, toStep):
         urls = file_handler.get_all_urls_from_temp()
         for url in urls:
             file_name = svtplaywrapper.download_video(url)
-            if toStep == "--seg":
-                exit()
             scenedetector.segment_video(file_name)
 
             if toStep == "--frames":
