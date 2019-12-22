@@ -18,5 +18,3 @@ def mergeImageAndAudio():
         subprocess.call(command, shell=True) 
         os.remove(file.audioName)
         os.remove(file.videoName)
-        scenedetector.segment_video(output)
-    return output
