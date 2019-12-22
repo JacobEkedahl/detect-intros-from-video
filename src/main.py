@@ -3,22 +3,24 @@ import sys as s
 
 import pipeline
 import utils.file_handler as file_handler
+from annotations import (annotate_subtitles, annotation_summary,
+                         scene_annotation)
+from audio_matcher import video_to_audio_pieces as v_a
 from downloader import svtplaywrapper
 from frame_matcher import frame_cleaner as cleaner
 from frame_matcher import frame_comparer as comparer
 from frame_matcher import video_matcher as v_matcher
 from frame_matcher import video_to_frames as vf
 from segmenter import scenedetector
-from annotations import scene_annotation
-from annotations import annotation_summary
-from annotations import annotate_subtitles
 
 if __name__ == "__main__":
     file_handler.create_folderstructure_if_not_exists()
     if (len(s.argv) - 1 < 1):
         print("need more arguments! (--dlv --file nameOfTxtFile numberOfEpisodes)")
         exit()
-    if (s.argv[1] == "--build"):
+    if (s.argv[1] == "--audio"):
+        v_a.get_audio_from_video()
+    elif (s.argv[1] == "--build"):
         pipeline.build_dataset_from_step(s.argv[2], s.argv[3])
     elif (s.argv[1] == "--rframes"):
         file_one = s.argv[2]
