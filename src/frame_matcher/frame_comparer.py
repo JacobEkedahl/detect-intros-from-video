@@ -12,6 +12,54 @@ import numpy as np
 from PIL import Image
 from skimage.metrics import structural_similarity as ssim
 
+from utils import constants as c
+
+
+## list of frames, preferably sorted
+def find_all_matches_hash(frames_A, frames_B, threshold):
+	hashes_A = {}
+	hashes_B = {}
+	result = []
+	for frame_A in frames_A:
+		if frame_A.count not in hashes_A:
+			hash_A = imagehash.average_hash(Image.open(frame_A.fileName))
+			hashes_A[frame_A.count] = hash_A
+
+		for frame_B in frames_B:
+			if frame_B.count not in hashes_B:
+				hash_B = imagehash.average_hash(Image.open(frame_B.fileName))
+				hashes_B[frame_B.count] = hash_B
+
+			diff = hashes_A[frame_A.count] - hashes_B[frame_B.count]
+			if diff < threshold:
+				print("add: " + str(frame_A.sec) + " - " + str(diff))
+				result.append({"count": frame_A.count, "sec": frame_A.sec})
+				break
+	return result
+
+
+## list of frames, preferably sorted
+def find_all_matches_ssim(frames_A, frames_B, threshold):
+	images_A = {}
+	images_B = {}
+	result = []
+	for frame_A in frames_A:
+		print(str(frame_A.count))
+		if frame_A.count not in images_A:
+			img_a = read_image_convert_to_grayscale(frame_A.fileName)
+			images_A[frame_A.count] = img_a
+		for frame_B in frames_B:
+			if frame_B.count not in images_B:
+				img_b = read_image_convert_to_grayscale(frame_B.fileName)
+				images_B[frame_B.count] = img_b
+
+			diff = ssim(images_A[frame_A.count], images_B[frame_B.count])
+			#print(diff)
+			if diff > 0.4:
+				#print("add: " + str(frame_A.sec) + " - " + str(diff))
+				result.append({"count": frame_A.count, "sec": frame_A.sec})
+				break
+	return result
 
 def read_images(fileA, fileB):
 	return cv2.imread(fileA), cv2.imread(fileB)
@@ -21,6 +69,11 @@ def read_images_convert_to_grayscale(fileA, fileB):
 	image_a = cv2.cvtColor(image_a, cv2.COLOR_BGR2GRAY)
 	image_b = cv2.cvtColor(image_b, cv2.COLOR_BGR2GRAY)
 	return (image_a, image_b)
+
+def read_image_convert_to_grayscale(fileA):
+	image_a = cv2.imread(fileA)
+	image_a = cv2.cvtColor(image_a, cv2.COLOR_BGR2GRAY)
+	return image_a
 
 def compare_images_mse(imageA, imageB):
 	img_a, img_b = read_images_convert_to_grayscale(imageA, imageB)

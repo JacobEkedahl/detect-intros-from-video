@@ -13,7 +13,6 @@ def remove_similar_frames(video_file):
 
     for i in range(len(frames) -1):
         j = i + 1
-
         #ssim_val = comparer.compare_images_ssim(frames[i].fileName, frames[j].fileName)
         orb_val = comparer.compare_images_orb(frames[i].fileName, frames[j].fileName)
         print(str(orb_val) + " - "  + str(i) + " - " + str(j))

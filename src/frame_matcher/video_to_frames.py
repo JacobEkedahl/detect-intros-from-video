@@ -7,6 +7,7 @@ from . import frame_cleaner
 
 
 def video_to_frames_check(video_filename):
+    video_filename = str(video_filename)
     if file_handler.is_dir_for_frames_empty(video_filename):
         print("there is no files")
         video_to_frames(video_filename)
