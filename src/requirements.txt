@@ -10,3 +10,4 @@ opencv-python
 scikit-image
 matplotlib
 ImageHash
+praat-parselmouth
