@@ -19,14 +19,16 @@ def create_folderstructure_if_not_exists():
 def get_audioframespath_from_video(video_file):
     dir = get_dir_for_audio(video_file)
     result = []
-    for file in os.listdir(dir):
-        if isfile(join(dir, file)):
-            file_info = file.replace('.jpg', '').split('-')
-            result.append(
-                FrameInfo(
-                    str(os.path.join(dir, file)),
-                    float(file_info[0]),
-                    int(file_info[1])))
+    files = get_all_files_by_type(dir, 'jpg')
+    for file in files:
+        file_name = os.path.basename(file)
+        file_name = str(file_name)
+        file_info = file_name.replace('.jpg', '').split('-')
+        result.append(
+            FrameInfo(
+                str(os.path.join(dir, file_name)),
+                float(file_info[0]),
+                int(file_info[1])))
     return result
 
 def get_framespaths_from_video(video_file):

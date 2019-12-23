@@ -1,9 +1,8 @@
 
 import utils.file_handler as file_handler
+from audio_extraction import audio_to_frames as a_matcher
 from downloader import svtplaywrapper
-from frame_matcher import frame_cleaner, video_matcher
-from frame_matcher import video_to_audio_frames as a_matcher
-from frame_matcher import video_to_frames
+from frame_matcher import video_matcher, video_to_frames
 from segmenter import scenedetector
 
 
@@ -35,30 +34,29 @@ def build_dataset_from_step(fromStep, toStep):
             if toStep == "--audio":
                 exit()
             a_matcher.audio_to_frames(file_name)
-            #frame_cleaner.remove_similar_frames(file_name)
 
         if toStep == "--sim":
             exit()
 
         video_files = file_handler.get_all_mp4_files()
         for video_file in video_files:
-            matches = video_matcher.find_all_matches(video_file)
+            video_matcher.find_all_matches(video_file)
+            video_matcher.print_frequencies(video_file)
     elif fromStep == "--frames":
         # find all videofiles
         video_files = file_handler.get_all_mp4_files()
         for video_file in video_files:
             video_to_frames.video_to_frames_check(video_file)
             a_matcher.audio_to_frames(video_file)
-            #frame_cleaner.remove_similar_frames(video_file)
         
         if toStep == "--sim":
             exit()
 
         for video_file in video_files:
-            #video_matcher.find_all_matches(video_file)
-            video_matcher.find_all_matches_audio(video_file)
+            video_matcher.find_all_matches(video_file)
+            video_matcher.print_frequencies(video_file)
     elif fromStep == "--sim":
         video_files = file_handler.get_all_mp4_files()
         for video_file in video_files:
             video_matcher.find_all_matches(video_file)
-            video_matcher.find_all_matches_audio(video_file)
+            video_matcher.print_frequencies(video_file)

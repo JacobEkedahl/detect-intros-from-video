@@ -11,24 +11,22 @@ import annotations.annotate as ann
 import utils.constants as c
 import utils.file_handler as file_handler
 from annotations.annotate import TimeInterval
+from utils import object_handler as handler
 
 from . import frame_comparer as comparer
 
 
 def find_all_matches_audio(file_A):
+    print("finding matches for audio")
     video_A = str(file_A)
     other_files_same_series = file_handler.get_all_other_videos_in_series(video_A)
     matches = {}
-    
-    frames_A = file_handler.get_audioframespath_from_video(video_A)
-    frames_A.sort(key=lambda x: x.count, reverse=False)
+    frames_A = handler.read_frames_audio(video_A)
     
     for file_B in other_files_same_series:
         video_B = str(file_B)
-        print("comparing: " + video_A + ", against: " + video_B)
-        frames_B = file_handler.get_audioframespath_from_video(video_B)
-        frames_B.sort(key=lambda x: x.count, reverse=False)
-        frames_matched = comparer.find_all_matches_ssim(frames_A, frames_B, c.THRESHOLD_SSIM)
+        frames_B = handler.read_frames_audio(video_B)
+        frames_matched = comparer.find_all_matches_ssim_audio(frames_A, frames_B, c.THRESHOLD_SSIM)
         
         for matched_item in frames_matched:
             count = matched_item["count"]
@@ -37,11 +35,18 @@ def find_all_matches_audio(file_A):
             matches[count]["numberMatches"] += 1
     sequences = extract_sequences(matches)
     
-
 # Compares a videofiles frames with frames related to all other videos within that directory
 # Outputs a list of number of matches for a frame at a specific timeslot
 
+def print_frequencies(file_A):
+    print("frequencies: ")
+    video_A = str(file_A)
+    freq = handler.open_frequencies(video_A)
+    for f in freq:
+        print("start: " + str(f[0]["sec"]) + ", end: " + str(f[-1]["sec"]))
+
 def find_all_matches(file_A):
+    print("finding matched for images")
     video_A = str(file_A)
     other_files_same_series = file_handler.get_all_other_videos_in_series(video_A)
     matches = {}
@@ -82,7 +87,7 @@ def extract_sequences(matches):
 
     for k, v in matches.items():
         list_matches.append(v["sec"])
-        print(str(k) + ": " + str(v))
+        #print(str(k) + ": " + str(v))
     list_matches.sort()
 
     current_sequence = {}

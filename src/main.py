@@ -5,11 +5,10 @@ import pipeline
 import utils.file_handler as file_handler
 from annotations import (annotate_subtitles, annotation_summary,
                          scene_annotation)
+from audio_extraction import audio_to_frames as v_a
 from downloader import svtplaywrapper
-from frame_matcher import frame_cleaner as cleaner
 from frame_matcher import frame_comparer as comparer
 from frame_matcher import video_matcher as v_matcher
-from frame_matcher import video_to_audio_frames as v_a
 from frame_matcher import video_to_frames as vf
 from segmenter import scenedetector
 

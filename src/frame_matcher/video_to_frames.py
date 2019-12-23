@@ -3,8 +3,6 @@ import cv2
 import utils.constants as c
 import utils.file_handler as file_handler
 
-from . import frame_cleaner
-
 
 def video_to_frames_check(video_filename):
     video_filename = str(video_filename)
