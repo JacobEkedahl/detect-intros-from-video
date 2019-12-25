@@ -1,4 +1,4 @@
-SEC_PER_FRAME = 0.4 # seconds
+SEC_PER_FRAME = 0.3 # seconds
 IMAGE_WIDTH = 256
 IMAGE_HEIGHT = 256
 
@@ -13,4 +13,4 @@ MIN_LENGTH_SEQUENCE = 5 # seconds
 DOWNSCALE_FACTOR = 10
 
 HASH_NAME = "hashes"
-FREQ_NAME = "frequencies"
+PITCH_NAME = "pitches"

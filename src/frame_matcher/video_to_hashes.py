@@ -11,13 +11,13 @@ import utils.object_handler as handler
 
 def save_hashes(video_filename):
     video_filename = str(video_filename)
-    if file_handler.is_dir_for_frames_empty(video_filename):
-        print("there is no files")
+    if not file_handler.does_meta_contain_obj(c.HASH_NAME, video_filename):
+        print("there is no hashfile")
         hashes = []
         video_to_hashes(video_filename, hashes)
-        handler.save_hash(video_filename, hashes)
+        handler.save_obj_in_meta(c.HASH_NAME,hashes, video_filename)
     else:
-        print("files already exists")
+        print("hashfile already exists")
 
 #Will override all files already existing in this folder
 def video_to_hashes(video_filename, hashes):

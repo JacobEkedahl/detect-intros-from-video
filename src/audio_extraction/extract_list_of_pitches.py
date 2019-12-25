@@ -23,15 +23,15 @@ def get_valid_pitches(audio_file):
             result.append({"count": v_index, "val": curr_pitch, "sec": time})
     return clean_result(result)
 
-def clean_result(frequencies):
+def clean_result(pitches):
     list_of_seq = []
     margin = 1
     currentSeq = []
-    for freq in frequencies:
+    for pitch in pitches:
         if len(currentSeq) == 0:
-            currentSeq.append(freq)
-        elif currentSeq[-1]["sec"] + margin >= freq["sec"]:
-            currentSeq.append(freq)
+            currentSeq.append(pitch)
+        elif currentSeq[-1]["sec"] + margin >= pitch["sec"]:
+            currentSeq.append(pitch)
         else:
             if len(currentSeq) > 50:
                 list_of_seq.append(currentSeq)
