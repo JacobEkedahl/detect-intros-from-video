@@ -4,24 +4,20 @@
 # The result is a list of number of matches with a timestamp in seconds     #
 # The algorithm used is called hashing                                      #
 
+import json
+
 import imagehash
 from PIL import Image
 
 import annotations.annotate as ann
-import utils.constants as c
 import utils.file_handler as file_handler
-from annotations.annotate import TimeInterval
+from annotations import annotate_meta as ann
+from segmenter import simple_segmentor
+from utils import constants as c
 from utils import object_handler as handler
 
 from . import frame_comparer as comparer
 
-
-def print_pitches(file_A):
-    print("pitches: ")
-    video_A = str(file_A)
-    pitches = handler.open_obj_from_meta(c.PITCH_NAME, video_A)
-    for p in pitches:
-        print("start: " + str(p[0]["sec"]) + ", end: " + str(p[-1]["sec"]))
 
 def find_matches_correlates_with_intro(file_A):
     video_A = str(file_A)
@@ -50,17 +46,7 @@ def find_all_matches(file_A):
                 matches[count] = {"numberMatches": 0, "sec": matched_item["sec"]}
             matches[count]["numberMatches"] += 1
     sequences = extract_sequences(matches)
-    
-    # loop through sequences and annotate
-    
-    # timeIntervals = []
-    # for ... 
-    #timeIntervals.append(TimeInterval("00:00:00", "00:00:00"))
-    #scenes = None
-    #with open(segmentationFile) as json_file:
-    #        data = json.load(json_file)
-    #        scenes = data['scenes']
-    #ann.set_presence_of_time_interval("fmatch, ", scenes, timeIntervals)
+    ann.annotate_meta_data(sequences, c.DESCRIPTION_MATCHES, video_A)
 
 # Will find sequences of matches and filter out unrelevant sequences
 

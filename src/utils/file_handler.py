@@ -24,6 +24,9 @@ def get_all_urls_from_file(file_name):
     urls = [line.rstrip('\n') for line in open(text_file_path)]
     return [item for item in urls if item.startswith("http")]
 
+def get_seg_file_from_video(video_file):
+    return str(video_file).replace('.mp4', '.json')
+
 def get_all_files_by_type(path, fileType):
     files = []
     for filename in Path(path).rglob('*.' + fileType):

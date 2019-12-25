@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 import parselmouth
+from annotations import annotate_meta
 from utils import constants
 
 # load PRAAT pitches
@@ -29,13 +30,13 @@ def clean_result(pitches):
     margin = constants.MARGIN_BETWEEN_PITCH
     currentSeq = []
     for pitch in pitches:
-        print(str(pitch))
+        #print(str(pitch))
         if len(currentSeq) == 0:
             currentSeq.append(pitch)
         elif currentSeq[-1]["sec"] + margin >= pitch["sec"]:
             currentSeq.append(pitch)
         else:
             if len(currentSeq) > constants.MAX_SEQ_LENGTH_PITCH * 10:
-                list_of_seq.append(currentSeq)
+                list_of_seq.append({"start": currentSeq[0]["sec"], "end": currentSeq[-1]["sec"]})
             currentSeq = []
     return list_of_seq

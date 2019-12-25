@@ -1,5 +1,6 @@
+import re
 import time
-import re 
+
 
 def timestamp(time_string):
     if ',' in time_string:
@@ -22,10 +23,8 @@ def timestamp(time_string):
 def timestamp_to_str(timestamp):
     milliseconds = timestamp%1000
     milliseconds = int(milliseconds)
-    print(milliseconds)
     seconds = (timestamp/1000)%60
     seconds = int(seconds)
-    minutes = (timestamp/(1000*60))%60
     minutes= (timestamp/(1000*60))%60
     minutes = int(minutes)
     hours= (timestamp/(1000*60*60))%24

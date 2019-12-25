@@ -6,7 +6,6 @@ from glob import glob
 import imageio_ffmpeg as ffmpeg
 
 import utils.file_handler as file_handler
-from segmenter import scenedetector
 
 
 def mergeImageAndAudio():

@@ -1,6 +1,7 @@
 def get_intro_from_video(video_file):
     # if you find a intro, return intro
-    # if you find a match return the longest match
+    # if you find a frame match (correlates with intro) return that sequence
+    # if you find a normal frame match, return the longest match
     # if you find subs return the longest seq of no subs
     # else return longest pitch sequence
     return None
