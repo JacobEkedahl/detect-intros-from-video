@@ -28,7 +28,7 @@ def build_dataset_from_step(fromStep, toStep):
             file_name = svtplaywrapper.download_video(url)
             if toStep == "--seg":	
                 exit()
-            scenedetector.segment_video(file_name)
+            #scenedetector.segment_video(file_name)
             if toStep == "--frames":
                 exit()
             video_to_hashes.save_hashes(file_name)

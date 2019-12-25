@@ -23,11 +23,18 @@ def print_pitches(file_A):
     for p in pitches:
         print("start: " + str(p[0]["sec"]) + ", end: " + str(p[-1]["sec"]))
 
+def find_matches_correlates_with_intro(file_A):
+    video_A = str(file_A)
+    other_files_same_series = file_handler.get_all_other_videos_in_series(video_A)
+    # extract the intros of the other series, then when a match is found set a flag on whether or not
+    # it matches with an frame that is within the intro
+    # filter sequences and return the sequence with the most amount of flags set for intro matches
+    return None
+
 def find_all_matches(file_A):
     print("finding matched for images")
     video_A = str(file_A)
     other_files_same_series = file_handler.get_all_other_videos_in_series(video_A)
-    print(len(other_files_same_series))
     matches = {}
     hashes_A = handler.open_obj_from_meta(c.HASH_NAME, video_A)
 
@@ -80,7 +87,7 @@ def extract_sequences(matches):
             else:
                 current_sequence = {"start": match, "end": None}
         prev_time = match
-    if current_sequence["end"] != None and current_sequence["end"] - current_sequence["start"] > c.MIN_LENGTH_SEQUENCE:
+    if current_sequence and current_sequence["end"] != None and current_sequence["end"] - current_sequence["start"] > c.MIN_LENGTH_SEQUENCE:
         recorded_sequences.append(current_sequence)
 
     for recorded in recorded_sequences:
