@@ -5,7 +5,7 @@ import pipeline
 import utils.file_handler as file_handler
 from annotations import (annotate_subtitles, annotation_summary,
                          scene_annotation)
-from audio_extraction import audio_to_frames as v_a
+from audio_extraction import video_to_pitches as v_p
 from downloader import svtplaywrapper
 from frame_matcher import frame_comparer as comparer
 from frame_matcher import video_matcher as v_matcher
@@ -18,7 +18,7 @@ if __name__ == "__main__":
         print("need more arguments! (--dlv --file nameOfTxtFile numberOfEpisodes)")
         exit()
     if (s.argv[1] == "--audio"):
-        v_a.get_audio_from_video()
+        v_p.get_audio_from_video()
     elif (s.argv[1] == "--build"):
         pipeline.build_dataset_from_step(s.argv[2], s.argv[3])
     elif (s.argv[1] == "--frames"):
