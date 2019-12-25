@@ -1,7 +1,8 @@
 
 import utils.file_handler as file_handler
+from audio_extraction import video_to_pitches as a_matcher
 from downloader import svtplaywrapper
-from frame_matcher import frame_cleaner, video_matcher, video_to_frames
+from frame_matcher import video_matcher, video_to_hashes
 from segmenter import scenedetector
 
 
@@ -30,28 +31,33 @@ def build_dataset_from_step(fromStep, toStep):
             scenedetector.segment_video(file_name)
             if toStep == "--frames":
                 exit()
-            video_to_frames.video_to_frames_check(file_name)
-            #frame_cleaner.remove_similar_frames(file_name)
+            video_to_hashes.save_hashes(file_name)
+            if toStep == "--audio":
+                exit()
+            a_matcher.convert(file_name)
 
         if toStep == "--sim":
             exit()
 
         video_files = file_handler.get_all_mp4_files()
         for video_file in video_files:
-            matches = video_matcher.find_all_matches(video_file)
+            video_matcher.find_all_matches(video_file)
+            video_matcher.print_pitches(video_file)
     elif fromStep == "--frames":
         # find all videofiles
         video_files = file_handler.get_all_mp4_files()
         for video_file in video_files:
-            video_to_frames.video_to_frames_check(video_file)
-            #frame_cleaner.remove_similar_frames(video_file)
-
+            video_to_hashes.save_hashes(video_file)
+            a_matcher.convert(video_file)
+        
         if toStep == "--sim":
             exit()
 
         for video_file in video_files:
-            matches = video_matcher.find_all_matches(video_file)
+            video_matcher.find_all_matches(video_file)
+            video_matcher.print_pitches(video_file)
     elif fromStep == "--sim":
         video_files = file_handler.get_all_mp4_files()
         for video_file in video_files:
-            matches = video_matcher.find_all_matches(video_file)
+            video_matcher.find_all_matches(video_file)
+            video_matcher.print_pitches(video_file)

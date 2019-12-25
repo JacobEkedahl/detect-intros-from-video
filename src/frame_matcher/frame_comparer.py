@@ -12,6 +12,19 @@ import numpy as np
 from PIL import Image
 from skimage.metrics import structural_similarity as ssim
 
+from utils import constants as c
+
+
+## list of hashes, preferably sorted
+def find_all_matches_hash(hashes_A, hashes_B, threshold):
+	result = []
+	for hash_A in hashes_A:
+		for hash_B in hashes_B:
+			diff = hash_A["hash"] - hash_B["hash"]
+			if diff < threshold:
+				result.append({"count": hash_A["count"], "sec": hash_A["sec"]})
+				break
+	return result
 
 def read_images(fileA, fileB):
 	return cv2.imread(fileA), cv2.imread(fileB)

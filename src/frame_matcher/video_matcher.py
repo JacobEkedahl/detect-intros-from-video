@@ -8,49 +8,35 @@ import imagehash
 from PIL import Image
 
 import annotations.annotate as ann
-from annotations.annotate import TimeInterval
-
 import utils.constants as c
 import utils.file_handler as file_handler
+from annotations.annotate import TimeInterval
+from utils import object_handler as handler
 
 from . import frame_comparer as comparer
 
 
-def find_all_matches_hash(file_A, file_B):
+def print_pitches(file_A):
+    print("pitches: ")
     video_A = str(file_A)
-    video_B = str(file_B)
-    print("comparing: " + video_A + ", against: " + video_B)
-    frames_A = file_handler.get_framespaths_from_video(video_A)
-    frames_B = file_handler.get_framespaths_from_video(video_B)
-    frames_A.sort(key=lambda x: x.count, reverse=False)
-    frames_B.sort(key=lambda x: x.count, reverse=False)
-
-    hashes_A = {}
-    hashes_B = {}
-    result = []
-    for frame_A in frames_A:
-        if frame_A.count not in hashes_A:
-            hash_A = imagehash.average_hash(Image.open(frame_A.fileName))
-            hashes_A[frame_A.count] = hash_A
-
-        for frame_B in frames_B:
-            if frame_B.count not in hashes_B:
-                hash_B = imagehash.average_hash(Image.open(frame_B.fileName))
-                hashes_B[frame_B.count] = hash_B
-            if hashes_A[frame_A.count] - hashes_B[frame_B.count] < c.HASH_CUTOFF:
-                result.append({"count": frame_A.count, "sec": frame_A.sec})
-                break
-
-    return result
-
-# Compares a videofiles frames with frames related to all other videos within that directory
-# Outputs a list of number of matches for a frame at a specific timeslot
+    pitches = handler.open_obj_from_meta(c.PITCH_NAME, video_A)
+    for p in pitches:
+        print("start: " + str(p[0]["sec"]) + ", end: " + str(p[-1]["sec"]))
 
 def find_all_matches(file_A):
-    other_files_same_series = file_handler.get_all_other_videos_in_series(file_A)
+    print("finding matched for images")
+    video_A = str(file_A)
+    other_files_same_series = file_handler.get_all_other_videos_in_series(video_A)
+    print(len(other_files_same_series))
     matches = {}
+    hashes_A = handler.open_obj_from_meta(c.HASH_NAME, video_A)
+
     for file_B in other_files_same_series:
-        frames_matched = find_all_matches_hash(file_A, file_B)
+        video_B = str(file_B)
+        print("comparing: " + video_A + ", against: " + video_B)
+        hashes_B = handler.open_obj_from_meta(c.HASH_NAME, video_B)
+        frames_matched = comparer.find_all_matches_hash(hashes_A, hashes_B, c.HASH_CUTOFF)
+        
         for matched_item in frames_matched:
             count = matched_item["count"]
             if count not in matches:
@@ -83,7 +69,6 @@ def extract_sequences(matches):
     prev_time = 0
 
     for match in list_matches:
-        #print(match)
         if not current_sequence:
             current_sequence = {"start": match, "end": None}
         elif prev_time + c.SEQUENCE_THRESHOLD >= match:
@@ -95,6 +80,8 @@ def extract_sequences(matches):
             else:
                 current_sequence = {"start": match, "end": None}
         prev_time = match
+    if current_sequence["end"] != None and current_sequence["end"] - current_sequence["start"] > c.MIN_LENGTH_SEQUENCE:
+        recorded_sequences.append(current_sequence)
 
     for recorded in recorded_sequences:
         print(recorded)
