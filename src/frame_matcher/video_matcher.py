@@ -16,24 +16,25 @@ from utils import object_handler as handler
 from . import frame_comparer as comparer
 
 
-def print_frequencies(file_A):
-    print("frequencies: ")
+def print_pitches(file_A):
+    print("pitches: ")
     video_A = str(file_A)
-    freq = handler.open_pitches(video_A)
-    for f in freq:
-        print("start: " + str(f[0]["sec"]) + ", end: " + str(f[-1]["sec"]))
+    pitches = handler.open_obj_from_meta(c.PITCH_NAME, video_A)
+    for p in pitches:
+        print("start: " + str(p[0]["sec"]) + ", end: " + str(p[-1]["sec"]))
 
 def find_all_matches(file_A):
     print("finding matched for images")
     video_A = str(file_A)
     other_files_same_series = file_handler.get_all_other_videos_in_series(video_A)
+    print(len(other_files_same_series))
     matches = {}
-    hashes_A = handler.get_hash(video_A)
+    hashes_A = handler.open_obj_from_meta(c.HASH_NAME, video_A)
 
     for file_B in other_files_same_series:
         video_B = str(file_B)
         print("comparing: " + video_A + ", against: " + video_B)
-        hashes_B = handler.get_hash(video_B)
+        hashes_B = handler.open_obj_from_meta(c.HASH_NAME, video_B)
         frames_matched = comparer.find_all_matches_hash(hashes_A, hashes_B, c.HASH_CUTOFF)
         
         for matched_item in frames_matched:

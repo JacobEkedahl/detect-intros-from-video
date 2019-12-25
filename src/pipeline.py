@@ -42,7 +42,7 @@ def build_dataset_from_step(fromStep, toStep):
         video_files = file_handler.get_all_mp4_files()
         for video_file in video_files:
             video_matcher.find_all_matches(video_file)
-            video_matcher.print_frequencies(video_file)
+            video_matcher.print_pitches(video_file)
     elif fromStep == "--frames":
         # find all videofiles
         video_files = file_handler.get_all_mp4_files()
@@ -55,9 +55,9 @@ def build_dataset_from_step(fromStep, toStep):
 
         for video_file in video_files:
             video_matcher.find_all_matches(video_file)
-            video_matcher.print_frequencies(video_file)
+            video_matcher.print_pitches(video_file)
     elif fromStep == "--sim":
         video_files = file_handler.get_all_mp4_files()
         for video_file in video_files:
             video_matcher.find_all_matches(video_file)
-            video_matcher.print_frequencies(video_file)
+            video_matcher.print_pitches(video_file)
