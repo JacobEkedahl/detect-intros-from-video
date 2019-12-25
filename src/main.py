@@ -9,7 +9,7 @@ from audio_extraction import audio_to_frames as v_a
 from downloader import svtplaywrapper
 from frame_matcher import frame_comparer as comparer
 from frame_matcher import video_matcher as v_matcher
-from frame_matcher import video_to_frames as vf
+from frame_matcher import video_to_hashes as vf
 from segmenter import scenedetector
 
 if __name__ == "__main__":
@@ -21,14 +21,10 @@ if __name__ == "__main__":
         v_a.get_audio_from_video()
     elif (s.argv[1] == "--build"):
         pipeline.build_dataset_from_step(s.argv[2], s.argv[3])
-    elif (s.argv[1] == "--rframes"):
-        file_one = s.argv[2]
-        cleaner.remove_similar_frames(file_one)
-        exit()
     elif (s.argv[1] == "--frames"):
         mp4_files = file_handler.get_all_mp4_files()
         for mp4_file in mp4_files:
-            vf.video_to_frames_check(str(mp4_file))
+            vf.save_hashes(str(mp4_file))
         exit()
     elif (s.argv[1] == "--match"):
         if len(s.argv) > 2:

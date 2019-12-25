@@ -2,7 +2,7 @@
 import utils.file_handler as file_handler
 from audio_extraction import audio_to_frames as a_matcher
 from downloader import svtplaywrapper
-from frame_matcher import video_matcher, video_to_frames
+from frame_matcher import video_matcher, video_to_hashes
 from segmenter import scenedetector
 
 
@@ -30,7 +30,7 @@ def build_dataset_from_step(fromStep, toStep):
 
             if toStep == "--frames":
                 exit()
-            video_to_frames.video_to_frames_check(file_name)
+            video_to_hashes.save_hashes(file_name)
             if toStep == "--audio":
                 exit()
             a_matcher.audio_to_frames(file_name)
@@ -46,7 +46,7 @@ def build_dataset_from_step(fromStep, toStep):
         # find all videofiles
         video_files = file_handler.get_all_mp4_files()
         for video_file in video_files:
-            video_to_frames.video_to_frames_check(video_file)
+            video_to_hashes.save_hashes(video_file)
             a_matcher.audio_to_frames(video_file)
         
         if toStep == "--sim":

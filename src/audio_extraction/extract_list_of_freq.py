@@ -8,7 +8,7 @@ import parselmouth
 # load PRAAT pitches
 
 
-def get_db(audio_file):
+def get_valid_pitches(audio_file):
     snd = parselmouth.Sound(str(audio_file))
     pitch = snd.to_pitch()
     frames = pitch.get_number_of_frames()

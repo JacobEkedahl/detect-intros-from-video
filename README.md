@@ -24,9 +24,6 @@
 ## Extract frames from video and save in folders
 - python src/main.py --frames
 
-## Clean frames connected to video (can be done after extracting frames)
-- py src/main.py --rframes "video_file_path"
-
 ## Find matching frames
 - py src/main.py --match --files "video_file_path_A" "video_file_path_B"
 - py src/main.py --match --files "video_file_path_A" "video_file_path_B"
