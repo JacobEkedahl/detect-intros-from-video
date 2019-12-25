@@ -9,7 +9,7 @@ from utils import object_handler as handler
 from . import extract_list_of_pitches as extrator
 
 
-def audio_to_frames(video_file_path):
+def convert(video_file_path):
     if not file_handler.does_meta_contain_obj(constants.PITCH_NAME, video_file_path):
         print("there is no pitch obj")
         get_audio_from_video(video_file_path)
