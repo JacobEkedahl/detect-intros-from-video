@@ -31,7 +31,7 @@ def get_audioframespath_from_video(video_file):
                 int(file_info[1])))
     return result
 
-def get_framespaths_from_video(video_file):
+def get_images_from_video(video_file):
     dir = get_dir_for_frames(video_file)
     result = []
     for file in os.listdir(dir):
@@ -43,6 +43,10 @@ def get_framespaths_from_video(video_file):
                     float(file_info[0]),
                     int(file_info[1])))
     return result
+
+def get_framespaths_from_video(video_file):
+    dir = get_dir_for_frames(video_file)
+    return get_all_files_by_type(dir, 'jpg')
 
 def get_file_name_audio(video_file, count, sec):
     dir = get_dir_for_audio(video_file)

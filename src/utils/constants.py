@@ -12,4 +12,5 @@ SEQUENCE_THRESHOLD = 3 # seconds
 MIN_LENGTH_SEQUENCE = 5 # seconds
 DOWNSCALE_FACTOR = 10
 
-AUDIO_SIZE_SPLITS = 1 #seconds
+HASH_NAME = "hashes"
+FREQ_NAME = "frequencies"

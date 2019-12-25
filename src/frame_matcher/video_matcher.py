@@ -16,32 +16,10 @@ from utils import object_handler as handler
 from . import frame_comparer as comparer
 
 
-def find_all_matches_audio(file_A):
-    print("finding matches for audio")
-    video_A = str(file_A)
-    other_files_same_series = file_handler.get_all_other_videos_in_series(video_A)
-    matches = {}
-    frames_A = handler.read_frames_audio(video_A)
-    
-    for file_B in other_files_same_series:
-        video_B = str(file_B)
-        frames_B = handler.read_frames_audio(video_B)
-        frames_matched = comparer.find_all_matches_ssim_audio(frames_A, frames_B, c.THRESHOLD_SSIM)
-        
-        for matched_item in frames_matched:
-            count = matched_item["count"]
-            if count not in matches:
-                matches[count] = {"numberMatches": 0, "sec": matched_item["sec"]}
-            matches[count]["numberMatches"] += 1
-    sequences = extract_sequences(matches)
-    
-# Compares a videofiles frames with frames related to all other videos within that directory
-# Outputs a list of number of matches for a frame at a specific timeslot
-
 def print_frequencies(file_A):
     print("frequencies: ")
     video_A = str(file_A)
-    freq = handler.open_frequencies(video_A)
+    freq = handler.open_pitches(video_A)
     for f in freq:
         print("start: " + str(f[0]["sec"]) + ", end: " + str(f[-1]["sec"]))
 
@@ -50,16 +28,13 @@ def find_all_matches(file_A):
     video_A = str(file_A)
     other_files_same_series = file_handler.get_all_other_videos_in_series(video_A)
     matches = {}
-    
-    frames_A = file_handler.get_framespaths_from_video(video_A)
-    frames_A.sort(key=lambda x: x.count, reverse=False)
-    
+    hashes_A = handler.get_hash(video_A)
+
     for file_B in other_files_same_series:
         video_B = str(file_B)
         print("comparing: " + video_A + ", against: " + video_B)
-        frames_B = file_handler.get_framespaths_from_video(video_B)
-        frames_B.sort(key=lambda x: x.count, reverse=False)
-        frames_matched = comparer.find_all_matches_hash(frames_A, frames_B, c.HASH_CUTOFF)
+        hashes_B = handler.get_hash(video_B)
+        frames_matched = comparer.find_all_matches_hash(hashes_A, hashes_B, c.HASH_CUTOFF)
         
         for matched_item in frames_matched:
             count = matched_item["count"]
@@ -87,7 +62,6 @@ def extract_sequences(matches):
 
     for k, v in matches.items():
         list_matches.append(v["sec"])
-        #print(str(k) + ": " + str(v))
     list_matches.sort()
 
     current_sequence = {}

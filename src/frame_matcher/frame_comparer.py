@@ -15,92 +15,14 @@ from skimage.metrics import structural_similarity as ssim
 from utils import constants as c
 
 
-## list of frames, preferably sorted
-def find_all_matches_hash(frames_A, frames_B, threshold):
-	hashes_A = {}
-	hashes_B = {}
+## list of hashes, preferably sorted
+def find_all_matches_hash(hashes_A, hashes_B, threshold):
 	result = []
-	for frame_A in frames_A:
-		if frame_A.count not in hashes_A:
-			hash_A = imagehash.average_hash(Image.open(frame_A.fileName))
-			hashes_A[frame_A.count] = hash_A
-
-		for frame_B in frames_B:
-			if frame_B.count not in hashes_B:
-				hash_B = imagehash.average_hash(Image.open(frame_B.fileName))
-				hashes_B[frame_B.count] = hash_B
-
-			diff = hashes_A[frame_A.count] - hashes_B[frame_B.count]
+	for hash_A in hashes_A:
+		for hash_B in hashes_B:
+			diff = hash_A["hash"] - hash_B["hash"]
 			if diff < threshold:
-				#print("add: " + str(frame_A.sec) + " - " + str(diff))
-				result.append({"count": frame_A.count, "sec": frame_A.sec})
-				break
-	return result
-
-
-## list of frames, preferably sorted
-def find_all_matches_orb(frames_A, frames_B, threshold):
-	bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
-	orb = cv2.ORB_create()
-	images_A = {}
-	images_B = {}
-	result = []
-	for frame_A in frames_A:
-		if frame_A.count not in images_A:
-			img_a = cv2.imread(frame_A.fileName)
-			kp_a, desc_a = orb.detectAndCompute(img_a, None)
-			images_A[frame_A.count] = desc_a
-		for frame_B in frames_B:
-			if frame_B.count not in images_B:
-				img_b = cv2.imread(frame_B.fileName)
-				kp_b, desc_b = orb.detectAndCompute(img_b, None)
-				images_B[frame_B.count] = desc_b
-
-			matches = bf.match(images_A[frame_A.count], images_B[frame_B.count])
-			similar_regions = [i for i in matches if i.distance < 70]
-			if len(matches) == 0:
-				break
-			diff = len(similar_regions) / len(matches)
-			if diff > 0.88:
-				#print("add: " + str(frame_A.sec) + " - " + str(diff))
-				result.append({"count": frame_A.count, "sec": frame_A.sec})
-				break
-	return result
-
-
-## list of frames, preferably sorted
-def find_all_matches_ssim_audio(frames_A, frames_B, threshold):
-	result = []
-	for frame_A_index in range(0, len(frames_A), 1):
-		frame_A = frames_A[frame_A_index]
-		for frame_B_index in range(len(frames_B)):
-			frame_B = frames_B[frame_B_index]
-			diff = ssim(frame_A["img"], frame_B["img"])
-			if diff > 0.4:
-				print("match!: " + str(frame_A["count"]))
-				result.append({"count": frame_A["count"], "sec": frame_A["sec"]})
-				break
-	print(len(result))
-	return result
-
-## list of frames, preferably sorted
-def find_all_matches_ssim(frames_A, frames_B, threshold):
-	images_A = {}
-	images_B = {}
-	result = []
-	for frame_A in frames_A:
-		if frame_A.count not in images_A:
-			img_a = read_image_convert_to_grayscale(frame_A.fileName)
-			images_A[frame_A.count] = img_a
-		for frame_B in frames_B:
-			if frame_B.count not in images_B:
-				img_b = read_image_convert_to_grayscale(frame_B.fileName)
-				images_B[frame_B.count] = img_b
-
-			diff = ssim(images_A[frame_A.count], images_B[frame_B.count])
-			if diff > 0.4:
-				#print("match: " + str(frame_A.sec))
-				result.append({"count": frame_A.count, "sec": frame_A.sec})
+				result.append({"count": hash_A["count"], "sec": hash_A["sec"]})
 				break
 	return result
 
@@ -112,11 +34,6 @@ def read_images_convert_to_grayscale(fileA, fileB):
 	image_a = cv2.cvtColor(image_a, cv2.COLOR_BGR2GRAY)
 	image_b = cv2.cvtColor(image_b, cv2.COLOR_BGR2GRAY)
 	return (image_a, image_b)
-
-def read_image_convert_to_grayscale(fileA):
-	image_a = cv2.imread(fileA)
-	image_a = cv2.cvtColor(image_a, cv2.COLOR_BGR2GRAY)
-	return image_a
 
 def compare_images_mse(imageA, imageB):
 	img_a, img_b = read_images_convert_to_grayscale(imageA, imageB)
