@@ -1,3 +1,4 @@
+import json
 import os
 from os import listdir
 from os.path import isfile, join
@@ -8,6 +9,8 @@ from . import constants as c
 TEMPFOLDERNAME = "temp"
 VIDEOFOLDERNAME = "videos"
 URLSTEXTFILENAME = "video-serier.txt"
+DATAFOLDERNAME = "data"
+ANNOTATIONS = "dataset.json"
 
 def create_folderstructure_if_not_exists():
     if not os.path.exists(get_full_path_videos()):
@@ -19,6 +22,28 @@ def get_all_other_videos_in_series(video_file):
     other_videos.remove(str(video_file))
     return other_videos
 
+def get_intros():
+    intro_file = get_full_path_intros()
+    with open(intro_file) as json_file:
+        data = json.load(json_file)
+        return data['intro']
+
+def get_url_from_file_name(video_file):
+    segFile = get_seg_file_from_video(video_file)
+    with open(segFile) as json_file:
+        data = json.load(json_file)
+        return data['url']
+    return None
+
+def get_file_name_from_url(url):
+    seg_files = get_all_files_by_type(get_full_path_videos(), 'json')
+    for segmentationFile in seg_files:
+        with open(segmentationFile) as json_file:
+            data = json.load(json_file)
+            if data['url'] == url:
+                return str(segmentationFile).replace('.json', '-.mp4')
+    return None
+
 def get_all_urls_from_file(file_name):
     text_file_path = os.path.join(get_full_path_temp(), file_name)
     urls = [line.rstrip('\n') for line in open(text_file_path)]
@@ -26,6 +51,9 @@ def get_all_urls_from_file(file_name):
 
 def get_seg_file_from_video(video_file):
     return str(video_file).replace('.mp4', '.json')
+
+def get_srt_from_video(video_file):
+    return str(video_file).replace('-converted.mp4', '.srt')
 
 def get_all_files_by_type(path, fileType):
     files = []
@@ -63,6 +91,12 @@ def get_all_urls_from_temp():
 
 def get_full_path_temp():
     return os.path.join(str(os.getcwd()), TEMPFOLDERNAME)
+    
+def get_full_path_data():
+    return os.path.join(str(os.getcwd()), DATAFOLDERNAME)
+
+def get_full_path_intros():
+    return os.path.join(str(get_full_path_data()), ANNOTATIONS)
 
 def get_full_path_videos():
     return os.path.join(get_full_path_temp(), VIDEOFOLDERNAME)

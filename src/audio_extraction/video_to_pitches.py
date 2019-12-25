@@ -1,3 +1,4 @@
+import json
 import os
 import subprocess
 
@@ -10,22 +11,16 @@ from utils import object_handler as handler
 from . import extract_list_of_pitches as extrator
 
 
-def convert(video_file_path):
-    print("getting pitches for " + video_file_path)
-    #if not file_handler.does_meta_contain_obj(constants.PITCH_NAME, video_file_path):
-    #    print("there is no pitch obj")
-    get_audio_from_video(video_file_path)
-    #else:
-    #    print("pitch obj already exists")
-
+## should probably check if pitches already have been annotated
 def get_audio_from_video(video_file_path):
     video_file_path = str(video_file_path)
     base_dir = file_handler.get_dir_for_meta(video_file_path)
     if not os.path.exists(base_dir):
         os.makedirs(base_dir)
     output = os.path.join(base_dir, "audio.wav")
-    command = [ffmpeg._utils.get_ffmpeg_exe.__call__(), "-i", video_file_path, "-ab", "160k", "-ac", "1", "-ar", "44100", "-vn", "-y",  output]
-    subprocess.call(command, shell=True) 
+    exe = ffmpeg.get_ffmpeg_exe()
+    command = [exe, "-i", video_file_path, "-ab", "160k", "-ac", "1", "-ar", "44100", "-vn", "-y",  output]
+    subprocess.check_call(command, shell=True) 
     dir_to_audio = os.path.dirname(output)
     pitches = extrator.get_valid_pitches(output)
     annotate_meta.annotate_meta_data(pitches, constants.DESCRIPTION_PITCHES, video_file_path)

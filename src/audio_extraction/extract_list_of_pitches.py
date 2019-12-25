@@ -7,9 +7,8 @@ import parselmouth
 from annotations import annotate_meta
 from utils import constants
 
+
 # load PRAAT pitches
-
-
 def get_valid_pitches(audio_file):
     snd = parselmouth.Sound(str(audio_file))
     pitch = snd.to_pitch()
@@ -21,7 +20,6 @@ def get_valid_pitches(audio_file):
         time = v_index / 10
         curr_pitch = pitch.get_value_at_time(time)
         if str(curr_pitch) != "nan":
-            #print("count: " + str(v_index) + ", sec: " + str(time) + ", val: " + str(curr_pitch))
             result.append({"count": v_index, "val": curr_pitch, "sec": time})
     return clean_result(result)
 

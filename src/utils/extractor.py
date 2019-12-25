@@ -3,7 +3,14 @@ import os
 import sys as s
 from pathlib import Path
 
+from . import file_handler
+
 NO_RESULT = ""
+
+def print_urls():
+    intros = file_handler.get_intros()
+    for intro in intros:
+        print(intro["url"])
 
 # Given a root directory it finds all json files and extract all intros annotated
 # Stores this data inside intro.json under output directory 
@@ -24,8 +31,11 @@ def extract_intros(path, output):
                 else:
                     files.append({"url": fileWithNoDir, "start": NO_RESULT, "end": NO_RESULT})
 
+    result = {"intro": files}
     with open(os.path.join(output, 'intros' + '.json') , 'w') as outfile:
-        json.dump(files, outfile)
+        json.dump(result, outfile)
+
+
 
 if __name__ == "__main__":
     extract_intros(s.argv[1], s.argv[2])

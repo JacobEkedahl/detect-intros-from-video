@@ -11,6 +11,7 @@ from PIL import Image
 
 import annotations.annotate as ann
 import utils.file_handler as file_handler
+from utils import time_handler
 from annotations import annotate_meta as ann
 from segmenter import simple_segmentor
 from utils import constants as c

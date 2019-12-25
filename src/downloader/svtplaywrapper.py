@@ -13,7 +13,7 @@ from . import videoMerger
 
 def download_video(url):
     command = ["sh", "lib/runSvtPlay.sh", "--config", "lib/svtplay-dl.yaml", url]
-    output = subprocess.call(command, shell=True) 
+    output = subprocess.check_call(command, shell=True) 
     print(output)
     return videoMerger.mergeImageAndAudio()
 
