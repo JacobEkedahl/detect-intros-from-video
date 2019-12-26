@@ -13,7 +13,7 @@ from . import videoMerger
 
 
 def download_video(url):
-    command = ["sh", "lib/runSvtPlay.sh", "--config", "lib/svtplay-dl.yaml", url]
+    command = ["sh", "lib/runSvtPlay.sh", "--config", "lib/svtplay-dl.yaml", url, "--capture_time", "10"]
     try:
         output = subprocess.check_call(command, shell=True) 
     except:
