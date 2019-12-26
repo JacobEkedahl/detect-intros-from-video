@@ -29,6 +29,8 @@ def build_dataset_from_step(fromStep, toStep):
             file_name = svtplaywrapper.download_video(url)
             if toStep == "--seg": #not adviced to skip this step after start (miss the urlconnection for later intro connections)
                 exit()
+            if file_name == None: # download or merge failed, try next video
+                continue
             simple_segmentor.segment_video_with_url(file_name, url)
             annotate_intro.annotate_intro(file_name, url) # finding intro with this url from dataset
             if toStep == "--frames":
@@ -38,10 +40,7 @@ def build_dataset_from_step(fromStep, toStep):
             a_matcher.get_audio_from_video(file_name) # will annotate pitches
         if toStep == "--sim":
             exit()
-
-        video_files = file_handler.get_all_mp4_files()
-        for video_file in video_files:
-            video_matcher.find_all_matches(video_file) # will annotate matches
+        fromSim(toStep)
     elif fromStep == "--frames":
         fromFrames(toStep)
     elif fromStep == "--sim":

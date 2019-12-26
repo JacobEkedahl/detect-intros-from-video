@@ -2,6 +2,7 @@ import os
 import pprint
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 import numpy as np
@@ -13,9 +14,21 @@ from . import videoMerger
 
 def download_video(url):
     command = ["sh", "lib/runSvtPlay.sh", "--config", "lib/svtplay-dl.yaml", url]
-    output = subprocess.check_call(command, shell=True) 
+    try:
+        output = subprocess.check_call(command, shell=True) 
+    except:
+        print("error while downloading, retrying..")
+        time.sleep(1)
+        download_video(url)
     print(output)
-    return videoMerger.mergeImageAndAudio()
+    attempts = 0
+    while attempts < 3:
+        try:
+            return videoMerger.mergeImageAndAudio()
+        except:
+            print("error while merging, retrying..")
+            time.sleep(1)
+            attempts += 1
 
 def start_download(urls, number_of_episodes):
     num_epi = int(number_of_episodes)

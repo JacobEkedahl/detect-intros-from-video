@@ -3,7 +3,7 @@ import os
 import sys as s
 from pathlib import Path
 
-from . import file_handler
+from . import file_handler, time_handler
 
 NO_RESULT = ""
 
@@ -11,6 +11,25 @@ def print_urls():
     intros = file_handler.get_intros()
     for intro in intros:
         print(intro["url"])
+
+def get_intro_from_video(video_file):
+    seg_file = file_handler.get_seg_file_from_video(video_file)
+    scenes = None
+    intro = {"start": None, "end": None}
+    with open(seg_file) as json_file:
+        data = json.load(json_file)
+        scenes = data['scenes']
+    for scene in scenes:
+        if scene["intro"] is True:
+            if intro["start"] is not None:
+                start = time_handler.timestamp(scene["start"]) / 1000
+                intro["end"] = start
+            else:
+                intro["start"] = int(time_handler.timestamp(scene["start"])) / 1000 
+        elif intro["start"] is not None and intro["end"] is not None:
+            return intro
+    return None
+
 
 # Given a root directory it finds all json files and extract all intros annotated
 # Stores this data inside intro.json under output directory 

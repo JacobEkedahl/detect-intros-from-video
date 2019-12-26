@@ -7,9 +7,6 @@ from . import annotate as ann
 from .annotate import TimeInterval
 
 
-def annotate_all_with_matching_intro():
-    return None
-
 def annotate_intro(video_file, url):
     intros = file_handler.get_intros()
     intro = []
