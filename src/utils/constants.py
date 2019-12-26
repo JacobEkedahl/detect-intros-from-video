@@ -1,4 +1,4 @@
-SEC_PER_FRAME = 0.4 # seconds
+SEC_PER_FRAME = 0.3 # seconds
 IMAGE_WIDTH = 256
 IMAGE_HEIGHT = 256
 
