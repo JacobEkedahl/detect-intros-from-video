@@ -60,11 +60,13 @@ def find_all_matches(file_A):
                     matches_intro[count] = {"numberMatches": 0, "sec": matched_item["sec"]}
                 matches_intro[count]["numberMatches"] += 1
 
-    sequences_intro = extract_sequences(matches_intro)
-    seq_intro = get_sequence_closest_to_intro(sequences_intro, statistics.median(intro_median))
+    if len(intro_median) != 0:
+        sequences_intro = extract_sequences(matches_intro)
+        seq_intro = get_sequence_closest_to_intro(sequences_intro, statistics.median(intro_median))
+        ann.annotate_meta_data(seq_intro, c.DESCRIPTION_MATCHES_INTRO, video_A)
+
     sequences = extract_sequences(matches)
     ann.annotate_meta_data(sequences, c.DESCRIPTION_MATCHES, video_A)
-    ann.annotate_meta_data(seq_intro, c.DESCRIPTION_MATCHES_INTRO, video_A)
 
 # given a median intro length, identify the sequence closest in length
 def get_sequence_closest_to_intro(sequences, intro_length):
