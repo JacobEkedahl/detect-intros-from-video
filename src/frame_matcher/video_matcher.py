@@ -66,6 +66,7 @@ def find_all_matches(file_A):
     ann.annotate_meta_data(sequences, c.DESCRIPTION_MATCHES, video_A)
     ann.annotate_meta_data(seq_intro, c.DESCRIPTION_MATCHES_INTRO, video_A)
 
+# given a median intro length, identify the sequence closest in length
 def get_sequence_closest_to_intro(sequences, intro_length):
     min_diff = 1000
     result = []
@@ -80,6 +81,7 @@ def get_sequence_closest_to_intro(sequences, intro_length):
     result.append(cloesest_seq)
     return result
 
+# not in use atm
 def get_longest_sequence(sequences):
     longest_count = 0
     longest_seq = {}
