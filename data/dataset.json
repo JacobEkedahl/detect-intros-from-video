@@ -146,8 +146,8 @@
             "url": "https://www.svtplay.se/video/24912371/langtans-blaa-blomma/langtans-blaa-blomma-sasong-1-avsnitt-2-1"
         },
         {
-            "end": "00:01:30",
-            "start": "00:00:52",
+            "end": "00:00:46",
+            "start": "00:00:07",
             "url": "https://www.svtplay.se/video/24912425/langtans-blaa-blomma/langtans-blaa-blomma-sasong-1-avsnitt-1-1"
         },
         {
@@ -1079,6 +1079,26 @@
             "end": "00:00:22",
             "start": "00:00:00",
             "url": "https://www.svtplay.se/video/23578398/hamnd-och-karlek/hamnd-och-karlek-sasong-1-avsnitt-5"
+        },
+        {
+            "end": "00:02:51",
+            "start": "00:02:17",
+            "url": "https://www.svtplay.se/video/12313002/hotell-halcyon/hotell-halcyon-sasong-1-avsnitt-2"
+        },
+        {
+            "end": "00:02:14",
+            "start": "00:02:40",
+            "url": "https://www.svtplay.se/video/12207066/hotell-halcyon/hotell-halcyon-sasong-1-avsnitt-1"
+        },
+        {
+            "end": "00:03:11",
+            "start": "00:02:36",
+            "url": "https://www.svtplay.se/video/12419346/hotell-halcyon/hotell-halcyon-sasong-1-avsnitt-3"
+        },
+        {
+            "end": "00:02:24",
+            "start": "00:01:51",
+            "url": "https://www.svtplay.se/video/12524164/hotell-halcyon/hotell-halcyon-sasong-1-avsnitt-4"
         }
     ],
     "pre-intro": [
