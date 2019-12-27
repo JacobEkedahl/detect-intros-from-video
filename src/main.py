@@ -4,7 +4,7 @@ import sys as s
 import pipeline
 import utils.file_handler as file_handler
 from annotations import (annotate_subtitles, annotation_summary,
-                         scene_annotation)
+                         scene_annotation, dataset_annotation)
 from audio_extraction import video_to_pitches as v_p
 from downloader import svtplaywrapper
 from frame_matcher import frame_comparer as comparer
@@ -98,7 +98,9 @@ if __name__ == "__main__":
             scenedetector.segment_video(video_file)
 
     elif (s.argv[1] == "--ann"):
-        if (s.argv[2] == "--result"):
+        if (s.argv[2] == "-dataset"):
+            dataset_annotation.execute(s.argv)
+        elif (s.argv[2] == "--result"):
             annotation_summary.execute(s.argv)
         else:
             scene_annotation.execute(s.argv)

@@ -4,6 +4,8 @@ import json
 import os 
 import re
 
+import db.video_repo as video_repo
+
 def get_dataset(annotation):
     with open(path) as json_file:
         data = json.load(json_file)
@@ -26,13 +28,6 @@ def __validate_time_input(t):
             if not c.isdigit():
                 return False
     return True 
-
-
-def get_intro(url):
-    for intro in get_dataset("intro"):
-        if url == intro['url']:
-            return intro 
-    return None
 
 
 def query_yes_or_no(): 
@@ -88,6 +83,8 @@ def manual_annotation(path, url, tag, start, end):
                 'start': start,
                 'end': end
             })
+
+        video_repo.insert_dataset_sequence(url, tag, start, end)
         with open(path, 'w') as outfile:
             json.dump(data, outfile, indent=4, sort_keys=True)
         print("%s saved for %s as (%s - %s)" % (tag, url, start, end))

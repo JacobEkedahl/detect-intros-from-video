@@ -141,3 +141,18 @@ def delete_by_url(url):
 
 def delete_show(targetShow):
     return videoCollection.delete_many({"show": targetShow}).deleted_count
+
+def insert_dataset_sequence(url, tag, start, end):
+
+    inner_tag = 'dataset' + tag
+    print(inner_tag)
+    
+    #return videoCollection.update_one({ "url": url }, 
+    #{
+    #    "$set": { 
+    #        tag: {"start": start, "end": end}
+    #    }
+    #}, upsert = False).matched_count
+
+
+
