@@ -17,7 +17,7 @@ import os
 import copy
 
 from db import video_repo
-from db.video import Video 
+from db.video_repo import Video 
 
 
 class Show:
