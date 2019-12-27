@@ -5,9 +5,20 @@ from pathlib import Path
 
 import numpy as np
 
+from segmenter import simple_segmentor
+
 from . import file_handler, time_handler
 
 NO_RESULT = ""
+
+def reformat_segmentation_files():
+    files = file_handler.get_all_mp4_files()
+    for video_file in files:
+        seg_file = file_handler.get_seg_file_from_video(video_file)
+        with open(seg_file) as json_file:
+            data = json.load(json_file)
+            url = data['url']
+            simple_segmentor.segment_video_with_url(video_file, url)
 
 def print_urls():
     intros = file_handler.get_intros()

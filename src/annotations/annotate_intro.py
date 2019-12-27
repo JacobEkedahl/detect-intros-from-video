@@ -13,8 +13,11 @@ def annotate_intro(video_file, url):
     seq = {}
     intro = next((sub for sub in intros if sub['url'] == url), None) 
     if intro is not None:
-        seq = {"start": intro["start"], "end": intro["end"]}
-    if seq is None:
+        if time_handler.timestamp(intro["start"]) == 0 and time_handler.timestamp(intro["end"]) == 0:
+            intro = None
+        else:
+            seq = {"start": intro["start"], "end": intro["end"]}
+    if 'start' not in seq:
         print("could not find any intro to annotate with")
         return
         
@@ -28,7 +31,7 @@ def annotate_intro(video_file, url):
         for scene in scenes:
             scene['intro'] = False
         timeIntervals.append(TimeInterval(seq["start"], seq["end"]))
-        ann.set_presence_of_time_interval('intro', data['scenes'], timeIntervals)
+        ann.set_presence_of_time_interval_improved('intro', data['scenes'], timeIntervals)
         data['scenes'] = scenes
         with open(segmentationFile, 'w') as outfile:
             json.dump(data, outfile, indent=4, sort_keys=False)

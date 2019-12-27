@@ -24,11 +24,12 @@ def get_dataset_for_hmm():
         labels = []
         with open(seg_file) as json_file:
             data = json.load(json_file)
+            if 'intro' not in data['scenes'][0]:
+                continue
             for scene in data['scenes']:
               #  count += 1
               #  if count == 400:
               #      break
-                
                 entry = []
                 if 'matches' in scene:
                     if scene['matches'] == True:
@@ -60,6 +61,7 @@ def get_dataset_for_hmm():
                         entry.append(0)
                 else:
                     entry.append(None)
+                
                 current_scenes.append(numpy.array(entry))
                 if scene['intro']:
                     labels.append(1) 
@@ -72,9 +74,9 @@ def get_dataset_for_hmm():
     
 def startHMM():
     obs, labels = get_dataset_for_hmm()
-    test = obs[30]
-#    numpy.delete(obs, 0)
-    result = labels[30]
+    test = obs[5]
+    numpy.delete(obs, 0)
+    result = labels[5]
     model = HiddenMarkovModel.from_samples(MultivariateGaussianDistribution, 
                                             n_components=2,
                                             X=obs,
@@ -86,7 +88,6 @@ def startHMM():
     print(''.join(str(seq)))
     print(str(result))
     print(''.join(map( str, hmm_predictions)))
-
 
 if __name__ == "__main__":
     startHMM()

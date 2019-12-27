@@ -15,46 +15,46 @@ from . import videoMerger
 
 def download_video(url):
     command = ["sh", "lib/runSvtPlay.sh", "--config", "lib/svtplay-dl.yaml", url, "--capture_time", "8"]
-    if try_to_download(0, command) is None:
+    if try_to_download(command) is None:
         return None
-    return try_to_merge()
-
-def try_to_download(tries, command):
-    if tries > 3:
-        return None
-    try:
-        attempts = 0
-        output = subprocess.check_call(command, shell=True) 
-        print("result of download: " + str(output))
-        while output == '0' and attempts < 3:
+    attempts = 0
+    video_file = try_to_merge()
+    if video_file == None:
+        while attempts < 3:
+            video_file = try_to_merge()
             attempts += 1
-            print("wasnt able to download, retrying..")
-            time.sleep(1)
+    return video_file
+
+def try_to_download(command):
+    attemps = 0
+    while attemps < 3:
+        try:
             output = subprocess.check_call(command, shell=True) 
-    except:
-        print("error while downloading and calling subprocess, retrying..")
-        time.sleep(1)
-        try_to_download(tries +1, command)
-    return True
+            return True
+        except:
+            print("error while downloading and calling subprocess, retrying.. #" + str(attemps))
+            time.sleep(1)
+            newCommand = command[:]
+            if "--force" not in command:
+                newCommand.append("--force")
+                command = newCommand
+            attemps += 1
+    return None
 
 def try_to_merge():
-    attempts = 0
-    while attempts < 3:
-        try:
-            video_path = videoMerger.mergeImageAndAudio()
-            clip = VideoFileClip(str(video_path))
-            video_length = int(clip.duration)
-            if video_length < 400:
-                print('error after merging, size of videofile is under 400 seconds, trying again..')
-                os.remove(video_path)
-                time.sleep(1)
-                attempts += 1
-            else:
-                return video_path
-        except:
-            print("error while merging, retrying..")
+    try:
+        video_path = videoMerger.mergeImageAndAudio()
+        clip = VideoFileClip(str(video_path))
+        video_length = int(clip.duration)
+        if video_length < 400:
+            print('error after merging, size of videofile is under 400 seconds, trying again..')
+            os.remove(video_path)
             time.sleep(1)
-            attempts += 1
+        else:
+            return video_path
+    except:
+        print("error while merging, retrying..")
+        time.sleep(1)
     return None
 
 def start_download(urls, number_of_episodes):
