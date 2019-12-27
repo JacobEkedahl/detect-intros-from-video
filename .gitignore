@@ -1,3 +1,7 @@
+# Hidden
+.secret.json
+
+
 # Directories
 temp/
 !lib/**

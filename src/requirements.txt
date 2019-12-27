@@ -12,3 +12,4 @@ matplotlib
 ImageHash
 praat-parselmouth
 moviepy
+pymongo

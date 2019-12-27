@@ -13,6 +13,10 @@ from frame_matcher import video_to_hashes as vf
 from segmenter import scenedetector
 from utils import extractor
 
+import downloader.scrapesvt as scrapesvt
+
+from commands import cmd_query
+
 if __name__ == "__main__":
     file_handler.create_folderstructure_if_not_exists()
     if (len(s.argv) - 1 < 1):
@@ -77,6 +81,13 @@ if __name__ == "__main__":
             svtplaywrapper.download_video(url_path)
             
         print("finnished downloading!")
+        exit()
+
+    elif (s.argv[1] == "--scrape"):
+        scrapesvt.execute(s.argv)
+        exit()
+    elif (s.argv[1] == "--q"):
+        cmd_query.execute_command(s.argv)
         exit()
 
     elif (s.argv[1] == "--seg"):
