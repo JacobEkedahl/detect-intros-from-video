@@ -28,6 +28,7 @@ def __query_videos(argv):
         else:
             print("%s s%02de%02d %s " % (v['show'], v['season'], v['episode'], v['downloaded']))
 
+
 def __export_dataset(path):
 
     tags = ["intro", "pre-intro", "previous"]
@@ -44,8 +45,9 @@ def __export_dataset(path):
     with open(path, 'w') as outfile:
         json.dump(output, outfile, indent=4, sort_keys=True)
 
+
 def __import_dataset(path):
-    
+
     tags = ["intro", "pre-intro", "previous"]
     with open(path) as json_file:
         data = json.load(json_file)
@@ -53,9 +55,11 @@ def __import_dataset(path):
             print("\n%s\n" % tag)
             for element in data[tag]:
                 ann_repo.insert(Annotation(element['url'], tag, element['start'], element['end']))
+                print(element)
+                
 
 def __query_dataset(argv):
-    
+
     exportPath = args_helper.get_value_after_key(argv, "-export", "-export")
     if exportPath != "" and ".json" in exportPath:
         __export_dataset(exportPath)
@@ -69,9 +73,9 @@ def __query_dataset(argv):
      
         
     # supports old method by first inserting all intros that have yet been inserted into ann_repo
-    intros = dataset_annotation.get_dataset("intro")
-    for intro in intros:
-        ann_repo.insert(Annotation(intro['url'], "intro", intro['start'], intro['end']))
+    #intros = dataset_annotation.get_dataset("intro")
+    #for intro in intros:
+    #    ann_repo.insert(Annotation(intro['url'], "intro", intro['start'], intro['end']))
         
 
     shows = ann_repo.get_shows()

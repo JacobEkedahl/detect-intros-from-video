@@ -29,7 +29,21 @@ def insert(srcs_annotation):
         print("Error: %s video does not exists inside the video repository. This is likely because the web scraper failed to find it." % srcs_annotation.url)
         return 
     if len(find_by_tag_url(srcs_annotation.url, srcs_annotation.tag)) > 0:
-        print("Error: %s was already saved before with [%s]." % (srcs_annotation.url, srcs_annotation.tag))
+        print("Warning: updating: %s %s" % (srcs_annotation.url, srcs_annotation.tag))
+        # Update 
+        annotationCollection.update_one(
+        {
+            "$and": [
+                {"url": srcs_annotation.url}, 
+                {"tag": srcs_annotation.tag}
+            ]
+        }, 
+        {
+            "$set": {
+                "start": srcs_annotation.start,
+                "fullpath": srcs_annotation.end
+            }
+        }, upsert = False)
         return 
     srcs_annotation.season = video['season']
     srcs_annotation.show = video['show']
