@@ -5,6 +5,17 @@
 - cd detect-intros-from-video
 - pip install -r requirements.txt
 
+## Configure MongoDB 
+
+This program requires that you have a connection to a mongodb server. To configure the the database and url connection create a file called '.secret.json' and place it inside the application root directory.
+
+    {
+        "dbname": "svt",
+        "url": "mongodb://host:port/"
+    }
+
+
+
 ## Build a dataset
 - python src/main.py --build <fromStep> <toStep>
 - fromStep, toStep = ["--start", "--frames", "--sim", "--seg", "--end"]
