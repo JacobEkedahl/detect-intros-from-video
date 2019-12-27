@@ -24,6 +24,12 @@
     *   delete_show(targetShow)
 """
 
+import pymongo
+import json
+import os 
+
+from pathlib import Path
+
 class Video:
     """ Class containing video information """
 
@@ -51,14 +57,6 @@ class Video:
 
 def generate_file_name(show, title, season, episode):
     return Video(show, title, season, episode).filename
-
-
-import pymongo
-import json
-import os 
-
-from db.video import Video 
-from pathlib import Path
 
 
 secret = None
