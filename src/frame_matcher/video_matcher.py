@@ -33,6 +33,13 @@ def find_matches_correlates_with_intro(file_A):
 def find_all_matches(file_A):
     print("finding matched for images")
     video_A = str(file_A)
+    seg_file = file_handler.get_seg_file_from_video(video_A)
+    with open(seg_file) as json_file:
+        data = json.load(json_file)
+        scenes = data['scenes']
+        if 'matches' in scenes[0]:
+            return
+
     other_files_same_series = file_handler.get_all_other_videos_in_series(video_A)
     matches = {}
     matches_intro = {}
@@ -60,13 +67,15 @@ def find_all_matches(file_A):
                     matches_intro[count] = {"numberMatches": 0, "sec": matched_item["sec"]}
                 matches_intro[count]["numberMatches"] += 1
 
-    if len(intro_median) != 0:
+    if len(intro_median) != 0 and matches_intro is not None:
         sequences_intro = extract_sequences(matches_intro)
-        seq_intro = get_sequence_closest_to_intro(sequences_intro, statistics.median(intro_median))
-        ann.annotate_meta_data(seq_intro, c.DESCRIPTION_MATCHES_INTRO, video_A)
+        if len(sequences_intro) > 0:
+            seq_intro = get_sequence_closest_to_intro(sequences_intro, statistics.median(intro_median))
+            ann.annotate_meta_data(seq_intro, c.DESCRIPTION_MATCHES_INTRO, video_A)
 
     sequences = extract_sequences(matches)
-    ann.annotate_meta_data(sequences, c.DESCRIPTION_MATCHES, video_A)
+    longestSeq = get_longest_sequence(sequences)
+    ann.annotate_meta_data(longestSeq, c.DESCRIPTION_MATCHES, video_A)
 
 # given a median intro length, identify the sequence closest in length
 def get_sequence_closest_to_intro(sequences, intro_length):
@@ -83,17 +92,18 @@ def get_sequence_closest_to_intro(sequences, intro_length):
     result.append(cloesest_seq)
     return result
 
-# not in use atm
 def get_longest_sequence(sequences):
     longest_count = 0
     longest_seq = {}
+    result = []
 
     for seq in sequences:
         length = seq["end"] - seq["start"]
         if length > longest_count:
             longest_count = length
             longest_seq = seq
-    return longest_seq
+    result.append(longest_seq)
+    return result
 
 # Will find sequences of matches and filter out unrelevant sequences
 def extract_sequences(matches): 

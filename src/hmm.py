@@ -14,7 +14,8 @@ def get_dataset_for_hmm():
     mp4s = file_handler.get_all_mp4_files()
     result = []
     data_labels = []
-    
+    #print(mp4s[0])
+    #exit()
     for video_file in mp4s:
         segFiles.append(file_handler.get_seg_file_from_video(video_file))
     for seg_file in segFiles:  
@@ -51,7 +52,7 @@ def get_dataset_for_hmm():
                         entry.append(0)
                 else:
                     entry.append(None)
-
+                
                 if 'subtitles' in scene:
                     if scene['subtitles'] == True:
                         entry.append(1)
@@ -71,9 +72,9 @@ def get_dataset_for_hmm():
     
 def startHMM():
     obs, labels = get_dataset_for_hmm()
-    test = obs[0]
+    test = obs[30]
 #    numpy.delete(obs, 0)
-    result = labels[0]
+    result = labels[30]
     model = HiddenMarkovModel.from_samples(MultivariateGaussianDistribution, 
                                             n_components=2,
                                             X=obs,

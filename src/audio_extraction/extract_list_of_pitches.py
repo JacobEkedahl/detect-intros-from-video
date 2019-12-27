@@ -5,6 +5,7 @@ import numpy as np
 
 import parselmouth
 from annotations import annotate_meta
+from frame_matcher import video_matcher
 from utils import constants
 
 
@@ -21,7 +22,22 @@ def get_valid_pitches(audio_file):
         curr_pitch = pitch.get_value_at_time(time)
         if str(curr_pitch) != "nan":
             result.append({"count": v_index, "val": curr_pitch, "sec": time})
-    return clean_result(result)
+    return get_longest_sequence(clean_result(result))
+
+# not in use atm
+def get_longest_sequence(sequences):
+    longest_count = 0
+    longest_seq = {}
+    result = []
+
+    for seq in sequences:
+        length = seq["end"] - seq["start"]
+        if length > longest_count:
+            longest_count = length
+            longest_seq = seq
+    result.append(longest_seq)
+    return result
+
 
 def clean_result(pitches):
     list_of_seq = []
