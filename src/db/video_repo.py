@@ -4,7 +4,7 @@
     API: 
 
     *   insert(video)
-    *   vind_all()
+    *   find_all()
     *   find_all_not_dl(): 
     *   find_all_dl()
     *   find_by_url(url)
