@@ -31,7 +31,7 @@
 ## Compare similarities between two images (default algorithm is using the hash of images)
 - py src/main.py --images "image_file_path_A" "image_file_path_B" --ssim<optinal> --print<optional>
 - Types of similarity algorithms - (--orb, --ssim, --mse, --hash)
-                                                                                                                        
+                                                                                                                    
 ## Extra
 - Requires python of maximum version 3.7
 - Run command from root folder (same directory as lib, src exists)

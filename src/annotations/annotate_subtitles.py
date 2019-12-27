@@ -8,11 +8,18 @@
 #         
 
 import json
+import os
 
-from utils import srt_to_json
-from .annotate import set_presence_of_time_interval
-from .annotate import TimeInterval
+from utils import file_handler, srt_to_json
 
+from .annotate import TimeInterval, set_presence_of_time_interval
+
+
+def annotate_subs_from_video(video_file):
+    srt_file = file_handler.get_srt_from_video(video_file)
+    if os.path.exists(srt_file):
+        seg_file = file_handler.get_seg_file_from_video(video_file)
+        annotate_srt_on_scenes(srt_file, seg_file)
 
 # Creates a annotation in the segmentation file for presence of subtitles in particular scenes
 #

@@ -4,59 +4,98 @@
 # The result is a list of number of matches with a timestamp in seconds     #
 # The algorithm used is called hashing                                      #
 
+import json
+import statistics
+
 import imagehash
 from PIL import Image
 
 import annotations.annotate as ann
-import utils.constants as c
 import utils.file_handler as file_handler
-from annotations.annotate import TimeInterval
+from annotations import annotate_meta as ann
+from segmenter import simple_segmentor
+from utils import constants as c
+from utils import extractor
 from utils import object_handler as handler
+from utils import time_handler
 
 from . import frame_comparer as comparer
 
 
-def print_pitches(file_A):
-    print("pitches: ")
+def find_matches_correlates_with_intro(file_A):
     video_A = str(file_A)
-    pitches = handler.open_obj_from_meta(c.PITCH_NAME, video_A)
-    for p in pitches:
-        print("start: " + str(p[0]["sec"]) + ", end: " + str(p[-1]["sec"]))
+    other_files_same_series = file_handler.get_all_other_videos_in_series(video_A)
+    # extract the intros of the other series, then when a match is found set a flag on whether or not
+    # it matches with an frame that is within the intro
+    # filter sequences and return the sequence with the most amount of flags set for intro matches
+    return None
 
 def find_all_matches(file_A):
     print("finding matched for images")
     video_A = str(file_A)
     other_files_same_series = file_handler.get_all_other_videos_in_series(video_A)
-    print(len(other_files_same_series))
     matches = {}
+    matches_intro = {}
     hashes_A = handler.open_obj_from_meta(c.HASH_NAME, video_A)
+    intro_median = []
 
     for file_B in other_files_same_series:
         video_B = str(file_B)
         print("comparing: " + video_A + ", against: " + video_B)
         hashes_B = handler.open_obj_from_meta(c.HASH_NAME, video_B)
         frames_matched = comparer.find_all_matches_hash(hashes_A, hashes_B, c.HASH_CUTOFF)
-        
         for matched_item in frames_matched:
             count = matched_item["count"]
             if count not in matches:
                 matches[count] = {"numberMatches": 0, "sec": matched_item["sec"]}
             matches[count]["numberMatches"] += 1
+
+        intro_B = extractor.get_intro_from_video(video_B)
+        intro_median.append(intro_B["end"] - intro_B["start"])
+        if intro_B is not None:
+            frames_matched_intro = comparer.find_all_matches_hash_intro(hashes_A, hashes_B, intro_B, c.HASH_CUTOFF)
+            for matched_item in frames_matched_intro:
+                count = matched_item["count"]
+                if count not in matches_intro:
+                    matches_intro[count] = {"numberMatches": 0, "sec": matched_item["sec"]}
+                matches_intro[count]["numberMatches"] += 1
+
+    if len(intro_median) != 0:
+        sequences_intro = extract_sequences(matches_intro)
+        seq_intro = get_sequence_closest_to_intro(sequences_intro, statistics.median(intro_median))
+        ann.annotate_meta_data(seq_intro, c.DESCRIPTION_MATCHES_INTRO, video_A)
+
     sequences = extract_sequences(matches)
-    
-    # loop through sequences and annotate
-    
-    # timeIntervals = []
-    # for ... 
-    #timeIntervals.append(TimeInterval("00:00:00", "00:00:00"))
-    #scenes = None
-    #with open(segmentationFile) as json_file:
-    #        data = json.load(json_file)
-    #        scenes = data['scenes']
-    #ann.set_presence_of_time_interval("fmatch, ", scenes, timeIntervals)
+    ann.annotate_meta_data(sequences, c.DESCRIPTION_MATCHES, video_A)
+
+# given a median intro length, identify the sequence closest in length
+def get_sequence_closest_to_intro(sequences, intro_length):
+    min_diff = 1000
+    result = []
+    cloesest_seq = {}
+
+    for seq in sequences:
+        length = seq["end"] - seq["start"]
+        diff = abs(intro_length - length)
+        if diff < min_diff:
+            min_diff = diff
+            cloesest_seq = seq
+    result.append(cloesest_seq)
+    return result
+
+# not in use atm
+def get_longest_sequence(sequences):
+    longest_count = 0
+    longest_seq = {}
+
+    for seq in sequences:
+        length = seq["end"] - seq["start"]
+        if length > longest_count:
+            longest_count = length
+            longest_seq = seq
+    return longest_seq
 
 # Will find sequences of matches and filter out unrelevant sequences
-
 def extract_sequences(matches): 
     list_matches = []
     recorded_sequences = []
@@ -80,7 +119,7 @@ def extract_sequences(matches):
             else:
                 current_sequence = {"start": match, "end": None}
         prev_time = match
-    if current_sequence["end"] != None and current_sequence["end"] - current_sequence["start"] > c.MIN_LENGTH_SEQUENCE:
+    if current_sequence and current_sequence["end"] != None and current_sequence["end"] - current_sequence["start"] > c.MIN_LENGTH_SEQUENCE:
         recorded_sequences.append(current_sequence)
 
     for recorded in recorded_sequences:

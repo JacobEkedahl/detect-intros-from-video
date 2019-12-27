@@ -26,6 +26,19 @@ def find_all_matches_hash(hashes_A, hashes_B, threshold):
 				break
 	return result
 
+## list of hashes, preferably sorted, dont match the same frame multiple times
+def find_all_matches_hash_intro(hashes_A, hashes_B, intro_B, threshold):
+	result = []
+	matched_B = []
+	for hash_A in hashes_A:
+		for hash_B in hashes_B:
+			diff = hash_A["hash"] - hash_B["hash"]
+			if diff < threshold and hash_B["sec"] >= intro_B["start"] and hash_B["sec"] <= intro_B["end"] and hash_B not in matched_B:
+				matched_B.append(hash_B)
+				result.append({"count": hash_A["count"], "sec": hash_A["sec"]})
+				break
+	return result
+
 def read_images(fileA, fileB):
 	return cv2.imread(fileA), cv2.imread(fileB)
 

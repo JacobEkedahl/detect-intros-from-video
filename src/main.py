@@ -11,14 +11,13 @@ from frame_matcher import frame_comparer as comparer
 from frame_matcher import video_matcher as v_matcher
 from frame_matcher import video_to_hashes as vf
 from segmenter import scenedetector
+from utils import extractor
 
 if __name__ == "__main__":
     file_handler.create_folderstructure_if_not_exists()
     if (len(s.argv) - 1 < 1):
         print("need more arguments! (--dlv --file nameOfTxtFile numberOfEpisodes)")
         exit()
-    if (s.argv[1] == "--audio"):
-        v_p.get_audio_from_video()
     elif (s.argv[1] == "--build"):
         pipeline.build_dataset_from_step(s.argv[2], s.argv[3])
     elif (s.argv[1] == "--frames"):
