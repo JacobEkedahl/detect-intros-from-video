@@ -64,6 +64,7 @@ def get_all_files_by_type(path, fileType):
 def get_all_mp4_files():
     return get_all_files_by_type(get_full_path_videos(), 'mp4')
 
+
 def get_all_unmerged_files():
     files = []
     types = ["*.audio.ts", "*.m4a"] #find audio files and match with videofiles
