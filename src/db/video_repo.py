@@ -4,6 +4,7 @@
     API: 
 
     *   insert(video)
+    *   vind_all()
     *   find_all_not_dl(): 
     *   find_all_dl()
     *   find_by_url(url)
@@ -51,6 +52,9 @@ def insert(srcs_video):
         return None
     x = videoCollection.insert_one(srcs_video.__dict__)
     return x.inserted_id
+
+def find_all():
+    return list(videoCollection.find())
 
 def find_all_not_dl():
     return list(videoCollection.find({"downloaded": False}))
