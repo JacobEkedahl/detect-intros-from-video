@@ -15,7 +15,10 @@ def execute_command(argv):
         else:
             videos = video_repo.find_all()
         for v in videos: 
-            print("%s %s %s %s" % (v['show'], v['season'], v['fullpath'], v['downloaded']))
+            if v['downloaded']:
+                print("%s s%02de%02d %s %s" % (v['show'], v['season'], v['episode'], v['downloaded'], v['fullpath']))
+            else:
+                print("%s s%02de%02d %s " % (v['show'], v['season'], v['episode'], v['downloaded']))
 
     else: 
         print("Error: invalid query.")    

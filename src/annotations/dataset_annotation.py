@@ -1,12 +1,16 @@
-# py src/annotations/simple_annotation.py https://www.svtplay.se/video/23587842/kvalster/kvalster-avsnitt-3?start=auto -s 00:00:00 -e 00:00:15 -t intro
 
 import sys
 import json 
 import os 
 import re
 
-def validate_time_input(t):
+def get_dataset(annotation):
+    with open(path) as json_file:
+        data = json.load(json_file)
+        return data[annotation]
+    return None
 
+def __validate_time_input(t):
     if not (t[0].isdigit() and t[1].isdigit() and t[2] == ':' and t[3].isdigit() and t[4].isdigit() and t[5] == ':' and t[6].isdigit() and t[7].isdigit()):
         return False 
     if len(t) == 8:
@@ -21,10 +25,15 @@ def validate_time_input(t):
         for c in t: 
             if not c.isdigit():
                 return False
-    
     return True 
-    
-    
+
+
+def get_intro(url):
+    for intro in get_dataset("intro"):
+        if url == intro['url']:
+            return intro 
+    return None
+
 
 def query_yes_or_no(): 
     yes = {'yes','y', 'ye', ''}
@@ -39,16 +48,11 @@ def query_yes_or_no():
         sys.stdout.write("Please respond with 'yes' or 'no'")
         return query_yes_or_no()
 
-argv = sys.argv
-start = ""
-end = ""
-tag = "intro"
-path = "data/dataset.json"
-url = ""
+
 
 def manual_annotation(path, url, tag, start, end):
 
-    if not validate_time_input(start) or not validate_time_input(end):
+    if not __validate_time_input(start) or not __validate_time_input(end):
         print("Error: Invalid time format.")
         return
 
@@ -88,31 +92,35 @@ def manual_annotation(path, url, tag, start, end):
             json.dump(data, outfile, indent=4, sort_keys=True)
         print("%s saved for %s as (%s - %s)" % (tag, url, start, end))
 
-doCount = False 
+start = ""
+end = ""
+tag = "intro"
+path = "data/dataset.json"
+url = ""
 
-for i in range(1, len(argv)):
-    if (argv[i] == "-s" or argv[i] == "-start") and i + 1 < len(argv):
-        start = argv[i + 1]
-    elif (argv[i] == "-e" or argv[i] == "-end") and i + 1 < len(argv):
-        end = argv[i + 1]
-    elif (argv[i] == "-t" or argv[i] == "-tag") and i + 1 < len(argv):
-        tag = argv[i + 1]
-    elif (argv[i] == "-p" or argv[i] == "-path") and i + 1 < len(argv):
-        path = argv[i + 1]
-    elif (argv[i] == "-url") and i + 1 < len(argv):
-        url = argv[i + 1]
-    elif(argv[i] == "-count"):
-        doCount = True
+def execute(argv):
+    doCount = False 
+    for i in range(1, len(argv)):
+        if (argv[i] == "-s" or argv[i] == "-start") and i + 1 < len(argv):
+            start = argv[i + 1]
+        elif (argv[i] == "-e" or argv[i] == "-end") and i + 1 < len(argv):
+            end = argv[i + 1]
+        elif (argv[i] == "-t" or argv[i] == "-tag") and i + 1 < len(argv):
+            tag = argv[i + 1]
+        elif (argv[i] == "-url") and i + 1 < len(argv):
+            url = argv[i + 1]
+        elif(argv[i] == "-count"):
+            doCount = True
 
-if (url != "" and tag != "" and start != "" and end != "" and path != ""):
-    manual_annotation(path, url, tag, start, end)
-else:
-    print("Error: Not enough arguments provided") 
+    if (url != "" and tag != "" and start != "" and end != "" and path != ""):
+        manual_annotation(path, url, tag, start, end)
+    else:
+        print("Error: Not enough arguments provided") 
 
-if doCount:
-    count = 0
-    with open(path) as json_file:
-        data = json.load(json_file)
-        for value in data[tag]:
-            count = count + 1
-    print("Total %s count: %d" % (tag, count))
+    if doCount:
+        count = 0
+        with open(path) as json_file:
+            data = json.load(json_file)
+            for value in data[tag]:
+                count = count + 1
+        print("Total %s count: %d" % (tag, count))
