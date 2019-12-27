@@ -3,6 +3,8 @@ import os
 import sys as s
 from pathlib import Path
 
+import numpy as np
+
 from . import file_handler, time_handler
 
 NO_RESULT = ""
