@@ -4,7 +4,8 @@ import json
 import os 
 import re
 
-import db.video_repo as video_repo
+import db.annotation_repo as ann_repo
+from db.annotation_repo import Annotation
 
 def get_dataset(annotation):
     with open(path) as json_file:
@@ -59,6 +60,8 @@ def manual_annotation(path, url, tag, start, end):
     if "?start=auto" in url: 
         url = url.split("?start=auto")[0]
 
+    ann_repo.insert(Annotation(url, tag, start, end))
+
     with open(path) as json_file:
         data = json.load(json_file)
         found = None
@@ -83,8 +86,8 @@ def manual_annotation(path, url, tag, start, end):
                 'start': start,
                 'end': end
             })
-
-        video_repo.insert_dataset_sequence(url, tag, start, end)
+        ann_repo.insert(Annotation(url, tag, start, end))
+        # Also saves to old json file
         with open(path, 'w') as outfile:
             json.dump(data, outfile, indent=4, sort_keys=True)
         print("%s saved for %s as (%s - %s)" % (tag, url, start, end))

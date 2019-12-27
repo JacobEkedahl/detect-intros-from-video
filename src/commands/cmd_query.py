@@ -2,6 +2,10 @@ import db.video_repo as video_repo
 import utils.args_helper as args_helper
 
 import annotations.dataset_annotation as dataset_annotation
+from db.annotation_repo import Annotation
+import db.annotation_repo as ann_repo
+
+import utils.time_handler as time_handler
 
 
 def __query_videos(argv):
@@ -23,12 +27,36 @@ def __query_videos(argv):
 
 
 def __query_dataset(argv):
+
+    # supports old method by first inserting all intros that have yet been inserted into ann_repo
     intros = dataset_annotation.get_dataset("intro")
-    
-    
     for intro in intros:
-        video = video_repo.find_by_url(intro['url'])
-        print(video['show'])
+        ann_repo.insert(Annotation(intro['url'], "intro", intro['start'], intro['end']))
+        
+
+    shows = ann_repo.get_shows()
+    i = 0
+    print("\n\nFirst batch")
+    while i < len(shows)*70/100:
+        print(shows[i])
+        i = i + 1
+    print("\n\nSecond batch")
+    while i < len(shows):
+        print(shows[i])
+        i = i + 1
+
+    #for show in ann_repo.get_shows():
+       # print(show)
+      #  for season in ann_repo.get_show_seasons(show):
+       ##     print(season)
+       #     for intro in ann_repo.find_by_tag_show_season("intro", show, season):
+      #         print(intro)
+
+            
+
+
+
+
 
 
     

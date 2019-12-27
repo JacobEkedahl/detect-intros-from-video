@@ -1,10 +1,10 @@
 #!/bin/sh
 
-url="https://www.svtplay.se/video/12524164/hotell-halcyon/hotell-halcyon-sasong-1-avsnitt-4?start=auto"
+url="https://www.svtplay.se/video/24912149/langtans-blaa-blomma/langtans-blaa-blomma-sasong-1-avsnitt-4-1?start=auto"
 
-start="00:01:51"
+start="00:00:40"
 
-end="00:02:24"
+end="00:01:18"
 
 tag="intro"
 
