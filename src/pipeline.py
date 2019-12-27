@@ -50,10 +50,10 @@ def fromFrames(toStep):
     # find all videofiles
     video_files = file_handler.get_all_mp4_files()
     for video_file in video_files:
-        video_url = file_handler.get_url_from_file_name(video_file) #requires url to be saved in json
-        annotate_intro.annotate_intro(video_file, video_url)
+        #video_url = file_handler.get_url_from_file_name(video_file) #requires url to be saved in json
+        #annotate_intro.annotate_intro(video_file, video_url)
         video_to_hashes.save_hashes(video_file)
-        a_matcher.get_audio_from_video(video_file)
+        #a_matcher.get_audio_from_video(video_file)
         annotate_subtitles.annotate_subs_from_video(video_file) # will annotate subs
     if toStep == "--sim":
         exit()

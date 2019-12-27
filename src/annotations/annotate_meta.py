@@ -22,6 +22,7 @@ def annotate_meta_data(sequences, description, video_file):
             scene[description] = False
 
         for seq in sequences:
+            print(seq)
             start = time_handler.timestamp_to_str(seq["start"] * 1000)
             end = time_handler.timestamp_to_str(seq["end"] * 1000)
             timeIntervals.append(TimeInterval(start, end))
