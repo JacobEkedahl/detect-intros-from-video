@@ -13,7 +13,7 @@ import os
 from utils import file_handler, srt_to_json, time_handler
 
 from . import scene_annotation
-from .annotate import TimeInterval, set_presence_of_time_interval
+from .annotate import TimeInterval, set_presence_of_time_interval_improved
 
 
 def annotate_subs_from_video(video_file):
@@ -77,7 +77,7 @@ def annotate_srt_on_scenes(srtFile, segmentationFile):
         data = json.load(json_file)
         for scene in data['scenes']:
             scene['subtitles'] = False
-        set_presence_of_time_interval('subtitles', data['scenes'], subtitleTimeIntervals)
+        set_presence_of_time_interval_improved('subtitles', data['scenes'], subtitleTimeIntervals)
         with open(segmentationFile, 'w') as outfile:
             json.dump(data, outfile, indent=4, sort_keys=False)
 
