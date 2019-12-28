@@ -10,6 +10,9 @@
 - fromStep, toStep = ["--start", "--frames", "--sim", "--seg", "--end"]
 - example: python src/main.py --build --start --end 
 
+## Train a hidden markov model and print predictions
+- python src/hmm.py
+
 ## Run svtplaydownloader:
 - python src/main.py --dlv --url "url"
 
