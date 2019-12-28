@@ -74,20 +74,23 @@ def get_dataset_for_hmm():
     
 def startHMM():
     obs, labels = get_dataset_for_hmm()
-    test = obs[5]
     numpy.delete(obs, 0)
-    result = labels[5]
+    result = labels[10]
     model = HiddenMarkovModel.from_samples(MultivariateGaussianDistribution, 
                                             n_components=2,
                                             X=obs,
                                             labels=labels,
                                             algorithm='labeled')
-    seq = numpy.array(test)
-    hmm_predictions = model.predict(seq)
-
-    print(''.join(str(seq)))
-    print(str(result))
-    print(''.join(map( str, hmm_predictions)))
+    
+    for i in range(len(obs)):
+        test = obs[i]
+        result = labels[i]
+        seq = numpy.array(test)
+        hmm_predictions = model.predict(seq)
+        pred = ''.join(map( str, hmm_predictions))
+        print("actual start: " + str(result.index(1)))
+        print("start predicted: " + str(pred.find('1')))
+        exit()
 
 if __name__ == "__main__":
     startHMM()
