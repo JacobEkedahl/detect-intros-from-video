@@ -33,7 +33,15 @@ def find_matches_correlates_with_intro(file_A):
 def find_all_matches(file_A):
     print("finding matched for images")
     video_A = str(file_A)
+    seg_file = file_handler.get_seg_file_from_video(video_A)
+    with open(seg_file) as json_file:
+        data = json.load(json_file)
+        scenes = data['scenes']
+        if 'matches' in scenes[0]:
+            return
+
     other_files_same_series = file_handler.get_all_other_videos_in_series(video_A)
+    print("number of episodes: " + str(len(other_files_same_series)))
     matches = {}
     matches_intro = {}
     hashes_A = handler.open_obj_from_meta(c.HASH_NAME, video_A)
@@ -43,30 +51,33 @@ def find_all_matches(file_A):
         video_B = str(file_B)
         print("comparing: " + video_A + ", against: " + video_B)
         hashes_B = handler.open_obj_from_meta(c.HASH_NAME, video_B)
-        frames_matched = comparer.find_all_matches_hash(hashes_A, hashes_B, c.HASH_CUTOFF)
+        
+        intro_B = extractor.get_intro_from_video(video_B)
+        frames_matched, frames_matched_intro = comparer.find_all_matches_hash_intro(hashes_A, hashes_B, intro_B, c.HASH_CUTOFF)
         for matched_item in frames_matched:
             count = matched_item["count"]
             if count not in matches:
                 matches[count] = {"numberMatches": 0, "sec": matched_item["sec"]}
             matches[count]["numberMatches"] += 1
 
-        intro_B = extractor.get_intro_from_video(video_B)
-        intro_median.append(intro_B["end"] - intro_B["start"])
-        if intro_B is not None:
-            frames_matched_intro = comparer.find_all_matches_hash_intro(hashes_A, hashes_B, intro_B, c.HASH_CUTOFF)
+        if len(frames_matched_intro) > 0:
+            intro_median.append(intro_B["end"] - intro_B["start"])
             for matched_item in frames_matched_intro:
                 count = matched_item["count"]
                 if count not in matches_intro:
                     matches_intro[count] = {"numberMatches": 0, "sec": matched_item["sec"]}
                 matches_intro[count]["numberMatches"] += 1
 
-    if len(intro_median) != 0:
+    if len(intro_median) != 0 and matches_intro is not None:
         sequences_intro = extract_sequences(matches_intro)
-        seq_intro = get_sequence_closest_to_intro(sequences_intro, statistics.median(intro_median))
-        ann.annotate_meta_data(seq_intro, c.DESCRIPTION_MATCHES_INTRO, video_A)
+        if len(sequences_intro) > 0:
+            seq_intro = get_sequence_closest_to_intro(sequences_intro, statistics.median(intro_median))
+            ann.annotate_meta_data(seq_intro, c.DESCRIPTION_MATCHES_INTRO, video_A)
 
     sequences = extract_sequences(matches)
-    ann.annotate_meta_data(sequences, c.DESCRIPTION_MATCHES, video_A)
+    longestSeq = get_longest_sequence(sequences)
+    if longestSeq is not None:
+        ann.annotate_meta_data(longestSeq, c.DESCRIPTION_MATCHES, video_A)
 
 # given a median intro length, identify the sequence closest in length
 def get_sequence_closest_to_intro(sequences, intro_length):
@@ -83,17 +94,20 @@ def get_sequence_closest_to_intro(sequences, intro_length):
     result.append(cloesest_seq)
     return result
 
-# not in use atm
 def get_longest_sequence(sequences):
     longest_count = 0
     longest_seq = {}
+    result = []
 
     for seq in sequences:
         length = seq["end"] - seq["start"]
         if length > longest_count:
             longest_count = length
             longest_seq = seq
-    return longest_seq
+    if 'start' not in longest_seq:
+        return None
+    result.append(longest_seq)
+    return result
 
 # Will find sequences of matches and filter out unrelevant sequences
 def extract_sequences(matches): 

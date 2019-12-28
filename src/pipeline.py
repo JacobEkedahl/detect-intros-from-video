@@ -5,6 +5,7 @@ from audio_extraction import video_to_pitches as a_matcher
 from downloader import svtplaywrapper
 from frame_matcher import video_matcher, video_to_hashes
 from segmenter import scenedetector, simple_segmentor
+from utils import extractor
 
 
 def build_dataset():
@@ -23,6 +24,10 @@ def build_dataset():
     return 0
 
 def build_dataset_from_step(fromStep, toStep):
+    if fromStep == "--format":
+        extractor.reformat_segmentation_files()
+        exit()
+
     if fromStep == "--start":
         urls = file_handler.get_all_urls_from_temp()
         for url in urls:
@@ -35,9 +40,9 @@ def build_dataset_from_step(fromStep, toStep):
             annotate_intro.annotate_intro(file_name, url) # finding intro with this url from dataset
             if toStep == "--frames":
                 exit()
-            video_to_hashes.save_hashes(file_name)
-            annotate_subtitles.annotate_subs_from_video(file_name) # will annotate subs
-            a_matcher.get_audio_from_video(file_name) # will annotate pitches
+           # video_to_hashes.save_hashes(file_name)
+            #annotate_subtitles.annotate_subs_from_video(file_name) # will annotate subs
+            #a_matcher.get_audio_from_video(file_name) # will annotate pitches
         if toStep == "--sim":
             exit()
         fromSim(toStep)
@@ -52,15 +57,15 @@ def fromFrames(toStep):
     for video_file in video_files:
         video_url = file_handler.get_url_from_file_name(video_file) #requires url to be saved in json
         annotate_intro.annotate_intro(video_file, video_url)
-        video_to_hashes.save_hashes(video_file)
-        a_matcher.get_audio_from_video(video_file)
-        annotate_subtitles.annotate_subs_from_video(video_file) # will annotate subs
+       # video_to_hashes.save_hashes(video_file)
+       # a_matcher.get_audio_from_video(video_file)
+       # annotate_subtitles.annotate_subs_from_video(video_file) # will annotate subs
     if toStep == "--sim":
         exit()
-    for video_file in video_files:
-        video_matcher.find_all_matches(video_file)
+    fromSim(toStep)
 
 def fromSim(toStep):
-    video_files = file_handler.get_all_mp4_files()
+    video_files = file_handler.get_all_mp4_files_not_matched()
     for video_file in video_files:
+        seg_file = file_handler.get_seg_file_from_video(video_file)
         video_matcher.find_all_matches(video_file)

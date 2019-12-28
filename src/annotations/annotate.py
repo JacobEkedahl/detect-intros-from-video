@@ -84,6 +84,16 @@ def flag_intersection_of_time_intervals(annotation, scenes, i, timeIntervals, j)
 def set_presence_of_time_interval(annotation, scenes, timeIntervals):
     flag_intersection_of_time_intervals(annotation, scenes, 0, timeIntervals, 0)
 
+def set_presence_of_time_interval_improved(annotation, scenes, TimeIntervals):
+    for interval in TimeIntervals:
+        interval_start = time.timestamp(interval.start)
+        interval_end = time.timestamp(interval.end)
+        for scene in scenes:
+            scene_start = time.timestamp(scene['start'])
+            scene_end = time.timestamp(scene['end'])
+            if scene_start >= interval_start and scene_end <= interval_end:
+                scene[annotation] = True 
+
 
 # Wrapper for setting presence of a single time interval within a scene
 # Such as an intro, outro, previous, etc

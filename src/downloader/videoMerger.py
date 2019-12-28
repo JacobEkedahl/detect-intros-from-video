@@ -14,6 +14,7 @@ def mergeImageAndAudio():
     file_names = []
     for file in files:
         print(file.audioName + " : " + file.videoName)
+        #check_if_length_is_over_limit(file.audioName, file.videoName)
         output = file.fileName + "-converted.mp4"
         command = [ffmpeg._utils.get_ffmpeg_exe(), "-i", file.audioName, "-i", file.videoName, "-c", "copy", "-t", "00:08:00.0", "-y", output]
         subprocess.call(command, shell=True) 

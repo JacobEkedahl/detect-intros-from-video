@@ -13,3 +13,5 @@ ImageHash
 praat-parselmouth
 moviepy
 pymongo
+pomegranate
+seaborn
