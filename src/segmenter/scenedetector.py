@@ -90,8 +90,11 @@ def segment_video(video_file):
                 scene[0].get_timecode(), scene[0].get_frames(),
                 scene[1].get_timecode(), scene[1].get_frames(),))
 
+
         with open(video_file.replace('.mp4', '') + '.json', 'w') as outfile:
             json.dump(json_data, outfile)
+    
+        
 
     finally:
         video_manager.release()

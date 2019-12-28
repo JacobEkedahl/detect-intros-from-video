@@ -15,7 +15,7 @@ from utils import extractor
 
 import downloader.scrapesvt as scrapesvt
 
-from commands import cmd_query
+from commands import cmd_query, cmd_segment
 
 if __name__ == "__main__":
     file_handler.create_folderstructure_if_not_exists()
@@ -91,11 +91,7 @@ if __name__ == "__main__":
         exit()
 
     elif (s.argv[1] == "--seg"):
-        if (len(s.argv) -1 < 2):
-            scenedetector.segment_all_videos()
-        elif s.argv[2].endswith(".mp4"):
-            video_file = s.argv[2]
-            scenedetector.segment_video(video_file)
+        cmd_segment.execute(s.argv)
 
     elif (s.argv[1] == "--ann"):
         if (s.argv[2] == "-dataset"):
