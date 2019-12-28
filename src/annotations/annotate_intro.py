@@ -13,8 +13,10 @@ def annotate_intro(video_file, url):
     seq = {}
     intro = next((sub for sub in intros if sub['url'] == url), None) 
     if intro is not None:
-        if time_handler.timestamp(intro["start"]) == 0 and time_handler.timestamp(intro["end"]) == 0:
-            intro = None
+        start = time_handler.timestamp(intro["start"])
+        end = time_handler.timestamp(intro["end"])
+        if start == 0 and end == 0:
+            seq = {"start": time_handler.timestamp_to_str(1000000), "end": time_handler.timestamp_to_str(1000000)}
         else:
             seq = {"start": intro["start"], "end": intro["end"]}
     if 'start' not in seq:

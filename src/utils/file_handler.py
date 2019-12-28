@@ -20,7 +20,27 @@ def get_all_other_videos_in_series(video_file):
     parent_dir = os.path.dirname(video_file)
     other_videos = get_all_files_by_type(parent_dir, 'mp4')
     other_videos.remove(str(video_file))
-    return other_videos
+    season = get_season_from_video_file(video_file)
+    result = []
+    for video in other_videos:
+        if len(result) >= 5:
+            break
+        if get_season_from_video_file(video_file) == season:
+            other_videos.remove(video)
+            result.append(video)
+    if len(result) < 5:
+        how_much_to_extend = 5 - len(result)
+        if how_much_to_extend > len(other_videos):
+            result.extend(other_videos[:len(other_videos)])
+        else:
+            result.extend(other_videos[:how_much_to_extend])
+    return result
+
+def get_season_from_video_file(video_file):
+    file_name = os.path.basename(video_file)
+    season_episode = file_name.split('.')[1]
+    return season_episode[1:3]
+    
 
 def get_intros():
     intro_file = get_full_path_intros()
@@ -31,7 +51,11 @@ def get_intros():
 def get_url_from_file_name(video_file):
     segFile = get_seg_file_from_video(video_file)
     with open(segFile) as json_file:
-        data = json.load(json_file)
+        try:
+            data = json.load(json_file)
+        except:
+            print(str(segFile))
+            exit()
         return data['url']
     return None
 
@@ -64,6 +88,17 @@ def get_all_files_by_type(path, fileType):
 def get_all_mp4_files():
     return get_all_files_by_type(get_full_path_videos(), 'mp4')
 
+def get_all_mp4_files_not_matched():
+    all_videos = get_all_mp4_files()
+    result = []
+    for video_file in all_videos:
+        seg_file = get_seg_file_from_video(video_file)
+        with open(seg_file) as json_file:
+            data = json.load(json_file)
+            if c.DESCRIPTION_MATCHES not in data['scenes'][0]:
+                result.append(video_file)
+                print(video_file)
+    return result
 
 def get_all_unmerged_files():
     files = []
