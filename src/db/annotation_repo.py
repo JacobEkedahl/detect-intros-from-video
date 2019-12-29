@@ -41,7 +41,7 @@ def insert(srcs_annotation):
         {
             "$set": {
                 "start": srcs_annotation.start,
-                "fullpath": srcs_annotation.end
+                "end": srcs_annotation.end
             }
         }, upsert = False)
         return 
@@ -60,6 +60,7 @@ def find_by_tag_url(url, tag):
             {"tag": tag}
         ]
     }))
+
 
 def find_by_tag_show(tag, show):
     return list(annotationCollection.find({

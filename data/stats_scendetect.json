@@ -1,0 +1,1784 @@
+[
+    {
+        "url": "https://www.svtplay.se/video/23536930/allt-jag-inte-minns/allt-jag-inte-minns-sasong-1-avsnitt-1",
+        "introStart": "00:00:41",
+        "suggestedStart": "00:00:17.280",
+        "startError": -23.72,
+        "introEnd": "00:01:55",
+        "suggestedEnd": "00:02:04.560",
+        "endError": 9.56
+    },
+    {
+        "url": "https://www.svtplay.se/video/23536922/allt-jag-inte-minns/allt-jag-inte-minns-sasong-1-avsnitt-2",
+        "introStart": "00:02:27",
+        "suggestedStart": "00:02:20.040",
+        "startError": -6.96,
+        "introEnd": "00:03:40",
+        "suggestedEnd": "00:04:30.200",
+        "endError": 50.2
+    },
+    {
+        "url": "https://www.svtplay.se/video/23536918/allt-jag-inte-minns/allt-jag-inte-minns-sasong-1-avsnitt-3",
+        "introStart": "00:00:57",
+        "suggestedStart": "00:00:48.240",
+        "startError": -8.76,
+        "introEnd": "00:02:12",
+        "suggestedEnd": "00:02:25.960",
+        "endError": 13.96
+    },
+    {
+        "url": "https://www.svtplay.se/video/21744946/al-pitcher-pa-paus/al-pitcher-pa-paus-sasong-1-avsnitt-1",
+        "introStart": "00:01:02",
+        "suggestedStart": "00:01:02.120",
+        "startError": 0.12,
+        "introEnd": "00:01:22",
+        "suggestedEnd": "00:01:22.000",
+        "endError": 0.0
+    },
+    {
+        "url": "https://www.svtplay.se/video/21744986/al-pitcher-pa-paus/al-pitcher-pa-paus-sasong-1-avsnitt-2",
+        "introStart": "00:00:58",
+        "suggestedStart": "00:00:58.880",
+        "startError": 0.88,
+        "introEnd": "00:01:18",
+        "suggestedEnd": "00:01:18.760",
+        "endError": 0.76
+    },
+    {
+        "url": "https://www.svtplay.se/video/21832626/al-pitcher-pa-paus/al-pitcher-pa-paus-sasong-1-avsnitt-3",
+        "introStart": "00:00:36",
+        "suggestedStart": "00:00:36.520",
+        "startError": 0.52,
+        "introEnd": "00:00:56",
+        "suggestedEnd": "00:00:56.360",
+        "endError": 0.36
+    },
+    {
+        "url": "https://www.svtplay.se/video/21895142/al-pitcher-pa-paus/al-pitcher-pa-paus-sasong-1-avsnitt-4",
+        "introStart": "00:00:40",
+        "suggestedStart": "00:00:40.720",
+        "startError": 0.72,
+        "introEnd": "00:01:00",
+        "suggestedEnd": "00:01:00.560",
+        "endError": 0.56
+    },
+    {
+        "url": "https://www.svtplay.se/video/22028418/al-pitcher-pa-paus/al-pitcher-pa-paus-sasong-1-avsnitt-5",
+        "introStart": "00:00:42",
+        "suggestedStart": "00:00:42.440",
+        "startError": 0.44,
+        "introEnd": "00:01:02",
+        "suggestedEnd": "00:01:02.320",
+        "endError": 0.32
+    },
+    {
+        "url": "https://www.svtplay.se/video/22102034/al-pitcher-pa-paus/al-pitcher-pa-paus-sasong-1-avsnitt-6",
+        "introStart": "00:00:47",
+        "suggestedStart": "00:00:48.280",
+        "startError": 1.28,
+        "introEnd": "00:01:08",
+        "suggestedEnd": "00:01:08.080",
+        "endError": 0.08
+    },
+    {
+        "url": "https://www.svtplay.se/video/22197557/al-pitcher-pa-paus/al-pitcher-pa-paus-sasong-1-avsnitt-7",
+        "introStart": "00:00:47",
+        "suggestedStart": "00:00:46.400",
+        "startError": -0.6,
+        "introEnd": "00:01:16",
+        "suggestedEnd": "00:01:16.000",
+        "endError": 0.0
+    },
+    {
+        "url": "https://www.svtplay.se/video/22262877/al-pitcher-pa-paus/al-pitcher-pa-paus-sasong-1-avsnitt-8",
+        "introStart": "00:00:52",
+        "suggestedStart": "00:00:52.920",
+        "startError": 0.92,
+        "introEnd": "00:01:12",
+        "suggestedEnd": "00:01:12.560",
+        "endError": 0.56
+    },
+    {
+        "url": "https://www.svtplay.se/video/19970142/andra-aket/andra-aket-sasong-1-avsnitt-1",
+        "introStart": "00:00:48",
+        "suggestedStart": "00:00:48.600",
+        "startError": 0.6,
+        "introEnd": "00:01:24",
+        "suggestedEnd": "00:01:25.520",
+        "endError": 1.52
+    },
+    {
+        "url": "https://www.svtplay.se/video/20037414/andra-aket/andra-aket-sasong-1-avsnitt-2",
+        "introStart": "00:02:30",
+        "suggestedStart": "00:02:30.040",
+        "startError": 0.04,
+        "introEnd": "00:02:43",
+        "suggestedEnd": "00:02:43.680",
+        "endError": 0.68
+    },
+    {
+        "url": "https://www.svtplay.se/video/20097612/andra-aket/andra-aket-sasong-1-avsnitt-3",
+        "introStart": "00:01:10",
+        "suggestedStart": "00:01:10.040",
+        "startError": 0.04,
+        "introEnd": "00:01:39",
+        "suggestedEnd": "00:01:40.240",
+        "endError": 1.24
+    },
+    {
+        "url": "https://www.svtplay.se/video/20201534/andra-aket/andra-aket-sasong-1-avsnitt-4",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:19",
+        "suggestedEnd": "00:00:19.360",
+        "endError": 0.36
+    },
+    {
+        "url": "https://www.svtplay.se/video/20259866/andra-aket/andra-aket-sasong-1-avsnitt-5",
+        "introStart": "00:01:31",
+        "suggestedStart": "00:01:32.160",
+        "startError": 1.16,
+        "introEnd": "00:01:45",
+        "suggestedEnd": "00:01:45.800",
+        "endError": 0.8
+    },
+    {
+        "url": "https://www.svtplay.se/video/20423807/andra-aket/andra-aket-sasong-1-avsnitt-7",
+        "introStart": "00:01:02",
+        "suggestedStart": "00:01:02.600",
+        "startError": 0.6,
+        "introEnd": "00:01:15",
+        "suggestedEnd": "00:01:16.240",
+        "endError": 1.24
+    },
+    {
+        "url": "https://www.svtplay.se/video/20430255/andra-aket/andra-aket-sasong-1-avsnitt-8",
+        "introStart": "00:01:33",
+        "suggestedStart": "00:01:33.880",
+        "startError": 0.88,
+        "introEnd": "00:02:02",
+        "suggestedEnd": "00:02:02.360",
+        "endError": 0.36
+    },
+    {
+        "url": "https://www.svtplay.se/video/13889724/byhala/byhala-avsnitt-1",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:00",
+        "suggestedEnd": "00:00:00.000",
+        "endError": 0.0
+    },
+    {
+        "url": "https://www.svtplay.se/video/13889656/byhala/byhala-avsnitt-2",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:34",
+        "suggestedEnd": "00:00:34.120",
+        "endError": 0.12
+    },
+    {
+        "url": "https://www.svtplay.se/video/13889632/byhala/byhala-avsnitt-3",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:34",
+        "suggestedEnd": "00:00:35.000",
+        "endError": 1.0
+    },
+    {
+        "url": "https://www.svtplay.se/video/13889876/byhala/byhala-avsnitt-4",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:34",
+        "suggestedEnd": "00:00:29.040",
+        "endError": -4.96
+    },
+    {
+        "url": "https://www.svtplay.se/video/13889764/byhala/byhala-avsnitt-5",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:34",
+        "suggestedEnd": "00:00:35.360",
+        "endError": 1.36
+    },
+    {
+        "url": "https://www.svtplay.se/video/13889856/byhala/byhala-avsnitt-6",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:34",
+        "suggestedEnd": "00:00:29.040",
+        "endError": -4.96
+    },
+    {
+        "url": "https://www.svtplay.se/video/23351498/cleo/cleo-sasong-1-avsnitt-1-2",
+        "introStart": "00:01:06",
+        "suggestedStart": "00:01:06.760",
+        "startError": 0.76,
+        "introEnd": "00:03:05",
+        "suggestedEnd": "00:03:04.400",
+        "endError": -0.6
+    },
+    {
+        "url": "https://www.svtplay.se/video/23351470/cleo/cleo-sasong-1-avsnitt-2-2",
+        "introStart": "00:01:57",
+        "suggestedStart": "00:01:57.920",
+        "startError": 0.92,
+        "introEnd": "00:02:22",
+        "suggestedEnd": "00:02:22.440",
+        "endError": 0.44
+    },
+    {
+        "url": "https://www.svtplay.se/video/23352054/cleo/cleo-sasong-1-avsnitt-3-1",
+        "introStart": "00:01:47",
+        "suggestedStart": "00:01:46.960",
+        "startError": -0.04,
+        "introEnd": "00:02:15",
+        "suggestedEnd": "00:02:14.880",
+        "endError": -0.12
+    },
+    {
+        "url": "https://www.svtplay.se/video/23351902/cleo/cleo-sasong-1-avsnitt-4-1",
+        "introStart": "00:02:14",
+        "suggestedStart": "00:02:14.560",
+        "startError": 0.56,
+        "introEnd": "00:02:40",
+        "suggestedEnd": "00:02:40.160",
+        "endError": 0.16
+    },
+    {
+        "url": "https://www.svtplay.se/video/23351514/cleo/cleo-sasong-1-avsnitt-5-2",
+        "introStart": "00:01:10",
+        "suggestedStart": "00:01:10.040",
+        "startError": 0.04,
+        "introEnd": "00:01:45",
+        "suggestedEnd": "00:01:46.000",
+        "endError": 1.0
+    },
+    {
+        "url": "https://www.svtplay.se/video/23351542/cleo/cleo-sasong-1-avsnitt-6-2",
+        "introStart": "00:01:52",
+        "suggestedStart": "00:01:52.600",
+        "startError": 0.6,
+        "introEnd": "00:02:17",
+        "suggestedEnd": "00:02:17.040",
+        "endError": 0.04
+    },
+    {
+        "url": "https://www.svtplay.se/video/23351562/cleo/cleo-sasong-1-avsnitt-7-2",
+        "introStart": "00:01:54",
+        "suggestedStart": "00:01:55.360",
+        "startError": 1.36,
+        "introEnd": "00:02:19",
+        "suggestedEnd": "00:02:19.080",
+        "endError": 0.08
+    },
+    {
+        "url": "https://www.svtplay.se/video/23351878/cleo/cleo-sasong-1-avsnitt-8-2",
+        "introStart": "00:00:47",
+        "suggestedStart": "00:00:48.120",
+        "startError": 1.12,
+        "introEnd": "00:01:12",
+        "suggestedEnd": "00:01:12.520",
+        "endError": 0.52
+    },
+    {
+        "url": "https://www.svtplay.se/video/23352222/cleo/cleo-sasong-1-avsnitt-9-1",
+        "introStart": "00:02:08",
+        "suggestedStart": "00:02:09.280",
+        "startError": 1.28,
+        "introEnd": "00:02:33",
+        "suggestedEnd": "00:02:33.600",
+        "endError": 0.6
+    },
+    {
+        "url": "https://www.svtplay.se/video/23726662/de-drabbade/de-drabbade-avsnitt-1",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:40",
+        "suggestedEnd": "00:00:40.640",
+        "endError": 0.64
+    },
+    {
+        "url": "https://www.svtplay.se/video/23726070/de-drabbade/de-drabbade-avsnitt-2",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:40",
+        "suggestedEnd": "00:00:40.160",
+        "endError": 0.16
+    },
+    {
+        "url": "https://www.svtplay.se/video/23726250/de-drabbade/de-drabbade-avsnitt-3",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:39",
+        "suggestedEnd": "00:00:37.800",
+        "endError": -1.2
+    },
+    {
+        "url": "https://www.svtplay.se/video/23726162/de-drabbade/de-drabbade-avsnitt-4",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:40",
+        "suggestedEnd": "00:00:41.240",
+        "endError": 1.24
+    },
+    {
+        "url": "https://www.svtplay.se/video/23726146/de-drabbade/de-drabbade-avsnitt-5",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:40",
+        "suggestedEnd": "00:00:39.600",
+        "endError": -0.4
+    },
+    {
+        "url": "https://www.svtplay.se/video/23726198/de-drabbade/de-drabbade-avsnitt-6",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:40",
+        "suggestedEnd": "00:00:41.120",
+        "endError": 1.12
+    },
+    {
+        "url": "https://www.svtplay.se/video/23726362/de-drabbade/de-drabbade-avsnitt-7",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:40",
+        "suggestedEnd": "00:00:41.360",
+        "endError": 1.36
+    },
+    {
+        "url": "https://www.svtplay.se/video/23726398/de-drabbade/de-drabbade-avsnitt-8",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:40",
+        "suggestedEnd": "00:00:40.040",
+        "endError": 0.04
+    },
+    {
+        "url": "https://www.svtplay.se/video/23726174/de-drabbade/de-drabbade-avsnitt-9",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:40",
+        "suggestedEnd": "00:00:38.440",
+        "endError": -1.56
+    },
+    {
+        "url": "https://www.svtplay.se/video/23726306/de-drabbade/de-drabbade-avsnitt-10",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:40",
+        "suggestedEnd": "00:00:41.240",
+        "endError": 1.24
+    },
+    {
+        "url": "https://www.svtplay.se/video/23726334/de-drabbade/de-drabbade-avsnitt-11",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:42",
+        "suggestedEnd": "00:00:40.000",
+        "endError": -2.0
+    },
+    {
+        "url": "https://www.svtplay.se/video/23726478/de-drabbade/de-drabbade-avsnitt-12",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:40",
+        "suggestedEnd": "00:00:40.520",
+        "endError": 0.52
+    },
+    {
+        "url": "https://www.svtplay.se/video/20495012/dips/dips-svensk-kinesiskt-pang-pang",
+        "introStart": "00:02:11",
+        "suggestedStart": "00:02:11.240",
+        "startError": 0.24,
+        "introEnd": "00:02:38",
+        "suggestedEnd": "00:02:38.920",
+        "endError": 0.92
+    },
+    {
+        "url": "https://www.svtplay.se/video/20494988/dips/dips-diplomatisk-immunitet",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:27",
+        "suggestedEnd": "00:00:27.800",
+        "endError": 0.8
+    },
+    {
+        "url": "https://www.svtplay.se/video/20494996/dips/dips-rysskracken",
+        "introStart": "00:00:37",
+        "suggestedStart": "00:00:38.320",
+        "startError": 1.32,
+        "introEnd": "00:01:05",
+        "suggestedEnd": "00:01:06.120",
+        "endError": 1.12
+    },
+    {
+        "url": "https://www.svtplay.se/video/20495000/dips/dips-tjejpolitik-och-jemen",
+        "introStart": "00:01:33",
+        "suggestedStart": "00:01:33.360",
+        "startError": 0.36,
+        "introEnd": "00:02:01",
+        "suggestedEnd": "00:02:01.160",
+        "endError": 0.16
+    },
+    {
+        "url": "https://www.svtplay.se/video/20494992/dips/dips-comfort-women",
+        "introStart": "00:01:46",
+        "suggestedStart": "00:01:46.040",
+        "startError": 0.04,
+        "introEnd": "00:02:12",
+        "suggestedEnd": "00:02:11.440",
+        "endError": -0.56
+    },
+    {
+        "url": "https://www.svtplay.se/video/20495004/dips/dips-dansk-svenska-flyktingforhandlingen",
+        "introStart": "00:02:49",
+        "suggestedStart": "00:02:47.760",
+        "startError": -1.24,
+        "introEnd": "00:03:17",
+        "suggestedEnd": "00:03:15.800",
+        "endError": -1.2
+    },
+    {
+        "url": "https://www.svtplay.se/video/20334014/en-engelsk-skandal/en-engelsk-skandal-sasong-1-avsnitt-1",
+        "introStart": "00:03:20",
+        "suggestedStart": "00:03:20.840",
+        "startError": 0.84,
+        "introEnd": "00:03:49",
+        "suggestedEnd": "00:03:49.640",
+        "endError": 0.64
+    },
+    {
+        "url": "https://www.svtplay.se/video/20373786/en-engelsk-skandal/en-engelsk-skandal-sasong-1-avsnitt-2",
+        "introStart": "00:02:13",
+        "suggestedStart": "00:02:13.400",
+        "startError": 0.4,
+        "introEnd": "00:02:48",
+        "suggestedEnd": "00:02:49.000",
+        "endError": 1.0
+    },
+    {
+        "url": "https://www.svtplay.se/video/20373262/en-engelsk-skandal/en-engelsk-skandal-sasong-1-avsnitt-3",
+        "introStart": "00:02:33",
+        "suggestedStart": "00:02:33.480",
+        "startError": 0.48,
+        "introEnd": "00:03:09",
+        "suggestedEnd": "00:03:09.880",
+        "endError": 0.88
+    },
+    {
+        "url": "https://www.svtplay.se/video/24136938/exit/exit-avsnitt-1",
+        "introStart": "00:04:50",
+        "suggestedStart": "00:04:50.120",
+        "startError": 0.12,
+        "introEnd": "00:05:02",
+        "suggestedEnd": "00:05:02.040",
+        "endError": 0.04
+    },
+    {
+        "url": "https://www.svtplay.se/video/24136954/exit/exit-avsnitt-2",
+        "introStart": "00:03:29.500",
+        "suggestedStart": "00:03:29.840",
+        "startError": 0.34,
+        "introEnd": "00:03:42",
+        "suggestedEnd": "00:03:41.920",
+        "endError": -0.08
+    },
+    {
+        "url": "https://www.svtplay.se/video/24137002/exit/exit-avsnitt-3",
+        "introStart": "00:04:58",
+        "suggestedStart": "00:04:58.640",
+        "startError": 0.64,
+        "introEnd": "00:05:11",
+        "suggestedEnd": "00:05:11.160",
+        "endError": 0.16
+    },
+    {
+        "url": "https://www.svtplay.se/video/24136934/exit/exit-avsnitt-4",
+        "introStart": "00:02:32",
+        "suggestedStart": "00:02:32.360",
+        "startError": 0.36,
+        "introEnd": "00:02:44",
+        "suggestedEnd": "00:02:45.800",
+        "endError": 1.8
+    },
+    {
+        "url": "https://www.svtplay.se/video/24136906/exit/exit-avsnitt-5",
+        "introStart": "00:02:53",
+        "suggestedStart": "00:02:53.760",
+        "startError": 0.76,
+        "introEnd": "00:03:06",
+        "suggestedEnd": "00:03:06.280",
+        "endError": 0.28
+    },
+    {
+        "url": "https://www.svtplay.se/video/24136942/exit/exit-avsnitt-6",
+        "introStart": "00:02:06",
+        "suggestedStart": "00:02:05.880",
+        "startError": -0.12,
+        "introEnd": "00:02:19",
+        "suggestedEnd": "00:02:18.880",
+        "endError": -0.12
+    },
+    {
+        "url": "https://www.svtplay.se/video/24136950/exit/exit-avsnitt-7",
+        "introStart": "00:02:18",
+        "suggestedStart": "00:02:18.560",
+        "startError": 0.56,
+        "introEnd": "00:02:30",
+        "suggestedEnd": "00:02:31.560",
+        "endError": 1.56
+    },
+    {
+        "url": "https://www.svtplay.se/video/24136946/exit/exit-avsnitt-8",
+        "introStart": "00:04:02",
+        "suggestedStart": "00:04:03.160",
+        "startError": 1.16,
+        "introEnd": "00:04:13",
+        "suggestedEnd": "00:04:14.400",
+        "endError": 1.4
+    },
+    {
+        "url": "https://www.svtplay.se/video/7488068/falsk-identitet/falsk-identitet-sasong-1-avsnitt-2",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:17",
+        "suggestedEnd": "00:00:17.760",
+        "endError": 0.76
+    },
+    {
+        "url": "https://www.svtplay.se/video/7708184/falsk-identitet/falsk-identitet-sasong-1-avsnitt-3",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:17",
+        "suggestedEnd": "00:00:17.960",
+        "endError": 0.96
+    },
+    {
+        "url": "https://www.svtplay.se/video/7809650/falsk-identitet/falsk-identitet-sasong-1-avsnitt-4",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:17",
+        "suggestedEnd": "00:00:18.120",
+        "endError": 1.12
+    },
+    {
+        "url": "https://www.svtplay.se/video/7973842/falsk-identitet/falsk-identitet-sasong-1-avsnitt-5",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:17",
+        "suggestedEnd": "00:00:18.080",
+        "endError": 1.08
+    },
+    {
+        "url": "https://www.svtplay.se/video/24448033/flatomysteriet/flatomysteriet-avsnitt-1",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:59",
+        "suggestedEnd": "00:01:00.200",
+        "endError": 1.2
+    },
+    {
+        "url": "https://www.svtplay.se/video/24448077/flatomysteriet/flatomysteriet-avsnitt-2",
+        "introStart": "00:01:27",
+        "suggestedStart": "00:01:27.160",
+        "startError": 0.16,
+        "introEnd": "00:02:25",
+        "suggestedEnd": "00:02:21.320",
+        "endError": -3.68
+    },
+    {
+        "url": "https://www.svtplay.se/video/24448013/flatomysteriet/flatomysteriet-avsnitt-3",
+        "introStart": "00:01:27",
+        "suggestedStart": "00:01:26.720",
+        "startError": -0.28,
+        "introEnd": "00:02:25",
+        "suggestedEnd": "00:02:25.400",
+        "endError": 0.4
+    },
+    {
+        "url": "https://www.svtplay.se/video/24447985/flatomysteriet/flatomysteriet-avsnitt-4",
+        "introStart": "00:01:45",
+        "suggestedStart": "00:01:45.040",
+        "startError": 0.04,
+        "introEnd": "00:02:41",
+        "suggestedEnd": "00:02:42.600",
+        "endError": 1.6
+    },
+    {
+        "url": "https://www.svtplay.se/video/23653138/hjartats-vagar/hjartats-vagar-sasong-1-avsnitt-1",
+        "introStart": "00:05:05",
+        "suggestedStart": "00:05:05.800",
+        "startError": 0.8,
+        "introEnd": "00:05:35",
+        "suggestedEnd": "00:05:35.800",
+        "endError": 0.8
+    },
+    {
+        "url": "https://www.svtplay.se/video/23654014/hjartats-vagar/hjartats-vagar-sasong-1-avsnitt-2",
+        "introStart": "00:02:45",
+        "suggestedStart": "00:02:45.480",
+        "startError": 0.48,
+        "introEnd": "00:03:15",
+        "suggestedEnd": "00:03:15.480",
+        "endError": 0.48
+    },
+    {
+        "url": "https://www.svtplay.se/video/23679614/hjartats-vagar/hjartats-vagar-sasong-1-avsnitt-3",
+        "introStart": "00:02:43",
+        "suggestedStart": "00:02:44.200",
+        "startError": 1.2,
+        "introEnd": "00:03:13",
+        "suggestedEnd": "00:03:14.200",
+        "endError": 1.2
+    },
+    {
+        "url": "https://www.svtplay.se/video/23694978/hjartats-vagar/hjartats-vagar-sasong-1-avsnitt-4",
+        "introStart": "00:02:36",
+        "suggestedStart": "00:02:37.400",
+        "startError": 1.4,
+        "introEnd": "00:03:06",
+        "suggestedEnd": "00:03:04.880",
+        "endError": -1.12
+    },
+    {
+        "url": "https://www.svtplay.se/video/23745994/hjartats-vagar/hjartats-vagar-sasong-1-hjalten",
+        "introStart": "00:03:23",
+        "suggestedStart": "00:03:23.120",
+        "startError": 0.12,
+        "introEnd": "00:03:52",
+        "suggestedEnd": "00:03:53.120",
+        "endError": 1.12
+    },
+    {
+        "url": "https://www.svtplay.se/video/23802879/hjartats-vagar/hjartats-vagar-sasong-1-avslojad",
+        "introStart": "00:04:31",
+        "suggestedStart": "00:04:32.400",
+        "startError": 1.4,
+        "introEnd": "00:05:01",
+        "suggestedEnd": "00:04:59.880",
+        "endError": -1.12
+    },
+    {
+        "url": "https://www.svtplay.se/video/23818125/hjartats-vagar/hjartats-vagar-sasong-1-statyn",
+        "introStart": "00:03:03",
+        "suggestedStart": "00:03:03.560",
+        "startError": 0.56,
+        "introEnd": "00:03:33",
+        "suggestedEnd": "00:03:33.560",
+        "endError": 0.56
+    },
+    {
+        "url": "https://www.svtplay.se/video/23848706/hjartats-vagar/hjartats-vagar-sasong-1-sanningen-maste-fram",
+        "introStart": "00:01:50",
+        "suggestedStart": "00:01:49.800",
+        "startError": -0.2,
+        "introEnd": "00:02:18",
+        "suggestedEnd": "00:02:17.280",
+        "endError": -0.72
+    },
+    {
+        "url": "https://www.svtplay.se/video/23909767/hjartats-vagar/hjartats-vagar-sasong-1-ett-farval",
+        "introStart": "00:03:57",
+        "suggestedStart": "00:03:57.080",
+        "startError": 0.08,
+        "introEnd": "00:04:28",
+        "suggestedEnd": "00:04:28.280",
+        "endError": 0.28
+    },
+    {
+        "url": "https://www.svtplay.se/video/23920599/hjartats-vagar/hjartats-vagar-sasong-1-vilken-rora",
+        "introStart": "00:02:31",
+        "suggestedStart": "00:02:31.440",
+        "startError": 0.44,
+        "introEnd": "00:03:01",
+        "suggestedEnd": "00:03:01.440",
+        "endError": 0.44
+    },
+    {
+        "url": "https://www.svtplay.se/video/23922003/hjartats-vagar/hjartats-vagar-sasong-2-likgiltighet",
+        "introStart": "00:04:26",
+        "suggestedStart": "00:04:26.640",
+        "startError": 0.64,
+        "introEnd": "00:04:56",
+        "suggestedEnd": "00:04:56.640",
+        "endError": 0.64
+    },
+    {
+        "url": "https://www.svtplay.se/video/24004051/hjartats-vagar/hjartats-vagar-sasong-2-utpressningen",
+        "introStart": "00:03:35",
+        "suggestedStart": "00:03:35.200",
+        "startError": 0.2,
+        "introEnd": "00:04:04",
+        "suggestedEnd": "00:04:05.200",
+        "endError": 1.2
+    },
+    {
+        "url": "https://www.svtplay.se/video/24020443/hjartats-vagar/hjartats-vagar-sasong-2-en-oanad-talang",
+        "introStart": "00:02:22",
+        "suggestedStart": "00:02:21.720",
+        "startError": -0.28,
+        "introEnd": "00:02:51",
+        "suggestedEnd": "00:02:51.720",
+        "endError": 0.72
+    },
+    {
+        "url": "https://www.svtplay.se/video/24020755/hjartats-vagar/hjartats-vagar-sasong-2-artikeln",
+        "introStart": "00:04:19",
+        "suggestedStart": "00:04:19.600",
+        "startError": 0.6,
+        "introEnd": "00:04:49",
+        "suggestedEnd": "00:04:49.600",
+        "endError": 0.6
+    },
+    {
+        "url": "https://www.svtplay.se/video/24047311/hjartats-vagar/hjartats-vagar-sasong-2-avsnitt-5",
+        "introStart": "00:03:03",
+        "suggestedStart": "00:03:01.920",
+        "startError": -1.08,
+        "introEnd": "00:03:34",
+        "suggestedEnd": "00:03:34.560",
+        "endError": 0.56
+    },
+    {
+        "url": "https://www.svtplay.se/video/24115114/hjartats-vagar/hjartats-vagar-sasong-2-avsnitt-6",
+        "introStart": "00:03:15",
+        "suggestedStart": "00:03:15.680",
+        "startError": 0.68,
+        "introEnd": "00:03:44",
+        "suggestedEnd": "00:03:43.160",
+        "endError": -0.84
+    },
+    {
+        "url": "https://www.svtplay.se/video/24125071/hjartats-vagar/hjartats-vagar-sasong-2-avsnitt-7",
+        "introStart": "00:03:13",
+        "suggestedStart": "00:03:13.440",
+        "startError": 0.44,
+        "introEnd": "00:03:43",
+        "suggestedEnd": "00:03:43.440",
+        "endError": 0.44
+    },
+    {
+        "url": "https://www.svtplay.se/video/24141022/hjartats-vagar/hjartats-vagar-sasong-2-avsnitt-8",
+        "introStart": "00:02:59",
+        "suggestedStart": "00:03:00.080",
+        "startError": 1.08,
+        "introEnd": "00:03:29",
+        "suggestedEnd": "00:03:30.080",
+        "endError": 1.08
+    },
+    {
+        "url": "https://www.svtplay.se/video/24167238/hjartats-vagar/hjartats-vagar-sasong-2-avsnitt-9",
+        "introStart": "00:03:43",
+        "suggestedStart": "00:03:43.240",
+        "startError": 0.24,
+        "introEnd": "00:04:12",
+        "suggestedEnd": "00:04:13.240",
+        "endError": 1.24
+    },
+    {
+        "url": "https://www.svtplay.se/video/24167834/hjartats-vagar/hjartats-vagar-sasong-2-avsnitt-10",
+        "introStart": "00:02:35",
+        "suggestedStart": "00:02:35.440",
+        "startError": 0.44,
+        "introEnd": "00:03:05",
+        "suggestedEnd": "00:03:05.440",
+        "endError": 0.44
+    },
+    {
+        "url": "https://www.svtplay.se/video/24640097/invisible-heroes/invisible-heroes-avsnitt-1",
+        "introStart": "00:03:34",
+        "suggestedStart": "00:03:34.720",
+        "startError": 0.72,
+        "introEnd": "00:04:51",
+        "suggestedEnd": "00:04:51.400",
+        "endError": 0.4
+    },
+    {
+        "url": "https://www.svtplay.se/video/24640177/invisible-heroes/invisible-heroes-avsnitt-2",
+        "introStart": "00:03:21",
+        "suggestedStart": "00:03:21.600",
+        "startError": 0.6,
+        "introEnd": "00:04:37",
+        "suggestedEnd": "00:04:38.280",
+        "endError": 1.28
+    },
+    {
+        "url": "https://www.svtplay.se/video/24640317/invisible-heroes/invisible-heroes-avsnitt-3",
+        "introStart": "00:01:58",
+        "suggestedStart": "00:01:57.520",
+        "startError": -0.48,
+        "introEnd": "00:03:14",
+        "suggestedEnd": "00:03:15.160",
+        "endError": 1.16
+    },
+    {
+        "url": "https://www.svtplay.se/video/24640245/invisible-heroes/invisible-heroes-avsnitt-4",
+        "introStart": "00:02:27",
+        "suggestedStart": "00:02:27.400",
+        "startError": 0.4,
+        "introEnd": "00:03:42",
+        "suggestedEnd": "00:03:41.200",
+        "endError": -0.8
+    },
+    {
+        "url": "https://www.svtplay.se/video/24640153/invisible-heroes/invisible-heroes-avsnitt-5",
+        "introStart": "00:03:02",
+        "suggestedStart": "00:03:01.920",
+        "startError": -0.08,
+        "introEnd": "00:04:16",
+        "suggestedEnd": "00:04:14.760",
+        "endError": -1.24
+    },
+    {
+        "url": "https://www.svtplay.se/video/24640121/invisible-heroes/invisible-heroes-avsnitt-6",
+        "introStart": "00:03:06",
+        "suggestedStart": "00:03:06.720",
+        "startError": 0.72,
+        "introEnd": "00:04:22",
+        "suggestedEnd": "00:04:23.400",
+        "endError": 1.4
+    },
+    {
+        "url": "https://www.svtplay.se/video/23587830/kvalster/kvalster-avsnitt-1",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:37",
+        "suggestedEnd": "00:00:39.760",
+        "endError": 2.76
+    },
+    {
+        "url": "https://www.svtplay.se/video/23587854/kvalster/kvalster-avsnitt-2",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:37",
+        "suggestedEnd": "00:00:39.760",
+        "endError": 2.76
+    },
+    {
+        "url": "https://www.svtplay.se/video/23587842/kvalster/kvalster-avsnitt-3",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:37",
+        "suggestedEnd": "00:00:36.320",
+        "endError": -0.68
+    },
+    {
+        "url": "https://www.svtplay.se/video/23587878/kvalster/kvalster-avsnitt-4",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:37",
+        "suggestedEnd": "00:00:36.960",
+        "endError": -0.04
+    },
+    {
+        "url": "https://www.svtplay.se/video/13893220/kvarteret-skatan/kvarteret-skatan-sasong-1-avsnitt-1",
+        "introStart": "00:01:02",
+        "suggestedStart": "00:01:03.200",
+        "startError": 1.2,
+        "introEnd": "00:01:39",
+        "suggestedEnd": "00:01:39.600",
+        "endError": 0.6
+    },
+    {
+        "url": "https://www.svtplay.se/video/13893364/kvarteret-skatan/kvarteret-skatan-sasong-1-avsnitt-2",
+        "introStart": "00:01:17",
+        "suggestedStart": "00:01:17.880",
+        "startError": 0.88,
+        "introEnd": "00:01:54",
+        "suggestedEnd": "00:01:55.800",
+        "endError": 1.8
+    },
+    {
+        "url": "https://www.svtplay.se/video/13893360/kvarteret-skatan/kvarteret-skatan-sasong-1-avsnitt-3",
+        "introStart": "00:01:10",
+        "suggestedStart": "00:01:11.440",
+        "startError": 1.44,
+        "introEnd": "00:01:45",
+        "suggestedEnd": "00:01:46.800",
+        "endError": 1.8
+    },
+    {
+        "url": "https://www.svtplay.se/video/13894120/kvarteret-skatan/kvarteret-skatan-sasong-1-avsnitt-4",
+        "introStart": "00:01:06",
+        "suggestedStart": "00:01:06.720",
+        "startError": 0.72,
+        "introEnd": "00:01:45",
+        "suggestedEnd": "00:01:46.000",
+        "endError": 1.0
+    },
+    {
+        "url": "https://www.svtplay.se/video/13893424/kvarteret-skatan/kvarteret-skatan-sasong-1-avsnitt-5",
+        "introStart": "00:00:56",
+        "suggestedStart": "00:00:57.000",
+        "startError": 1.0,
+        "introEnd": "00:01:33",
+        "suggestedEnd": "00:01:33.400",
+        "endError": 0.4
+    },
+    {
+        "url": "https://www.svtplay.se/video/13893528/kvarteret-skatan/kvarteret-skatan-sasong-1-avsnitt-6",
+        "introStart": "00:00:43",
+        "suggestedStart": "00:00:43.440",
+        "startError": 0.44,
+        "introEnd": "00:01:20",
+        "suggestedEnd": "00:01:21.480",
+        "endError": 1.48
+    },
+    {
+        "url": "https://www.svtplay.se/video/13893516/kvarteret-skatan/kvarteret-skatan-sasong-2-avsnitt-1",
+        "introStart": "00:01:16",
+        "suggestedStart": "00:01:16.000",
+        "startError": 0.0,
+        "introEnd": "00:01:50",
+        "suggestedEnd": "00:01:51.880",
+        "endError": 1.88
+    },
+    {
+        "url": "https://www.svtplay.se/video/13893864/kvarteret-skatan/kvarteret-skatan-sasong-2-avsnitt-2",
+        "introStart": "00:01:31.500",
+        "suggestedStart": "00:01:32.000",
+        "startError": 0.5,
+        "introEnd": "00:02:07",
+        "suggestedEnd": "00:02:07.760",
+        "endError": 0.76
+    },
+    {
+        "url": "https://www.svtplay.se/video/13894080/kvarteret-skatan/kvarteret-skatan-sasong-2-avsnitt-3",
+        "introStart": "00:01:03",
+        "suggestedStart": "00:01:03.720",
+        "startError": 0.72,
+        "introEnd": "00:01:39",
+        "suggestedEnd": "00:01:39.760",
+        "endError": 0.76
+    },
+    {
+        "url": "https://www.svtplay.se/video/13893752/kvarteret-skatan/kvarteret-skatan-sasong-2-avsnitt-4",
+        "introStart": "00:01:07",
+        "suggestedStart": "00:01:07.840",
+        "startError": 0.84,
+        "introEnd": "00:01:42",
+        "suggestedEnd": "00:01:42.600",
+        "endError": 0.6
+    },
+    {
+        "url": "https://www.svtplay.se/video/13893788/kvarteret-skatan/kvarteret-skatan-sasong-2-avsnitt-5",
+        "introStart": "00:01:16",
+        "suggestedStart": "00:01:15.960",
+        "startError": -0.04,
+        "introEnd": "00:01:52",
+        "suggestedEnd": "00:01:52.920",
+        "endError": 0.92
+    },
+    {
+        "url": "https://www.svtplay.se/video/13893692/kvarteret-skatan/kvarteret-skatan-sasong-2-avsnitt-6",
+        "introStart": "00:00:54",
+        "suggestedStart": "00:00:54.520",
+        "startError": 0.52,
+        "introEnd": "00:01:29.500",
+        "suggestedEnd": "00:01:29.960",
+        "endError": 0.46
+    },
+    {
+        "url": "https://www.svtplay.se/video/13893744/kvarteret-skatan/kvarteret-skatan-sasong-2-avsnitt-7",
+        "introStart": "00:00:58",
+        "suggestedStart": "00:00:57.800",
+        "startError": -0.2,
+        "introEnd": "00:01:38",
+        "suggestedEnd": "00:01:38.520",
+        "endError": 0.52
+    },
+    {
+        "url": "https://www.svtplay.se/video/13894164/kvarteret-skatan/kvarteret-skatan-sasong-2-avsnitt-8",
+        "introStart": "00:00:52",
+        "suggestedStart": "00:00:53.120",
+        "startError": 1.12,
+        "introEnd": "00:01:28",
+        "suggestedEnd": "00:01:28.560",
+        "endError": 0.56
+    },
+    {
+        "url": "https://www.svtplay.se/video/13893900/kvarteret-skatan/kvarteret-skatan-sasong-2-avsnitt-9",
+        "introStart": "00:00:51",
+        "suggestedStart": "00:00:51.280",
+        "startError": 0.28,
+        "introEnd": "00:01:25",
+        "suggestedEnd": "00:01:26.680",
+        "endError": 1.68
+    },
+    {
+        "url": "https://www.svtplay.se/video/13894112/kvarteret-skatan/kvarteret-skatan-sasong-2-avsnitt-10",
+        "introStart": "00:01:12",
+        "suggestedStart": "00:01:12.960",
+        "startError": 0.96,
+        "introEnd": "00:01:48",
+        "suggestedEnd": "00:01:48.360",
+        "endError": 0.36
+    },
+    {
+        "url": "https://www.svtplay.se/video/13894140/kvarteret-skatan/kvarteret-skatan-sasong-2-avsnitt-11",
+        "introStart": "00:00:38",
+        "suggestedStart": "00:00:39.120",
+        "startError": 1.12,
+        "introEnd": "00:01:16",
+        "suggestedEnd": "00:01:17.040",
+        "endError": 1.04
+    },
+    {
+        "url": "https://www.svtplay.se/video/13894048/kvarteret-skatan/kvarteret-skatan-sasong-2-avsnitt-12",
+        "introStart": "00:01:10",
+        "suggestedStart": "00:01:10.920",
+        "startError": 0.92,
+        "introEnd": "00:01:48",
+        "suggestedEnd": "00:01:48.600",
+        "endError": 0.6
+    },
+    {
+        "url": "https://www.svtplay.se/video/24912425/langtans-blaa-blomma/langtans-blaa-blomma-sasong-1-avsnitt-1-1",
+        "introStart": "00:00:07",
+        "suggestedStart": "00:00:06.520",
+        "startError": -0.48,
+        "introEnd": "00:00:46",
+        "suggestedEnd": "00:00:46.080",
+        "endError": 0.08
+    },
+    {
+        "url": "https://www.svtplay.se/video/24912371/langtans-blaa-blomma/langtans-blaa-blomma-sasong-1-avsnitt-2-1",
+        "introStart": "00:00:52",
+        "suggestedStart": "00:00:51.720",
+        "startError": -0.28,
+        "introEnd": "00:01:30",
+        "suggestedEnd": "00:01:30.640",
+        "endError": 0.64
+    },
+    {
+        "url": "https://www.svtplay.se/video/15705164/mysteriet-pa-greveholm/mysteriet-pa-greveholm-sasong-1-hus-att-hyra",
+        "introStart": "00:01:30",
+        "suggestedStart": "00:01:20.760",
+        "startError": -9.24,
+        "introEnd": "00:02:15",
+        "suggestedEnd": "00:02:18.280",
+        "endError": 3.28
+    },
+    {
+        "url": "https://www.svtplay.se/video/15705296/mysteriet-pa-greveholm/mysteriet-pa-greveholm-sasong-1-ett-markligt-slott",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:41",
+        "suggestedEnd": "00:00:47.400",
+        "endError": 6.4
+    },
+    {
+        "url": "https://www.svtplay.se/video/15705284/mysteriet-pa-greveholm/mysteriet-pa-greveholm-sasong-1-spokchock",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:43",
+        "suggestedEnd": "00:00:43.320",
+        "endError": 0.32
+    },
+    {
+        "url": "https://www.svtplay.se/video/15705300/mysteriet-pa-greveholm/mysteriet-pa-greveholm-sasong-1-att-tamja-ett-spoke",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:45",
+        "suggestedEnd": "00:00:45.960",
+        "endError": 0.96
+    },
+    {
+        "url": "https://www.svtplay.se/video/15705272/mysteriet-pa-greveholm/mysteriet-pa-greveholm-sasong-1-fallan",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:43",
+        "suggestedEnd": "00:00:34.400",
+        "endError": -8.6
+    },
+    {
+        "url": "https://www.svtplay.se/video/15705268/mysteriet-pa-greveholm/mysteriet-pa-greveholm-sasong-1-drangen-och-betjanten",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:40",
+        "suggestedEnd": "00:00:43.480",
+        "endError": 3.48
+    },
+    {
+        "url": "https://www.svtplay.se/video/15705320/mysteriet-pa-greveholm/mysteriet-pa-greveholm-sasong-1-ogonmatt-och-synvinkel",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:41",
+        "suggestedEnd": "00:00:40.400",
+        "endError": -0.6
+    },
+    {
+        "url": "https://www.svtplay.se/video/15705880/mysteriet-pa-greveholm/mysteriet-pa-greveholm-sasong-1-ovantat-besok",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:41",
+        "suggestedEnd": "00:00:45.960",
+        "endError": 4.96
+    },
+    {
+        "url": "https://www.svtplay.se/video/15705968/mysteriet-pa-greveholm/mysteriet-pa-greveholm-sasong-1-greve-von-dy-s-menuett",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:41",
+        "suggestedEnd": "00:00:43.600",
+        "endError": 2.6
+    },
+    {
+        "url": "https://www.svtplay.se/video/15705864/mysteriet-pa-greveholm/mysteriet-pa-greveholm-sasong-1-skattjakten",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:41",
+        "suggestedEnd": "00:00:48.560",
+        "endError": 7.56
+    },
+    {
+        "url": "https://www.svtplay.se/video/15705944/mysteriet-pa-greveholm/mysteriet-pa-greveholm-sasong-1-spoktimmen",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:41",
+        "suggestedEnd": "00:00:39.960",
+        "endError": -1.04
+    },
+    {
+        "url": "https://www.svtplay.se/video/15705920/mysteriet-pa-greveholm/mysteriet-pa-greveholm-sasong-1-skatten",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:41",
+        "suggestedEnd": "00:00:54.200",
+        "endError": 13.2
+    },
+    {
+        "url": "https://www.svtplay.se/video/15705916/mysteriet-pa-greveholm/mysteriet-pa-greveholm-sasong-1-lekande-latt",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:43",
+        "suggestedEnd": "00:00:50.440",
+        "endError": 7.44
+    },
+    {
+        "url": "https://www.svtplay.se/video/15705928/mysteriet-pa-greveholm/mysteriet-pa-greveholm-sasong-1-melittas-nya-vanner",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:43",
+        "suggestedEnd": "00:00:32.920",
+        "endError": -10.08
+    },
+    {
+        "url": "https://www.svtplay.se/video/15706512/mysteriet-pa-greveholm/mysteriet-pa-greveholm-sasong-1-det-var-en-gang",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:43",
+        "suggestedEnd": "00:00:46.800",
+        "endError": 3.8
+    },
+    {
+        "url": "https://www.svtplay.se/video/15706360/mysteriet-pa-greveholm/mysteriet-pa-greveholm-sasong-1-spejaren",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:37",
+        "suggestedEnd": "00:00:43.880",
+        "endError": 6.88
+    },
+    {
+        "url": "https://www.svtplay.se/video/15706444/mysteriet-pa-greveholm/mysteriet-pa-greveholm-sasong-1-en-riktig-hjalte",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:45",
+        "suggestedEnd": "00:00:47.040",
+        "endError": 2.04
+    },
+    {
+        "url": "https://www.svtplay.se/video/15706584/mysteriet-pa-greveholm/mysteriet-pa-greveholm-sasong-1-lillan-far-en-ide",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:42",
+        "suggestedEnd": "00:00:42.000",
+        "endError": 0.0
+    },
+    {
+        "url": "https://www.svtplay.se/video/15706564/mysteriet-pa-greveholm/mysteriet-pa-greveholm-sasong-1-den-sista-striden",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:38",
+        "suggestedEnd": "00:00:37.840",
+        "endError": -0.16
+    },
+    {
+        "url": "https://www.svtplay.se/video/15706484/mysteriet-pa-greveholm/mysteriet-pa-greveholm-sasong-1-dioda",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:38",
+        "suggestedEnd": "00:00:44.280",
+        "endError": 6.28
+    },
+    {
+        "url": "https://www.svtplay.se/video/15706532/mysteriet-pa-greveholm/mysteriet-pa-greveholm-sasong-1-dan-fore-dan",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:42",
+        "suggestedEnd": "00:00:32.160",
+        "endError": -9.84
+    },
+    {
+        "url": "https://www.svtplay.se/video/15706652/mysteriet-pa-greveholm/mysteriet-pa-greveholm-sasong-1-jul-pa-greveholm",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:40",
+        "suggestedEnd": "00:00:46.600",
+        "endError": 6.6
+    },
+    {
+        "url": "https://www.svtplay.se/video/24139998/nudes/nudes-sasong-1-sofia-del-ett",
+        "introStart": "00:01:36",
+        "suggestedStart": "00:01:36.720",
+        "startError": 0.72,
+        "introEnd": "00:01:47",
+        "suggestedEnd": "00:01:47.360",
+        "endError": 0.36
+    },
+    {
+        "url": "https://www.svtplay.se/video/24139982/nudes/nudes-sasong-1-sofia-del-tva",
+        "introStart": "00:00:34",
+        "suggestedStart": "00:00:33.160",
+        "startError": -0.84,
+        "introEnd": "00:00:45",
+        "suggestedEnd": "00:00:46.160",
+        "endError": 1.16
+    },
+    {
+        "url": "https://www.svtplay.se/video/24139974/nudes/nudes-sasong-1-sofia-del-tre",
+        "introStart": "00:01:26",
+        "suggestedStart": "00:01:26.760",
+        "startError": 0.76,
+        "introEnd": "00:01:36",
+        "suggestedEnd": "00:01:37.400",
+        "endError": 1.4
+    },
+    {
+        "url": "https://www.svtplay.se/video/24192870/nudes/nudes-sasong-1-viktor-del-ett",
+        "introStart": "00:03:23",
+        "suggestedStart": "00:03:23.960",
+        "startError": 0.96,
+        "introEnd": "00:03:35",
+        "suggestedEnd": "00:03:34.600",
+        "endError": -0.4
+    },
+    {
+        "url": "https://www.svtplay.se/video/24192854/nudes/nudes-sasong-1-viktor-del-tva",
+        "introStart": "00:04:13",
+        "suggestedStart": "00:04:14.320",
+        "startError": 1.32,
+        "introEnd": "00:04:25",
+        "suggestedEnd": "00:04:24.960",
+        "endError": -0.04
+    },
+    {
+        "url": "https://www.svtplay.se/video/24373333/nudes/nudes-sasong-1-ada-del-ett",
+        "introStart": "00:01:58",
+        "suggestedStart": "00:01:58.240",
+        "startError": 0.24,
+        "introEnd": "00:02:08",
+        "suggestedEnd": "00:02:08.880",
+        "endError": 0.88
+    },
+    {
+        "url": "https://www.svtplay.se/video/24373313/nudes/nudes-sasong-1-ada-del-tva",
+        "introStart": "00:02:46",
+        "suggestedStart": "00:02:47.560",
+        "startError": 1.56,
+        "introEnd": "00:02:58",
+        "suggestedEnd": "00:02:58.200",
+        "endError": 0.2
+    },
+    {
+        "url": "https://www.svtplay.se/video/24373369/nudes/nudes-sasong-1-ada-del-tre",
+        "introStart": "00:04:02",
+        "suggestedStart": "00:04:03.120",
+        "startError": 1.12,
+        "introEnd": "00:04:13",
+        "suggestedEnd": "00:04:13.760",
+        "endError": 0.76
+    },
+    {
+        "url": "https://www.svtplay.se/video/13902480/pistvakt/pistvakt-sasong-1-lavinbjarn",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:01:07",
+        "suggestedEnd": "00:00:58.640",
+        "endError": -8.36
+    },
+    {
+        "url": "https://www.svtplay.se/video/13902692/pistvakt/pistvakt-sasong-1-arets-vackraste-dag",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:01:07",
+        "suggestedEnd": "00:01:33.520",
+        "endError": 26.52
+    },
+    {
+        "url": "https://www.svtplay.se/video/13902656/pistvakt/pistvakt-sasong-1-svartlien-2010",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:01:08",
+        "suggestedEnd": "00:00:58.600",
+        "endError": -9.4
+    },
+    {
+        "url": "https://www.svtplay.se/video/13902580/pistvakt/pistvakt-sasong-1-flytande-inspektion",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:01:07",
+        "suggestedEnd": "00:00:58.360",
+        "endError": -8.64
+    },
+    {
+        "url": "https://www.svtplay.se/video/13902584/pistvakt/pistvakt-sasong-1-doris-ar-dod",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:01:07",
+        "suggestedEnd": "00:01:07.480",
+        "endError": 0.48
+    },
+    {
+        "url": "https://www.svtplay.se/video/13902600/pistvakt/pistvakt-sasong-1-julafton-73",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:01:07",
+        "suggestedEnd": "00:00:58.560",
+        "endError": -8.44
+    },
+    {
+        "url": "https://www.svtplay.se/video/23523210/shetland/shetland-sasong-5-avsnitt-1",
+        "introStart": "00:00:54",
+        "suggestedStart": "00:00:54.680",
+        "startError": 0.68,
+        "introEnd": "00:01:19",
+        "suggestedEnd": "00:01:19.600",
+        "endError": 0.6
+    },
+    {
+        "url": "https://www.svtplay.se/video/23616342/shetland/shetland-sasong-5-avsnitt-2",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:24",
+        "suggestedEnd": "00:00:25.000",
+        "endError": 1.0
+    },
+    {
+        "url": "https://www.svtplay.se/video/23678942/shetland/shetland-sasong-5-avsnitt-3",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:24",
+        "suggestedEnd": "00:00:25.000",
+        "endError": 1.0
+    },
+    {
+        "url": "https://www.svtplay.se/video/23793902/shetland/shetland-sasong-5-avsnitt-4",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:24",
+        "suggestedEnd": "00:00:25.000",
+        "endError": 1.0
+    },
+    {
+        "url": "https://www.svtplay.se/video/23885055/shetland/shetland-sasong-5-avsnitt-5",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:24",
+        "suggestedEnd": "00:00:25.000",
+        "endError": 1.0
+    },
+    {
+        "url": "https://www.svtplay.se/video/23974723/shetland/shetland-sasong-5-avsnitt-6",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:24",
+        "suggestedEnd": "00:00:25.000",
+        "endError": 1.0
+    },
+    {
+        "url": "https://www.svtplay.se/video/24170014/twin/twin-sasong-1-avsnitt-1",
+        "introStart": "00:01:46",
+        "suggestedStart": "00:01:46.360",
+        "startError": 0.36,
+        "introEnd": "00:01:56",
+        "suggestedEnd": "00:01:57.040",
+        "endError": 1.04
+    },
+    {
+        "url": "https://www.svtplay.se/video/24358305/twin/twin-sasong-1-avsnitt-2",
+        "introStart": "00:01:37",
+        "suggestedStart": "00:01:37.680",
+        "startError": 0.68,
+        "introEnd": "00:02:03",
+        "suggestedEnd": "00:02:03.640",
+        "endError": 0.64
+    },
+    {
+        "url": "https://www.svtplay.se/video/24432537/twin/twin-sasong-1-avsnitt-3",
+        "introStart": "00:00:52",
+        "suggestedStart": "00:00:53.000",
+        "startError": 1.0,
+        "introEnd": "00:01:18",
+        "suggestedEnd": "00:01:18.560",
+        "endError": 0.56
+    },
+    {
+        "url": "https://www.svtplay.se/video/24520793/twin/twin-sasong-1-avsnitt-4",
+        "introStart": "00:01:24",
+        "suggestedStart": "00:01:24.680",
+        "startError": 0.68,
+        "introEnd": "00:01:53",
+        "suggestedEnd": "00:01:49.640",
+        "endError": -3.36
+    },
+    {
+        "url": "https://www.svtplay.se/video/24607773/twin/twin-sasong-1-avsnitt-5",
+        "introStart": "00:01:35",
+        "suggestedStart": "00:01:35.160",
+        "startError": 0.16,
+        "introEnd": "00:02:01",
+        "suggestedEnd": "00:02:01.160",
+        "endError": 0.16
+    },
+    {
+        "url": "https://www.svtplay.se/video/24689550/twin/twin-sasong-1-avsnitt-6",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:37",
+        "suggestedEnd": "00:00:35.080",
+        "endError": -1.92
+    },
+    {
+        "url": "https://www.svtplay.se/video/24782618/twin/twin-sasong-1-avsnitt-7",
+        "introStart": "00:01:49",
+        "suggestedStart": "00:01:49.520",
+        "startError": 0.52,
+        "introEnd": "00:02:14",
+        "suggestedEnd": "00:02:15.480",
+        "endError": 1.48
+    },
+    {
+        "url": "https://www.svtplay.se/video/1172226/unge-kommissarie-morse/del-1-674",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:00",
+        "suggestedEnd": "00:00:00.000",
+        "endError": 0.0
+    },
+    {
+        "url": "https://www.svtplay.se/video/1181007/unge-kommissarie-morse/del-2-243",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:00",
+        "suggestedEnd": "00:00:00.000",
+        "endError": 0.0
+    },
+    {
+        "url": "https://www.svtplay.se/video/1196720/unge-kommissarie-morse/del-3-208",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:00",
+        "suggestedEnd": "00:00:00.000",
+        "endError": 0.0
+    },
+    {
+        "url": "https://www.svtplay.se/video/1214025/unge-kommissarie-morse/del-4-185",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:00",
+        "suggestedEnd": "00:00:00.000",
+        "endError": 0.0
+    },
+    {
+        "url": "https://www.svtplay.se/video/2237838/unge-kommissarie-morse/avsnitt-1-220",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:00",
+        "suggestedEnd": "00:00:00.000",
+        "endError": 0.0
+    },
+    {
+        "url": "https://www.svtplay.se/video/2553368/unge-kommissarie-morse/unge-kommissarie-morse-sasong-2-avsnitt-2",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:00",
+        "suggestedEnd": "00:00:00.000",
+        "endError": 0.0
+    },
+    {
+        "url": "https://www.svtplay.se/video/2586117/unge-kommissarie-morse/unge-kommissarie-morse-sasong-2-avsnitt-3",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:00",
+        "suggestedEnd": "00:00:00.000",
+        "endError": 0.0
+    },
+    {
+        "url": "https://www.svtplay.se/video/2619613/unge-kommissarie-morse/unge-kommissarie-morse-sasong-2-avsnitt-4",
+        "introStart": "00:00:00",
+        "suggestedStart": "00:00:00.000",
+        "startError": 0.0,
+        "introEnd": "00:00:00",
+        "suggestedEnd": "00:00:00.000",
+        "endError": 0.0
+    },
+    {
+        "url": "https://www.svtplay.se/video/15367465/var-tid-ar-nu/var-tid-ar-nu-sasong-1-freden",
+        "introStart": "00:04:29",
+        "suggestedStart": "00:04:29.000",
+        "startError": 0.0,
+        "introEnd": "00:05:14",
+        "suggestedEnd": "00:05:13.760",
+        "endError": -0.24
+    },
+    {
+        "url": "https://www.svtplay.se/video/15438385/var-tid-ar-nu/var-tid-ar-nu-sasong-1-hemkomsten",
+        "introStart": "00:03:36",
+        "suggestedStart": "00:03:35.840",
+        "startError": -0.16,
+        "introEnd": "00:04:24",
+        "suggestedEnd": "00:04:23.680",
+        "endError": -0.32
+    },
+    {
+        "url": "https://www.svtplay.se/video/15508665/var-tid-ar-nu/var-tid-ar-nu-sasong-1-jubileet",
+        "introStart": "00:02:20",
+        "suggestedStart": "00:02:20.720",
+        "startError": 0.72,
+        "introEnd": "00:03:10",
+        "suggestedEnd": "00:03:09.160",
+        "endError": -0.84
+    },
+    {
+        "url": "https://www.svtplay.se/video/15939286/var-tid-ar-nu/var-tid-ar-nu-sasong-1-avtalet",
+        "introStart": "00:03:51",
+        "suggestedStart": "00:03:51.440",
+        "startError": 0.44,
+        "introEnd": "00:04:41",
+        "suggestedEnd": "00:04:39.960",
+        "endError": -1.04
+    },
+    {
+        "url": "https://www.svtplay.se/video/16015659/var-tid-ar-nu/var-tid-ar-nu-sasong-1-hemmafrun",
+        "introStart": "00:03:31",
+        "suggestedStart": "00:03:30.600",
+        "startError": -0.4,
+        "introEnd": "00:05:21",
+        "suggestedEnd": "00:05:19.520",
+        "endError": -1.48
+    },
+    {
+        "url": "https://www.svtplay.se/video/23885035/vaster-om-friheten/vaster-om-friheten-sasong-1-avsnitt-1",
+        "introStart": "00:02:00",
+        "suggestedStart": "00:02:00.440",
+        "startError": 0.44,
+        "introEnd": "00:03:03",
+        "suggestedEnd": "00:03:03.080",
+        "endError": 0.08
+    },
+    {
+        "url": "https://www.svtplay.se/video/23885183/vaster-om-friheten/vaster-om-friheten-sasong-1-avsnitt-2",
+        "introStart": "00:02:39",
+        "suggestedStart": "00:02:39.320",
+        "startError": 0.32,
+        "introEnd": "00:03:39",
+        "suggestedEnd": "00:03:39.120",
+        "endError": 0.12
+    },
+    {
+        "url": "https://www.svtplay.se/video/23885123/vaster-om-friheten/vaster-om-friheten-sasong-1-avsnitt-3",
+        "introStart": "00:01:28",
+        "suggestedStart": "00:01:27.520",
+        "startError": -0.48,
+        "introEnd": "00:02:28",
+        "suggestedEnd": "00:02:28.320",
+        "endError": 0.32
+    },
+    {
+        "url": "https://www.svtplay.se/video/23885075/vaster-om-friheten/vaster-om-friheten-sasong-1-avsnitt-4",
+        "introStart": "00:02:52",
+        "suggestedStart": "00:02:53.520",
+        "startError": 1.52,
+        "introEnd": "00:03:51",
+        "suggestedEnd": "00:03:51.320",
+        "endError": 0.32
+    },
+    {
+        "url": "https://www.svtplay.se/video/23885163/vaster-om-friheten/vaster-om-friheten-sasong-1-avsnitt-5",
+        "introStart": "00:03:45",
+        "suggestedStart": "00:03:44.480",
+        "startError": -0.52,
+        "introEnd": "00:04:44",
+        "suggestedEnd": "00:04:44.200",
+        "endError": 0.2
+    },
+    {
+        "url": "https://www.svtplay.se/video/23885143/vaster-om-friheten/vaster-om-friheten-sasong-1-avsnitt-6",
+        "introStart": "00:02:12",
+        "suggestedStart": "00:02:13.200",
+        "startError": 1.2,
+        "introEnd": "00:03:12",
+        "suggestedEnd": "00:03:13.000",
+        "endError": 1.0
+    },
+    {
+        "url": "https://www.svtplay.se/video/24782634/world-on-fire/world-on-fire-sasong-1-avsnitt-2",
+        "introStart": "00:00:53",
+        "suggestedStart": "00:00:52.440",
+        "startError": -0.56,
+        "introEnd": "00:01:38",
+        "suggestedEnd": "00:01:39.000",
+        "endError": 1.0
+    },
+    {
+        "url": "https://www.svtplay.se/video/24897218/world-on-fire/world-on-fire-sasong-1-avsnitt-3",
+        "introStart": "00:00:38.500",
+        "suggestedStart": "00:00:39.000",
+        "startError": 0.5,
+        "introEnd": "00:01:23",
+        "suggestedEnd": "00:01:23.120",
+        "endError": 0.12
+    },
+    {
+        "url": "https://www.svtplay.se/video/24897142/world-on-fire/world-on-fire-sasong-1-avsnitt-4",
+        "introStart": "00:00:30",
+        "suggestedStart": "00:00:29.600",
+        "startError": -0.4,
+        "introEnd": "00:01:15",
+        "suggestedEnd": "00:01:14.960",
+        "endError": -0.04
+    },
+    {
+        "url": "https://www.svtplay.se/video/24896910/world-on-fire/world-on-fire-sasong-1-avsnitt-5",
+        "introStart": "00:00:24",
+        "suggestedStart": "00:00:25.000",
+        "startError": 1.0,
+        "introEnd": "00:01:08",
+        "suggestedEnd": "00:01:10.000",
+        "endError": 2.0
+    },
+    {
+        "url": "https://www.svtplay.se/video/24897266/world-on-fire/world-on-fire-sasong-1-avsnitt-6",
+        "introStart": "00:00:47",
+        "suggestedStart": "00:00:46.760",
+        "startError": -0.24,
+        "introEnd": "00:01:31",
+        "suggestedEnd": "00:01:32.760",
+        "endError": 1.76
+    },
+    {
+        "url": "https://www.svtplay.se/video/24899111/world-on-fire/world-on-fire-sasong-1-avsnitt-7",
+        "introStart": "00:00:44",
+        "suggestedStart": "00:00:45.000",
+        "startError": 1.0,
+        "introEnd": "00:01:29",
+        "suggestedEnd": "00:01:29.160",
+        "endError": 0.16
+    },
+    {
+        "url": "https://www.svtplay.se/video/12207066/hotell-halcyon/hotell-halcyon-sasong-1-avsnitt-1",
+        "introStart": "00:02:40",
+        "suggestedStart": "00:02:40.640",
+        "startError": 0.64,
+        "introEnd": "00:03:14",
+        "suggestedEnd": "00:03:14.640",
+        "endError": 0.64
+    },
+    {
+        "url": "https://www.svtplay.se/video/12313002/hotell-halcyon/hotell-halcyon-sasong-1-avsnitt-2",
+        "introStart": "00:02:17",
+        "suggestedStart": "00:02:17.880",
+        "startError": 0.88,
+        "introEnd": "00:02:51",
+        "suggestedEnd": "00:02:51.880",
+        "endError": 0.88
+    },
+    {
+        "url": "https://www.svtplay.se/video/12419346/hotell-halcyon/hotell-halcyon-sasong-1-avsnitt-3",
+        "introStart": "00:02:36",
+        "suggestedStart": "00:02:37.320",
+        "startError": 1.32,
+        "introEnd": "00:03:11",
+        "suggestedEnd": "00:03:11.320",
+        "endError": 0.32
+    },
+    {
+        "url": "https://www.svtplay.se/video/12524164/hotell-halcyon/hotell-halcyon-sasong-1-avsnitt-4",
+        "introStart": "00:01:51",
+        "suggestedStart": "00:01:51.000",
+        "startError": 0.0,
+        "introEnd": "00:02:24",
+        "suggestedEnd": "00:02:25.000",
+        "endError": 1.0
+    }
+]

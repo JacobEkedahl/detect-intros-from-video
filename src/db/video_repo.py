@@ -8,6 +8,7 @@
     *   find_all_not_dl(): 
     *   find_all_dl()
     *   find_by_url(url)
+    *   find_by_urls(urls)
     *   find_by_file(videoFileName)
     *   find_by_show(targetShow)
     *   find_by_show_not_dl(targetShow)
@@ -91,6 +92,12 @@ def find_all_dl():
 
 def find_by_url(url):
     return videoCollection.find_one({"url": url})
+
+def find_by_urls(urls):
+    return list(videoCollection.find({ "url": {
+         "$in": urls 
+         }
+    }))
 
 def find_by_file(filename):
     return videoCollection.find_one({"file": filename})

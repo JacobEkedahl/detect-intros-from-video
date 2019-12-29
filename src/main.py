@@ -92,6 +92,7 @@ if __name__ == "__main__":
 
     elif (s.argv[1] == "--seg"):
         cmd_segment.execute(s.argv)
+        exit()
 
     elif (s.argv[1] == "--ann"):
         if (s.argv[2] == "-dataset"):

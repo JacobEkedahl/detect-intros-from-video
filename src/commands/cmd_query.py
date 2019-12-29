@@ -30,7 +30,7 @@ def __query_videos(argv):
 
 
 def __export_dataset(path):
-
+    print("exported to %s " % path)
     tags = ["intro", "pre-intro", "previous"]
     output = { "intro": [], "pre-intro": [], "previous": []}
     for show in ann_repo.get_shows():
@@ -47,7 +47,7 @@ def __export_dataset(path):
 
 
 def __import_dataset(path):
-
+    print("imported from %s " % path)
     tags = ["intro", "pre-intro", "previous"]
     with open(path) as json_file:
         data = json.load(json_file)
@@ -56,7 +56,7 @@ def __import_dataset(path):
             for element in data[tag]:
                 ann_repo.insert(Annotation(element['url'], tag, element['start'], element['end']))
                 print(element)
-                
+
 
 def __query_dataset(argv):
 
@@ -69,7 +69,6 @@ def __query_dataset(argv):
     if importPath != "" and ".json" in importPath:
         __import_dataset(importPath)
         return 
-
      
         
     # supports old method by first inserting all intros that have yet been inserted into ann_repo
@@ -103,6 +102,7 @@ def execute_command(argv):
         __query_videos(argv)
     if args_helper.is_key_present(argv, "-dataset"):
         __query_dataset(argv)
+        exit()
     else: 
         print("Error: invalid query.")    
 
