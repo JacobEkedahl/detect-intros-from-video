@@ -1,19 +1,38 @@
+import os 
 import json 
 import statistics 
+import matplotlib 
+
 
 import utils.args_helper as args_helper
+import utils.file_handler as file_handler
 import segmenter.scenedetector as scenedetector
 import db.annotation_repo as ann_repo 
 import db.video_repo as video_repo
 import utils.time_handler as time_handler
 
-SCENDTECT_COMP_STATS_FILE = "data/stats_scendetect.json"
-
+SCENEDETECT_STATS_FILE = "data/stats_scendetect.json"
+KEY_SCENES              = 'sd_scenes'
 
 #TODO: make it optional to segment all or only segment unsegmented videos
 def __segment_all_scendetect(forced):
-    scenedetector.segment_all_videos()
-
+    files = file_handler.get_all_mp4_files()
+    if forced: 
+        for file in files: 
+            scenedetector.segment_video(file)
+    else:
+        for file in files: 
+            json_path = file.replace('.mp4', '') + '.json'
+            if os.path.exists(json_path):
+                with open(json_path) as json_file:
+                    data = json.load(json_file)
+                    if not "sd_scenes" in data: 
+                        scenedetector.segment_video(file)
+            else: 
+                # in case json file does not exist we try the database
+                video = video_repo.find_by_file(os.path.basename(file))
+                if (video is not None) and (not "sd_scenes" in video):
+                    scenedetector.segment_video(file)
 
 def __segment_scendetect(video_file):
     scenedetector.segment_video(video_file)
@@ -82,15 +101,15 @@ def __create_scendetect_intro_stats():
     hasScenesCount = 0
     data = []
     for video in videos:
-        if "scenes" in video:
+        if KEY_SCENES in video:
             hasScenesCount = hasScenesCount + 1
             for intro in intros: 
                 if intro['url'] == video['url']:
-                    result = __get_compare_scenes_to_intro(intro['url'], video['scenes'], intro['start'], intro['end'])
+                    result = __get_compare_scenes_to_intro(intro['url'], video[KEY_SCENES], intro['start'], intro['end'])
                     if result: 
                         data.append(result)
 
-    with open(SCENDTECT_COMP_STATS_FILE, 'w') as outfile:
+    with open(SCENEDETECT_STATS_FILE, 'w') as outfile:
         json.dump(data, outfile, indent=4, sort_keys=False)
 
     print("Processed from annotated set: %d/%d\nSegment the remainder to improve the coverage." % (hasScenesCount, len(videos)))
@@ -104,20 +123,21 @@ def __display_scendetect_stats(startFilter, endFilter):
     if endFilter != "":
         endFilterValue = float(endFilter.split(" ")[1])
         endFilter = endFilter.split(" ")[0]
+    startErrorsAbs = []
     startErrors = []
     endErrors = []
     matchingEntries = 0
     s = "Start\t\tSceneStart\tStartError\tEnd\t\t SceneEnd\tEndError\turl\n"
-    with open(SCENDTECT_COMP_STATS_FILE) as json_file:
+    with open(SCENEDETECT_STATS_FILE) as json_file:
         entries = json.load(json_file)
         for entry in entries:          
-            startError = abs(entry['startError'])
+            startErrorAbs = abs(entry['startError'])
             endError = abs(entry['endError'])
             if startFilter != "":
                 includeEntry = False 
-                if startFilter == "lt" and startError < startFilterValue:
+                if startFilter == "lt" and startErrorAbs < startFilterValue:
                     includeEntry = True 
-                if startFilter == "gt" and startError > startFilterValue:
+                if startFilter == "gt" and startErrorAbs > startFilterValue:
                     includeEntry = True 
             if endFilter != "":
                 includeEntry = False 
@@ -126,10 +146,10 @@ def __display_scendetect_stats(startFilter, endFilter):
                 if endFilter == "gt" and endError > endFilterValue:
                     includeEntry = True 
 
-
             if includeEntry:
                 s = s + entry['introStart'] + "\t" + entry['suggestedStart'] + "\t" + ("%f" % entry['startError']) + "\t" + entry['introEnd'] + "\t" + entry['suggestedEnd'] + "\t" + ("%f" % entry['endError']) + "\t" + entry['url'] + "\n"   
-                startErrors.append(startError)
+                startErrorsAbs.append(startErrorAbs)
+                startErrors.append(entry['startError'])
                 endErrors.append(endError)
                 matchingEntries = matchingEntries + 1
 
@@ -139,11 +159,14 @@ def __display_scendetect_stats(startFilter, endFilter):
         print("Start filter: %s %d" % (startFilter, startFilterValue)) 
     if endFilter != "":
         print("End filter %s %d" % (endFilter, endFilterValue))
-    if len(startErrors) > 0:
-        print("Start Error avg:     %f" % statistics.mean(startErrors))
-        print("Start Error median:  %f" % statistics.median(startErrors))
-        print("Start Error stdev:   %f" % statistics.stdev(startErrors))
-    if len(endErrors) > 0:
+    if len(startErrorsAbs) > 1:
+        print("Start Error avg:     %f" % statistics.mean(startErrorsAbs))
+        print("Start Error median:  %f" % statistics.median(startErrorsAbs))
+        print("Start Error stdev:   %f" % statistics.stdev(startErrorsAbs))
+
+        startErrors.sort()
+
+    if len(endErrors) > 1:
         print("End Error avg:       %f" % statistics.mean(endErrors))
         print("End Error median:    %f" % statistics.median(endErrors))
         print("End Error stdev:     %f" % statistics.stdev(endErrors)) 
@@ -160,6 +183,7 @@ def execute(argv):
     if file != "" and ".mp4" in file: 
         __segment_scendetect(file)
         return 
+        
     if args_helper.is_key_present(argv, "-stats"):
         __create_scendetect_intro_stats()
         

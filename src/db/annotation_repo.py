@@ -91,8 +91,3 @@ def delete_by_url(url):
 
 def drop_collection():
     annotationCollection.drop()
-
-
-för alla frames från i till n 
-    för alla frames i + k till n 
-        leta matchningar 
