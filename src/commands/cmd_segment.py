@@ -11,32 +11,25 @@ import db.annotation_repo as ann_repo
 import db.video_repo as video_repo
 import utils.time_handler as time_handler
 
-SCENEDETECT_STATS_FILE = "data/stats_scendetect.json"
+SCENEDETECT_STATS_FILE  = "temp/stats_scendetect.json"
 KEY_SCENES              = 'sd_scenes'
 
-#TODO: make it optional to segment all or only segment unsegmented videos
 def __segment_all_scendetect(forced):
+    count = 0
     files = file_handler.get_all_mp4_files()
     if forced: 
         for file in files: 
+            count = count + 1
             scenedetector.segment_video(file)
     else:
         for file in files: 
-            json_path = file.replace('.mp4', '') + '.json'
-            if os.path.exists(json_path):
-                with open(json_path) as json_file:
-                    data = json.load(json_file)
-                    if not "sd_scenes" in data: 
-                        scenedetector.segment_video(file)
-            else: 
-                # in case json file does not exist we try the database
-                video = video_repo.find_by_file(os.path.basename(file))
-                if (video is not None) and (not "sd_scenes" in video):
-                    scenedetector.segment_video(file)
+            if not scenedetector.file_has_been_segmented(file): 
+                count = count + 1
+                scenedetector.segment_video(file)
+    print("Scendetection was used on %d/%d files." % (count, len(files)))
 
 def __segment_scendetect(video_file):
     scenedetector.segment_video(video_file)
-
 
 # Compares the scenes with the annotated intro to determine the margin of error between when scene breaks and intro sequence 
 def __get_compare_scenes_to_intro(url, scenes, startStr, endStr):

@@ -39,6 +39,19 @@ DEFAULT_END_TIME        = 600.0        # 00:10:00.00
 DOWNSCALE_FACTOR        = c.DOWNSCALE_FACTOR
 DATA_KEY                = 'sd_scenes'
 
+
+def file_has_been_segmented(video_file):
+    json_path = video_file.replace('.mp4', '') + '.json'
+    if os.path.exists(json_path):
+        with open(json_path) as json_file:
+            data = json.load(json_file)
+            return DATA_KEY in data
+    else: 
+        # in case json file does not exist we try the database
+        video = video_repo.find_by_file(os.path.basename(video_file))
+        return (video is not None) and (DATA_KEY in video)
+
+
 def segment_video(video_file):
     # requires that they all have the same frame size, and optionally, framerate.
     video_manager = VideoManager([video_file])
