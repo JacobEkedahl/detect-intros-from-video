@@ -9,6 +9,7 @@ import db.annotation_repo as ann_repo
 import utils.time_handler as time_handler
 import annotations.dataset_annotation as dataset_annotation
 
+
 def __export_dataset(path):
     print("exported to %s " % path)
     tags = ["intro", "pre-intro", "previous"]
@@ -36,6 +37,7 @@ def __import_dataset(path):
             for element in data[tag]:
                 ann_repo.insert(Annotation(element['url'], tag, element['start'], element['end']))
                 print(element)
+
 
 # TODO: not sure what statistics are relevant here tbh, you may wish to expand on this
 def __create_intro_stats(): 
@@ -92,6 +94,7 @@ def __do_manual_annotation(argv):
             print("Total %s count: %d " % (tag, count))
     else:
         print("Error: Not enough arguments provided") 
+
 
 def execute(argv):   
     exportPath = args_helper.get_value_after_key(argv, "-export", "-export")

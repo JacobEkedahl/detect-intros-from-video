@@ -23,6 +23,7 @@
     *   delete_by_file(videoFileName):
     *   delete_by_url(url):
     *   delete_show(targetShow)
+    *   set_prediction(url, tag, start, end)
 """
 
 import pymongo
@@ -160,6 +161,16 @@ def set_scenes(videoFileName, scenes):
         "$set": { "scenes": scenes}
     }, upsert = False).matched_count
 
+def set_prediction(url, tag, start, end):
+    return videoCollection.update_one({ "url": url }, 
+    {
+        "$set": { 
+           tag: {
+               "start": start,
+               "end": end
+           }
+        }
+    }, upsert = False).matched_count
 
 def get_shows():
     return list(videoCollection.distinct("show"))

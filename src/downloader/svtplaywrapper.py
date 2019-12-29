@@ -70,3 +70,4 @@ def start_download(urls, number_of_episodes):
 def start(name_textfile, number_of_episodes):
     urls = file_handler.get_all_urls_from_file(name_textfile)
     start_download(urls, number_of_episodes)
+ 
