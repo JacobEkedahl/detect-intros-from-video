@@ -15,7 +15,7 @@ from utils import extractor
 
 import downloader.scrapesvt as scrapesvt
 
-from commands import cmd_query, cmd_segment
+from commands import cmd_videos, cmd_segment, cmd_dataset
 
 if __name__ == "__main__":
     file_handler.create_folderstructure_if_not_exists()
@@ -86,22 +86,18 @@ if __name__ == "__main__":
     elif (s.argv[1] == "--scrape"):
         scrapesvt.execute(s.argv)
         exit()
-    elif (s.argv[1] == "--q"):
-        cmd_query.execute_command(s.argv)
+    elif (s.argv[1] == "--videos"):
+        cmd_videos.execute(s.argv)
         exit()
 
     elif (s.argv[1] == "--seg"):
         cmd_segment.execute(s.argv)
         exit()
-
-    elif (s.argv[1] == "--ann"):
-        if (s.argv[2] == "-dataset"):
-            dataset_annotation.execute(s.argv)
-        elif (s.argv[2] == "--result"):
-            annotation_summary.execute(s.argv)
-        else:
-            scene_annotation.execute(s.argv)
+    
+    elif (s.argv[1] == "--dataset"):
+        cmd_dataset.execute(s.argv)
         exit()
+
     elif (s.argv[1] == "--subs"):
         annotate_subtitles.execute(s.argv)
         exit()

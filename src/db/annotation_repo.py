@@ -46,6 +46,7 @@ def insert(srcs_annotation):
         }, upsert = False)
         return 
     srcs_annotation.season = video['season']
+    srcs_annotation.episode = video['episode']
     srcs_annotation.show = video['show']
     x = annotationCollection.insert_one(srcs_annotation.__dict__)
     return x.inserted_id

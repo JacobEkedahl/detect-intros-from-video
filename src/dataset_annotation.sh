@@ -1,11 +1,11 @@
 #!/bin/sh
 
-url="https://www.svtplay.se/video/24912149/langtans-blaa-blomma/langtans-blaa-blomma-sasong-1-avsnitt-4-1?start=auto"
+url="https://www.svtplay.se/video/15047632/rederiet/rederiet-sasong-1-stoppa-pressarna?start=auto"
 
-start="00:00:40"
+start="00:00:00"
 
-end="00:01:18"
+end="00:00:58"
 
 tag="intro"
 
-py src/main.py --ann -dataset -tag $tag -s $start -e $end -url $url -count
+py src/main.py --dataset -annotate -tag $tag -s $start -e $end -url $url -count

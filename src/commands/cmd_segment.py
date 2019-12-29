@@ -9,6 +9,7 @@ import utils.time_handler as time_handler
 
 SCENDTECT_COMP_STATS_FILE = "data/stats_scendetect.json"
 
+
 #TODO: make it optional to segment all or only segment unsegmented videos
 def __segment_all_scendetect(forced):
     scenedetector.segment_all_videos()
