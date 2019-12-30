@@ -91,3 +91,20 @@ def delete_by_url(url):
 
 def drop_collection():
     annotationCollection.drop()
+
+def get_prediction_comparison(url, tag):
+    video = video_repo.find_by_url(url)
+    if video is None: 
+        print("Error: %s video does not exists inside the video repository. This is likely because the web scraper failed to find it." % url)
+        return 
+    if not tag in video: 
+        return None 
+    ann = find_by_tag_url(url, tag)[0]
+    if ann is None:
+          return None
+    return {
+        'predicted':  video[tag],
+        'actual': { 
+            'start': ann['start'], 'end': ann['end'] 
+        } 
+    }

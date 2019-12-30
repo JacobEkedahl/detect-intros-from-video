@@ -114,6 +114,21 @@ def execute(argv):
     if args_helper.is_key_present(argv, "-annotate"):
         __do_manual_annotation(argv)
         return 
+
+
+    from db.video_repo import Video
+    url ="http.omg.se"
+
+    
+
+    #video_repo.insert(Video("HELLO", "Hello", 1, 1, url))
+    #video_repo.set_prediction(url, "intro", "00:15:00", "00:16:00")
+    #ann_repo.insert(Annotation(url, "intro", "99:99", "100:100"))
+    result = ann_repo.get_prediction_comparison(url, "intro")
+
+    print(result)
+    print("HELLO")
+    return 
     show = args_helper.get_value_after_key(argv, "-show", "-show")
     annotations = []
     if show != "":
@@ -122,5 +137,8 @@ def execute(argv):
         annotations = ann_repo.find_by_tag("intro")
     for a in annotations: 
         print("%s s%02de%02d" % (a['show'], a['season'], a['episode']))
+        
+        result = ann_repo.get_prediction_comparison(a['url'], "intro")
+        print(result)
 
 
