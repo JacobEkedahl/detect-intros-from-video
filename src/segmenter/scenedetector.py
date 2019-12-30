@@ -54,7 +54,18 @@ def file_has_been_segmented(video_file):
 
 def segment_video(video_file):
     # requires that they all have the same frame size, and optionally, framerate.
-    video_manager = VideoManager([video_file])
+
+    if not os.path.exists(video_file):
+        print("Error: %s does not exists." % video_file)
+        return 
+
+    try: 
+        video_manager = VideoManager([video_file])
+    except Exception as e: 
+        print("Error: failed to read %s, data might be corrupted." % video_file)
+        print(e)
+        return 
+    
     stats_manager = StatsManager()
     scene_manager = SceneManager(stats_manager)
 
