@@ -1,3 +1,19 @@
+"""
+    Commands:
+
+    * --dataset -stats     
+        Loops through all annotated data creating some basic statistics
+
+    * --dataset -export data/dataset.json   
+        Exports annotated db content to json file
+
+    * --dataset -import data/dataset.json               
+        Imports json file to db, warning will override similar urls
+
+    * --dataset -annotate -tag $tag -s $start -e $end -url $url
+        Saves a manual annotation in the database
+    
+"""
 import json 
 import statistics 
 
@@ -67,7 +83,21 @@ def __create_intro_stats():
                 print("avg\tmedian\tstdev")
                 print("start: %f %f %f " % (startAvg, startMedian, startStdev))
                 print("length: %f %f %f %s" % (lenAvg, lenMedian, lenStdev, lengthList))
-           
+
+
+def __do_present_length_varians():
+    shows = ann_repo.get_shows()
+    for show in shows: 
+        seasons = ann_repo.get_show_seasons(show)
+        for season in seasons: 
+            lengthList = []
+            intros = ann_repo.find_by_tag_show_season("intro", show, season)
+            print("\n%s %02d\n" % (show, season))
+            for intro in intros:
+                length = time_handler.timestamp(intro['end'])/1000 - time_handler.timestamp(intro['start'])/1000
+                lengthList.append(length)
+                print("%s\t%f" % (intro['url'], length))
+
 
 def __do_manual_annotation(argv):
     start = ""
@@ -75,7 +105,6 @@ def __do_manual_annotation(argv):
     tag = "intro"
     path = "data/dataset.json"
     url = ""
-
     for i in range(1, len(argv)):
         if (argv[i] == "-s" or argv[i] == "-start") and i + 1 < len(argv):
             start = argv[i + 1]
@@ -113,6 +142,11 @@ def execute(argv):
         __do_manual_annotation(argv)
         return 
 
+    if args_helper.is_key_present(argv, "-length"):
+        __do_present_length_varians()
+        return
+
+    
     show = args_helper.get_value_after_key(argv, "-show", "-show")
     annotations = []
     if show != "":

@@ -8,5 +8,5 @@ end="00:01:44"
 
 tag="intro"
 
-py src/main.py --dataset -annotate -tag $tag -s $start -e $end -url $url -count
+py src/main.py --dataset -annotate -tag $tag -s $start -e $end -url $url 
 
