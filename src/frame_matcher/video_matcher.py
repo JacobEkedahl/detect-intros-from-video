@@ -46,6 +46,7 @@ def find_all_matches(file_A):
     matches_intro = {}
     hashes_A = handler.open_obj_from_meta(c.HASH_NAME, video_A)
     intro_median = []
+    intro_start_median = []
 
     for file_B in other_files_same_series:
         video_B = str(file_B)
@@ -62,6 +63,7 @@ def find_all_matches(file_A):
 
         if len(frames_matched_intro) > 0:
             intro_median.append(intro_B["end"] - intro_B["start"])
+            intro_start_median.append(intro_B["start"])
             for matched_item in frames_matched_intro:
                 count = matched_item["count"]
                 if count not in matches_intro:
@@ -71,7 +73,7 @@ def find_all_matches(file_A):
     if len(intro_median) != 0 and matches_intro is not None:
         sequences_intro = extract_sequences(matches_intro)
         if len(sequences_intro) > 0:
-            seq_intro = get_sequence_closest_to_intro(sequences_intro, statistics.median(intro_median))
+            seq_intro = get_sequence_closest_to_intro(sequences_intro, statistics.median(intro_median), statistics.median(intro_start_median))
             ann.annotate_meta_data(seq_intro, c.DESCRIPTION_MATCHES_INTRO, video_A)
 
     sequences = extract_sequences(matches)
@@ -80,7 +82,7 @@ def find_all_matches(file_A):
         ann.annotate_meta_data(longestSeq, c.DESCRIPTION_MATCHES, video_A)
 
 # given a median intro length, identify the sequence closest in length
-def get_sequence_closest_to_intro(sequences, intro_length):
+def get_sequence_closest_to_intro(sequences, intro_length, intro_start):
     min_diff = 1000
     result = []
     cloesest_seq = {}
