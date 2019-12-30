@@ -54,11 +54,9 @@ def file_has_been_segmented(video_file):
 
 def segment_video(video_file):
     # requires that they all have the same frame size, and optionally, framerate.
-
     if not os.path.exists(video_file):
         print("Error: %s does not exists." % video_file)
         return 
-
     try: 
         video_manager = VideoManager([video_file])
     except Exception as e: 
@@ -68,7 +66,6 @@ def segment_video(video_file):
     
     stats_manager = StatsManager()
     scene_manager = SceneManager(stats_manager)
-
     contentDetector = ContentDetector()
     scene_manager.add_detector(contentDetector)
     threshholdDetector = ThresholdDetector()
@@ -90,18 +87,22 @@ def segment_video(video_file):
                 data = json.load(json_file)
         else:
             data = { DATA_KEY: [] }
-        for scene in enumerate(scene_list):
-            start = scene[0].get_timecode()
+        data[DATA_KEY] = []
+        for scene in scene_list: 
+            start =  scene[0].get_timecode()
+            end = scene[1].get_timecode()
             data[DATA_KEY].append({
                 'start': start,
-                'end':  scene[1].get_timecode(),
+                'end': end, 
                 'timestamp': time_handler.timestamp(start)
             })
-        # Save
-        video_repo.set_data_by_file(os.path.basename(video_file), DATA_KEY, data[DATA_KEY])
+        try: 
+            video_repo.set_data_by_file(os.path.basename(video_file), DATA_KEY, data[DATA_KEY])
+        except: 
+            print("Warning: did not save scenes to db.")
         with open(json_path, 'w') as outfile:
             json.dump(data, outfile, indent=4, sort_keys=False)
-        
+
         print("Scenedetector %s completed. " % video_file)
     
     except Exception as e: 
