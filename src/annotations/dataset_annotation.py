@@ -14,10 +14,10 @@ import utils.time_handler as time_handler
 def manual_annotation(path, url, tag, start, end):
     if not time_handler.validate_timeformat(start) or not time_handler.validate_timeformat(end):
         print("Error: Invalid time format.")
-        return
+        return 0
     if time_handler.timestamp(start) > time_handler.timestamp(end):
         print("Error: start > end.")
-        return 
+        return 0
     if "?start=auto" in url: 
         url = url.split("?start=auto")[0]
 

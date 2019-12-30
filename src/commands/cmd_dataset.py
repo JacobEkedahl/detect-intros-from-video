@@ -75,7 +75,7 @@ def __do_manual_annotation(argv):
     tag = "intro"
     path = "data/dataset.json"
     url = ""
-    doCount = False 
+
     for i in range(1, len(argv)):
         if (argv[i] == "-s" or argv[i] == "-start") and i + 1 < len(argv):
             start = argv[i + 1]
@@ -85,13 +85,11 @@ def __do_manual_annotation(argv):
             tag = argv[i + 1]
         elif (argv[i] == "-url") and i + 1 < len(argv):
             url = argv[i + 1]
-        elif(argv[i] == "-count"):
-            doCount = True
+  
     
     if (url != "" and tag != "" and start != "" and end != "" and path != ""):
         count = dataset_annotation.manual_annotation(path, url, tag, start, end)
-        if doCount:
-            print("Total %s count: %d " % (tag, count))
+        print("Total %s count: %d " % (tag, count))
     else:
         print("Error: Not enough arguments provided") 
 
