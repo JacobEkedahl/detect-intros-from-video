@@ -73,22 +73,16 @@ def segment_video(video_file):
     scene_manager.add_detector(contentDetector)
     threshholdDetector = ThresholdDetector()
     scene_manager.add_detector(threshholdDetector)
-    
     base_timecode = video_manager.get_base_timecode()
 
     try:
         start_time = base_timecode + DEFAULT_START_TIME      
         end_time = base_timecode + DEFAULT_END_TIME   
-
-
         video_manager.set_duration(start_time=start_time, end_time=end_time)
-
         video_manager.set_downscale_factor(DOWNSCALE_FACTOR)
         video_manager.start()
         scene_manager.detect_scenes(frame_source=video_manager)
         scene_list = scene_manager.get_scene_list(base_timecode)
-
-        print('List of scenes obtained from %s:' % video_file)
 
         json_path = video_file.replace('.mp4', '') + '.json'
         if os.path.exists(json_path):
@@ -96,7 +90,6 @@ def segment_video(video_file):
                 data = json.load(json_file)
         else:
             data = { DATA_KEY: [] }
-         
         for i, scene in enumerate(scene_list):
             start = scene[0].get_timecode()
             data[DATA_KEY].append({
@@ -104,18 +97,17 @@ def segment_video(video_file):
                 'end':  scene[1].get_timecode(),
                 'timestamp': time_handler.timestamp(start)
             })
-            print('    Scene %2d: Start %s / Frame %d, End %s / Frame %d' % (
-                i+1,
-                scene[0].get_timecode(), scene[0].get_frames(),
-                scene[1].get_timecode(), scene[1].get_frames(),))
-
+        # Save
         video_repo.set_data_by_file(os.path.basename(video_file), DATA_KEY, data[DATA_KEY])
-
         with open(json_path, 'w') as outfile:
             json.dump(data, outfile, indent=4, sort_keys=False)
+        
+        print("Scenedetector %s completed. " % video_file)
     
     except Exception as e: 
         print(e)
         
     finally:
         video_manager.release()
+
+    
