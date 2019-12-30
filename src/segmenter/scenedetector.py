@@ -90,7 +90,7 @@ def segment_video(video_file):
                 data = json.load(json_file)
         else:
             data = { DATA_KEY: [] }
-        for i, scene in enumerate(scene_list):
+        for scene in enumerate(scene_list):
             start = scene[0].get_timecode()
             data[DATA_KEY].append({
                 'start': start,
