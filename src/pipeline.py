@@ -1,7 +1,10 @@
 
+import json
+
 import utils.file_handler as file_handler
 from annotations import annotate_intro, annotate_subtitles
 from audio_extraction import video_to_pitches as a_matcher
+from classifier import stats
 from downloader import svtplaywrapper
 from frame_matcher import video_matcher, video_to_hashes
 from segmenter import scenedetector, simple_segmentor
@@ -41,7 +44,7 @@ def build_dataset_from_step(fromStep, toStep):
             if toStep == "--frames":
                 exit()
            # video_to_hashes.save_hashes(file_name)
-            #annotate_subtitles.annotate_subs_from_video(file_name) # will annotate subs
+           # annotate_subtitles.annotate_subs_from_video(file_name) # will annotate subs
             #a_matcher.get_audio_from_video(file_name) # will annotate pitches
         if toStep == "--sim":
             exit()
@@ -55,17 +58,23 @@ def fromFrames(toStep):
     # find all videofiles
     video_files = file_handler.get_all_mp4_files()
     for video_file in video_files:
+        #seg_file = file_handler.get_seg_file_from_video(video_file)
+        #with open(seg_file) as json_file:
+        #    data = json.load(json_file)
+           # if "pitches" not in data["scenes"][0]:
+       # a_matcher.get_audio_from_video(video_file)
+           # if "intro" not in data["scenes"][0]:
         video_url = file_handler.get_url_from_file_name(video_file) #requires url to be saved in json
         annotate_intro.annotate_intro(video_file, video_url)
+           # if "subtitles" not in data["scenes"][0]:
+           #     annotate_subtitles.annotate_subs_from_video(video_file) # will annotate subs
        # video_to_hashes.save_hashes(video_file)
-       # a_matcher.get_audio_from_video(video_file)
-       # annotate_subtitles.annotate_subs_from_video(video_file) # will annotate subs
     if toStep == "--sim":
         exit()
     fromSim(toStep)
 
 def fromSim(toStep):
-    video_files = file_handler.get_all_mp4_files_not_matched()
+    video_files = file_handler.get_all_mp4_files()
     for video_file in video_files:
         seg_file = file_handler.get_seg_file_from_video(video_file)
         video_matcher.find_all_matches(video_file)

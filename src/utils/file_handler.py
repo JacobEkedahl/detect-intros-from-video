@@ -16,24 +16,61 @@ def create_folderstructure_if_not_exists():
     if not os.path.exists(get_full_path_videos()):
         os.makedirs(get_full_path_videos())
 
+def get_video_file_from_seg(seg_file):
+    return str(seg_file).replace('.json', '.mp4')
+
 def get_all_other_videos_in_series(video_file):
     parent_dir = os.path.dirname(video_file)
     other_videos = get_all_files_by_type(parent_dir, 'mp4')
+    #print(other_videos)
+    this_video_index = other_videos.index(video_file)
     other_videos.remove(str(video_file))
+
     season = get_season_from_video_file(video_file)
+    series = get_series_from_video_file(video_file)
     result = []
-    for video in other_videos:
-        if len(result) >= 5:
+    videos_to_remove = []
+    two_back = this_video_index - 3
+    if two_back < 0:
+        two_back = 0
+    for i in range(two_back, len(other_videos)):
+        video = other_videos[i]
+        if len(result) >= 6:
             break
-        if get_season_from_video_file(video_file) == season:
-            other_videos.remove(video)
+        if get_season_from_video_file(video_file) == season and series in video_file:
             result.append(video)
-    if len(result) < 5:
-        how_much_to_extend = 5 - len(result)
+            videos_to_remove.append(video)
+    for video in videos_to_remove:
+        other_videos.remove(str(video))
+
+    if len(result) < 6:
+        how_much_to_extend = 6 - len(result)
         if how_much_to_extend > len(other_videos):
             result.extend(other_videos[:len(other_videos)])
         else:
             result.extend(other_videos[:how_much_to_extend])
+    return result
+
+def get_other_videos_in_series(video_file):
+    parent_dir = os.path.dirname(video_file)
+    other_videos = get_all_files_by_type(parent_dir, 'mp4')
+    other_videos.remove(str(video_file))
+    return other_videos
+
+def get_intros_from_videos(video_files):
+    intros = get_intros()
+    result = []
+    for video_file in video_files:
+        seg_file = get_seg_file_from_video(video_file)
+        with open(seg_file) as json_file:
+            data = json.load(json_file)
+            url = data['url']
+            for intro in intros:
+                if intro['url'] == url:
+                    result.append(intro)
+                    break
+    if len(result) == 0:
+        return None
     return result
 
 def get_season_from_video_file(video_file):
@@ -41,6 +78,9 @@ def get_season_from_video_file(video_file):
     season_episode = file_name.split('.')[1]
     return season_episode[1:3]
     
+def get_series_from_video_file(video_file):
+    file_name = os.path.basename(video_file)
+    return file_name.split('.')[0]
 
 def get_intros():
     intro_file = get_full_path_intros()
@@ -97,7 +137,7 @@ def get_all_mp4_files_not_matched():
             data = json.load(json_file)
             if c.DESCRIPTION_MATCHES not in data['scenes'][0]:
                 result.append(video_file)
-                print(video_file)
+             #   print(video_file)
     return result
 
 def get_all_unmerged_files():
@@ -108,7 +148,7 @@ def get_all_unmerged_files():
         audioExtNoStar = ext[1:]
         for audioName in Path(get_full_path_videos()).rglob(ext):
             audioName = str(audioName)
-            print("audioname: " + audioName)
+          #  print("audioname: " + audioName)
             videoName = audioName.replace(audioExtNoStar, audioVideoTranslator[audioExtNoStar], 1)
             fileName = audioName.replace(audioExtNoStar,  '', 1)
             files.append(FileInfo(fileName, audioName, videoName ))

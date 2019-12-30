@@ -1,27 +1,39 @@
 import pprint
 import sys as s
+from commands import cmd_query
 
+import downloader.scrapesvt as scrapesvt
 import pipeline
 import utils.file_handler as file_handler
 from annotations import (annotate_subtitles, annotation_summary,
-                         scene_annotation, dataset_annotation)
+                         dataset_annotation, scene_annotation)
 from audio_extraction import video_to_pitches as v_p
+from classifier import prob_calculator
 from downloader import svtplaywrapper
 from frame_matcher import frame_comparer as comparer
 from frame_matcher import video_matcher as v_matcher
 from frame_matcher import video_to_hashes as vf
 from segmenter import scenedetector
-from utils import extractor
-
-import downloader.scrapesvt as scrapesvt
-
-from commands import cmd_query
+from utils import cleaner, extractor
 
 if __name__ == "__main__":
     file_handler.create_folderstructure_if_not_exists()
     if (len(s.argv) - 1 < 1):
         print("need more arguments! (--dlv --file nameOfTxtFile numberOfEpisodes)")
         exit()
+    elif (s.argv[1] == "--clean"):
+        #if len(s.argv) >= 4:
+        #    cleaner.remove_annotation_from_series(s.argv[2], s.argv[3])
+       # else:
+      #  cleaner.remove_annotations(s.argv[2])
+        if len(s.argv) >= 4:
+            cleaner.remove_annotation_from_series(s.argv[2], s.argv[3])
+      #  else:
+         #   cleaner.remove_annotations(s.argv[2])
+    elif (s.argv[1] == "--train"):
+        prob_calculator.fun_test()
+    elif (s.argv[1] == "--testMatcher"):
+        v_matcher.find_errors()
     elif (s.argv[1] == "--build"):
         pipeline.build_dataset_from_step(s.argv[2], s.argv[3])
     elif (s.argv[1] == "--frames"):

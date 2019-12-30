@@ -27,14 +27,17 @@ def get_valid_pitches(audio_file):
 # not in use atm
 def get_longest_sequence(sequences):
     longest_count = 0
-    longest_seq = {}
+    longest_seq = None
     result = []
 
     for seq in sequences:
         length = seq["end"] - seq["start"]
+        print(length)
         if length > longest_count:
             longest_count = length
             longest_seq = seq
+    if longest_seq is None:
+        return []
     result.append(longest_seq)
     return result
 
@@ -50,7 +53,7 @@ def clean_result(pitches):
         elif currentSeq[-1]["sec"] + margin >= pitch["sec"]:
             currentSeq.append(pitch)
         else:
-            if len(currentSeq) > constants.MAX_SEQ_LENGTH_PITCH * 10:
+            if len(currentSeq) > constants.MIN_SEQ_LENGTH * 10:
                 list_of_seq.append({"start": currentSeq[0]["sec"], "end": currentSeq[-1]["sec"]})
             currentSeq = []
     return list_of_seq
