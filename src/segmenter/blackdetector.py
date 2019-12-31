@@ -5,12 +5,15 @@ import os
 import json 
 
 import db.video_repo as video_repo 
+import utils.constants as c 
 
 SEQ_KEY = 'blackSequences'
 FRAMES_KEY = 'blackFrames'  
-SAVE_TO_DB = True
+SAVE_TO_DB = True 
 SAVE_TO_FILE = True 
 PRINT_OUTPUT = False 
+THRESHOLD = c.BLACK_DETECTOR_THRESHOLD
+DURATION = c.BLACK_DETECTOR_MIN_DUR 
 
 def file_has_been_detected(video_file):
     if SAVE_TO_DB:
@@ -28,7 +31,7 @@ def file_has_been_detected(video_file):
     
 def detect_black_sequences(video_file):
 
-    cmd = ( "%s -i %s -vf blackdetect=d=0.1:pix_th=0.10 -an -f null -y /dev/null" % (ffmpeg._utils.get_ffmpeg_exe(), video_file) ).split(" ")
+    cmd = ( "%s -i %s -vf blackdetect=d=%f:pix_th=%f -an -f null -y /dev/null" % (ffmpeg._utils.get_ffmpeg_exe(), video_file, DURATION, THRESHOLD) ).split(" ")
     output = subprocess.Popen( cmd, stderr=subprocess.PIPE ).communicate()[1]
     
     blackFrames = []
@@ -71,10 +74,14 @@ def detect_black_sequences(video_file):
             print(e)
 
     if PRINT_OUTPUT: 
-        for seq in blackSequences: 
-            print(seq)
-        for f in blackFrames: 
-            print(f)
+        if len(blackSequences) > 0:
+            print("sequences: ")
+            for seq in blackSequences: 
+                print(seq)
+        if len(blackFrames) > 0:
+            print("frames: ")
+            for f in blackFrames: 
+                print(f)
 
     print("Blackdetection of %s completed (%d sequences, %d frames) " % (video_file, len(blackSequences), len(blackFrames)))
     

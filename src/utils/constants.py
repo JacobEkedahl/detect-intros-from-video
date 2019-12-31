@@ -23,3 +23,6 @@ PITCH_NAME = "pitches"
 DESCRIPTION_MATCHES_INTRO = "matches_intro"
 DESCRIPTION_MATCHES = "matches"
 DESCRIPTION_PITCHES = "pitches"
+
+BLACK_DETECTOR_THRESHOLD = 0.1  # 0.0 complete blackness 
+BLACK_DETECTOR_MIN_DUR = 0.1    # minimum sequence duration 
