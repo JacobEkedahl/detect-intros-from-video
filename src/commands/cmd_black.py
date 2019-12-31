@@ -1,8 +1,8 @@
 """
     Commands:
 
-    * --black -stats     
-        Loops through all annotated data creating statistics
+    * --black -stats -t 1.0
+        Loops through all annotated data creating statistics with a margin of error of 1.0
 
     * --black -i temp/videos/video.mp4 
         Detects all black sequences and frames for input video. 
@@ -38,7 +38,7 @@ def __detect_black_sequences_for_all(forced):
     print("Blackdetection was used on %d/%d files." % (count, len(files)))
 
 
-def __stats_intro_correlation():
+def __stats_intro_correlation(errMargin):
     blackIntroStartCount = 0
     blackIntroEndCount = 0
     processedIntrosCount = 0
@@ -59,10 +59,10 @@ def __stats_intro_correlation():
         if black.FRAMES_KEY in video:
             blackFramePresentCount = blackFramePresentCount + 1
             for frame in video[black.FRAMES_KEY]:
-                if abs(time_handler.to_seconds(frame['time']) - introStart) < ACCEPTED_ERR + 0.15:
+                if abs(time_handler.to_seconds(frame['time']) - introStart) < errMargin:
                     blackFrameIntroStart = blackFrameIntroStart + 1
                     startHasBlackness = True 
-                if abs(time_handler.to_seconds(frame['time']) - introEnd) < ACCEPTED_ERR + 0.15:
+                if abs(time_handler.to_seconds(frame['time']) - introEnd) < errMargin:
                     blackFrameIntroEnd = blackFrameIntroEnd + 1
                     endHasBlackness = True 
 
@@ -71,10 +71,10 @@ def __stats_intro_correlation():
             print()
             print("%s s%02de%02d %f-%f" % (video['show'], video['season'], video['episode'], introStart, introEnd) )
             for seq in video[black.SEQ_KEY]:
-                if seq['start'] <= introStart + ACCEPTED_ERR and introStart - ACCEPTED_ERR <= seq['end']: 
+                if seq['start'] <= introStart + errMargin and introStart - errMargin <= seq['end']: 
                     blackIntroStartCount = blackIntroStartCount + 1
                     startHasBlackness = True 
-                elif seq['end'] <= introEnd + ACCEPTED_ERR and introEnd - ACCEPTED_ERR <= seq['end']: 
+                elif seq['end'] <= introEnd + errMargin and introEnd - errMargin <= seq['end']: 
                     blackIntroEndCount = blackIntroEndCount + 1 
                     endHasBlackness = True 
                 print(seq)
@@ -85,6 +85,7 @@ def __stats_intro_correlation():
         if black.SEQ_KEY in video or black.FRAMES_KEY in video:
             totalBlackCombinedCount = totalBlackCombinedCount + 1 
 
+    print("\nmargin of error: %f " % errMargin)
     print("\nBlack sequences:")
     print("Intro start: %f%% of %d " % (blackIntroStartCount/processedIntrosCount*100, processedIntrosCount))
     print("Intro end: %f%% of %d" % (blackIntroEndCount/processedIntrosCount*100, processedIntrosCount))
@@ -106,7 +107,11 @@ def execute(argv):
             __detect_black_sequences_for_all(False)
         return
     if args_helper.is_key_present(argv, "-stats"):
-        __stats_intro_correlation()
+        errMargin = args_helper.get_value_after_key(argv, "-threshold", "-t")
+        if errMargin != "":
+            __stats_intro_correlation(float(errMargin))
+        else: 
+            __stats_intro_correlation(ACCEPTED_ERR)
 
     file = args_helper.get_value_after_key(argv, "-input", "-i")
     if file != "" and ".mp4" in file: 
