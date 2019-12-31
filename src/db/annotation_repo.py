@@ -41,11 +41,12 @@ def insert(srcs_annotation):
         {
             "$set": {
                 "start": srcs_annotation.start,
-                "fullpath": srcs_annotation.end
+                "end": srcs_annotation.end
             }
         }, upsert = False)
         return 
     srcs_annotation.season = video['season']
+    srcs_annotation.episode = video['episode']
     srcs_annotation.show = video['show']
     x = annotationCollection.insert_one(srcs_annotation.__dict__)
     return x.inserted_id
@@ -60,6 +61,7 @@ def find_by_tag_url(url, tag):
             {"tag": tag}
         ]
     }))
+
 
 def find_by_tag_show(tag, show):
     return list(annotationCollection.find({
@@ -89,3 +91,20 @@ def delete_by_url(url):
 
 def drop_collection():
     annotationCollection.drop()
+
+def get_prediction_comparison(url, tag):
+    video = video_repo.find_by_url(url)
+    if video is None: 
+        print("Error: %s video does not exists inside the video repository. This is likely because the web scraper failed to find it." % url)
+        return 
+    if not tag in video: 
+        return None 
+    ann = find_by_tag_url(url, tag)[0]
+    if ann is None:
+          return None
+    return {
+        'predicted':  video[tag],
+        'actual': { 
+            'start': ann['start'], 'end': ann['end'] 
+        } 
+    }

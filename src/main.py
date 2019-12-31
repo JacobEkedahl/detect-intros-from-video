@@ -1,7 +1,7 @@
 import os
 import pprint
 import sys as s
-from commands import cmd_query
+from commands import cmd_dataset, cmd_query, cmd_segment, cmd_videos
 
 import downloader.scrapesvt as scrapesvt
 import pipeline
@@ -34,16 +34,16 @@ if __name__ == "__main__":
     elif (s.argv[1] == "--testMatcher"):
         v_matcher.find_errors()
     elif (s.argv[1] == "--build"):
-       # try:
-        if "--f" in s.argv:
-            pipeline.build_dataset_from_step(s.argv[2], s.argv[3], True)
-        else:
-            pipeline.build_dataset_from_step(s.argv[2], s.argv[3], False)
-       # except:  
-        #        print("restarting..")      
-        #        python = s.executable
-        #        os.execl(python, python, ' '.join(s.argv))
-        #        exit()
+        try:
+            if "--f" in s.argv:
+                pipeline.build_dataset_from_step(s.argv[2], s.argv[3], True)
+            else:
+                pipeline.build_dataset_from_step(s.argv[2], s.argv[3], False)
+        except:  
+                print("restarting..")      
+                python = s.executable
+                os.execl(python, python, ' '.join(s.argv))
+                exit()
         exit()
     elif (s.argv[1] == "--frames"):
         mp4_files = file_handler.get_all_mp4_files()
@@ -102,24 +102,16 @@ if __name__ == "__main__":
     elif (s.argv[1] == "--scrape"):
         scrapesvt.execute(s.argv)
         exit()
-    elif (s.argv[1] == "--q"):
-        cmd_query.execute_command(s.argv)
+    elif (s.argv[1] == "--videos"):
+        cmd_videos.execute(s.argv)
         exit()
 
     elif (s.argv[1] == "--seg"):
-        if (len(s.argv) -1 < 2):
-            scenedetector.segment_all_videos()
-        elif s.argv[2].endswith(".mp4"):
-            video_file = s.argv[2]
-            scenedetector.segment_video(video_file)
-
-    elif (s.argv[1] == "--ann"):
-        if (s.argv[2] == "-dataset"):
-            dataset_annotation.execute(s.argv)
-        elif (s.argv[2] == "--result"):
-            annotation_summary.execute(s.argv)
-        else:
-            scene_annotation.execute(s.argv)
+        cmd_segment.execute(s.argv)
+        exit()
+    
+    elif (s.argv[1] == "--dataset"):
+        cmd_dataset.execute(s.argv)
         exit()
     else:
 

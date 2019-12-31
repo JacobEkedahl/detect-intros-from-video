@@ -9,10 +9,13 @@ def get_value_after_key(argv, key1, key2):
 
 # Returns true if a key is present inside the argument list
 def is_key_present(argv, key):
+    return get_key_index(argv, key) != -1
+
+def get_key_index(argv, key):
     for i in range(1, len(argv)):    
         if (argv[i] == key):
-            return True 
-    return False 
+            return i 
+    return -1
 
 # Returns true if any [key] is present inside the argument list 
 def is_any_key_present(argv, keys):
@@ -22,4 +25,10 @@ def is_any_key_present(argv, keys):
                 return True 
     return False 
 
+def get_key_index_first(argv, keys):
+    for key in keys:
+        index = get_key_index(argv, key)
+        if index != -1:
+            return index
+    return -1
 
