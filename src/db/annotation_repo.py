@@ -1,3 +1,18 @@
+"""
+    *   insert(srcs_annotation)
+
+    *   find_by_tag(tag)
+    *   find_by_tag_show(tag, show)
+    *   find_by_tag_show_season(tag, show, season)
+    *   get_shows()
+    *   get_show_seasons(show)
+
+    *   delete_by_url(url)
+    *   drop_collection()
+
+    *   get_prediction_comparison(url, tag)
+    
+"""
 import pymongo
 import json 
 import db.video_repo as video_repo

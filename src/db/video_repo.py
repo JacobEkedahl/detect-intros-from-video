@@ -4,6 +4,7 @@
     API: 
 
     *   insert(video)
+    
     *   find_all()
     *   find_all_not_dl(): 
     *   find_all_dl()
@@ -15,16 +16,19 @@
     *   find_by_show_and_season(show, season)
     *   find_by_show_and_season_not_dl(show, season)
     *   find_by_show_season_episode(show, season, episode)
+    *   get_shows()
+    *   get_show_seasons(show):
+
     *   save_after_download(url, mp4_fullpath)
     *   set_downloaded_flag(url, flag)
     *   change_fullpath(file, fullpath)
     *   set_data_by_file(file, key, data):
     *   set_data_by_url(url, key, data):
-    *   get_shows()
-    *   get_show_seasons(show):
+
     *   delete_by_file(videoFileName):
     *   delete_by_url(url):
     *   delete_show(show)
+
     *   set_prediction(url, tag, start, end)
 """
 

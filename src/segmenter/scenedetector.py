@@ -40,17 +40,22 @@ DOWNSCALE_FACTOR        = c.DOWNSCALE_FACTOR
 DATA_KEY                = 'sd_scenes'
 SAVE_TO_DB = True
 SAVE_TO_FILE = True 
+PRINT_OUTPUT = False 
+
 
 def file_has_been_segmented(video_file):
-    json_path = video_file.replace('.mp4', '') + '.json'
-    if os.path.exists(json_path):
-        with open(json_path) as json_file:
-            data = json.load(json_file)
-            return DATA_KEY in data
-    else: 
-        # in case json file does not exist we try the database
-        video = video_repo.find_by_file(os.path.basename(video_file))
-        return (video is not None) and (DATA_KEY in video)
+    if SAVE_TO_DB:
+        try: 
+            video = video_repo.find_by_file(os.path.basename(video_file))
+            return (video is not None) and (DATA_KEY in video)
+        except Exception as e: 
+            print(e)
+    if SAVE_TO_FILE: 
+        json_path = video_file.replace('.mp4', '') + '.json'
+        if os.path.exists(json_path):
+            with open(json_path) as json_file:
+                data = json.load(json_file)
+                return DATA_KEY in data
 
 
 def segment_video(video_file):
@@ -89,24 +94,28 @@ def segment_video(video_file):
             scenes.append({
                 'start': start,
                 'end': end, 
-                'timestamp': time_handler.timestamp(start)
+                'timestamp': time_handler.to_seconds(start)
             })
-        if SAVE_TO_FILE: 
+
+        if SAVE_TO_FILE:  
+            data = {}
             json_path = video_file.replace('.mp4', '') + '.json'
             if os.path.exists(json_path):
                 with open(json_path) as json_file:
                     data = json.load(json_file)
-            else:
-                data = { DATA_KEY: scenes }
+            data[DATA_KEY] = scenes           
             with open(json_path, 'w') as outfile:
                 json.dump(data, outfile, indent=4, sort_keys=False)
 
         if SAVE_TO_DB: 
             try: 
                 video_repo.set_data_by_file(os.path.basename(video_file), DATA_KEY, data[DATA_KEY])
-            except: 
-                print("Warning: did not save scenes to db.")
+            except Exception as e: 
+                print(e)
         
+        if PRINT_OUTPUT:
+            for scene in scenes: 
+                print(scene)
 
         print("Scenedetector %s completed. " % video_file)
     
@@ -115,5 +124,7 @@ def segment_video(video_file):
         
     finally:
         video_manager.release()
+
+    return scenes 
 
     
