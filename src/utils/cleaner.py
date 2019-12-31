@@ -14,12 +14,8 @@ def remove_annotations(annotation):
 
 def remove_annotation_from_series(annotation, serie_name):
     all_videos = file_handler.get_all_mp4_files()
-    startRemoving = False
-    print(serie_name)
     for video in all_videos:
-        if serie_name in video and startRemoving == False:
-            startRemoving = True
-        if startRemoving:
+        if serie_name in video:
             print("removing..")
             seg_file = file_handler.get_seg_file_from_video(video)
             scene_annotation.delete_annotation(annotation, seg_file)

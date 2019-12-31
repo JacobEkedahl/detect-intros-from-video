@@ -1,17 +1,59 @@
 import json
 import random
 import statistics
+import sys as s
 
 import matplotlib.pyplot as plt
 import numpy
 
 from pomegranate import *
-from utils import file_handler
+from stats import prob_calculator
+from utils import constants, file_handler
 
 import seaborn; seaborn.set_style('whitegrid')
+seed = constants.START_SEED
 
-seed = 0
-def examine():
+def get_prediction(video_file):
+    obs, labels = get_dataset_for_hmm()
+    model = get_model(obs, labels)
+    seg_file = file_handler.get_seg_file_from_video(video_file)
+    with open(seg_file) as json_file:
+        data = json.load(json_file)
+        current_scenes = []
+        for scene in data['scenes']:
+            entry = []
+            if 'matches' in scene:
+                if scene['matches'] == True:
+                    entry.append(1)
+                else:
+                    entry.append(0)
+            else:
+                entry.append(None)
+            if 'matches_intro' in scene:
+                if scene['matches_intro'] == True:
+                    entry.append(1)
+                else:
+                    entry.append(0)
+            else:
+                entry.append(None)
+            current_scenes.append(numpy.array(entry))
+    hmm_predictions = model.predict(current_scenes)
+    seq_pred = find_sequences(hmm_predictions)
+    seq_pred = clean_sequences(seq_pred)
+    most_likely_sequence = prob_calculator.get_sequence_with_closest_size(seq_pred, video_file)
+    print(most_likely_sequence)
+    return most_likely_sequence
+                
+
+def get_model(obs, labels):
+    return HiddenMarkovModel.from_samples(MultivariateGaussianDistribution, 
+                                            n_components=2,
+                                            X=obs,
+                                            labels=labels,
+                                            algorithm='labeled')
+
+
+def evaluate():
     total_start = []
     total_end = []
     curr_no_pred = []
@@ -37,63 +79,42 @@ def get_dataset_for_hmm():
     for video_file in mp4s:
         segFiles.append(file_handler.get_seg_file_from_video(video_file))
     for seg_file in segFiles:  
-        count = 0
-        current_scenes = []
-        labels = []
         with open(seg_file) as json_file:
+            count = 0
+            current_scenes = []
+            labels = []
             data = json.load(json_file)
-            if 'intro' not in data['scenes'][0]:
-                continue
-            for scene in data['scenes']:
-              #  count += 1
-              #  if count == 400:
-              #      break
-                entry = []
-                if 'matches' in scene:
-                    if scene['matches'] == True:
-                        entry.append(1)
+            if 'intro' in data['scenes'][0]:
+                for scene in data['scenes']:
+                    entry = []
+                    if 'matches' in scene:
+                        if scene['matches'] == True:
+                            entry.append(1)
+                        else:
+                            entry.append(0)
                     else:
-                        entry.append(0)
-                else:
-                    entry.append(None)
-                if 'matches_intro' in scene:
-                    if scene['matches_intro'] == True:
-                        entry.append(1)
+                        entry.append(None)
+                    if 'matches_intro' in scene:
+                        if scene['matches_intro'] == True:
+                            entry.append(1)
+                        else:
+                            entry.append(0)
                     else:
-                        entry.append(0)
-                else:
-                    entry.append(None)
-                '''
-                if 'pitches' in scene:
-                    if scene['pitches'] == False:
-                        entry.append(0)
+                        entry.append(None)
+
+                    current_scenes.append(numpy.array(entry))
+                    if scene['intro']:
+                        labels.append(1) 
                     else:
-                        entry.append(scene['pitches'])
-                else:
-                    entry.append(None)
-                
-                if 'subtitles' in scene:
-                    if scene['subtitles'] == True:
-                        entry.append(1)
-                    else:
-                        entry.append(0)
-                else:
-                    entry.append(None)
-                '''
-                current_scenes.append(numpy.array(entry))
-                if scene['intro']:
-                    labels.append(1) 
-                else:
-                    labels.append(0) 
-        #print(str(len(current_scenes)) + " - " + str(len(labels)))
-        result.append(numpy.array(current_scenes))
-        data_labels.append(labels)
-    return swap_entries(result, data_labels)
+                        labels.append(0)
+            if len(current_scenes) != 0:
+                result.append(numpy.array(current_scenes))
+                data_labels.append(labels)
+    return result, data_labels
 
 def swap_entries(result, data_labels):
     global seed
-    random.seed(seed) 
-    print("seed: " + str(seed))
+    random.seed(seed)
 
     for i in range(len(result)):
         random_index = random.randint(0, len(result) - 1)
@@ -101,32 +122,25 @@ def swap_entries(result, data_labels):
     return result, data_labels
 
 def swap_positions(data, labels, pos1, pos2):
-    # Storing the two elements 
-    # as a pair in a tuple variable get 
     get = data[pos1], data[pos2] 
     data[pos2], data[pos1] = get 
     get = labels[pos1], labels[pos2] 
     labels[pos2], labels[pos1] = get 
-       
     return data, labels
     
 def startHMM():
-    obs, labels = get_dataset_for_hmm()
-    len_of_training = int(len(obs) * 0.7)
+    obs, labels = swap_entries(get_dataset_for_hmm())
+    len_of_training = int(len(obs) * constants.TRAIN_SIZE)
     len_of_test = len(obs) - len_of_training
     trainX, trainY = obs[:len_of_training], labels[:len_of_training]
     testX, testY = obs[-len_of_test:], labels[-len_of_test:]
-    
-    model = HiddenMarkovModel.from_samples(MultivariateGaussianDistribution, 
-                                            n_components=2,
-                                            X=trainX,
-                                            labels=trainY,
-                                            algorithm='labeled')
+    model = get_model(trainX, trainY)
+
     matched_seq = []
     for i in testX:
         temp = []
         for x in i:
-            temp.append(x[0])
+            temp.append(x[1])
         matched_seq.append(temp)
 
     diff_start = []
@@ -150,7 +164,6 @@ def startHMM():
             predictions += 1
             
             if len(seq_pred) != 0:
-                no_pred += 1
                 if len(seq_pred) == 1:
                     single_pred += 1
             else:
@@ -162,7 +175,8 @@ def startHMM():
                     dist_end = abs(pre["end"] - one_res["end"])
                     closest_pred = pre
                     dist = diff
-                
+
+            no_pred += 1
             diff_start.append(dist)
             diff_end.append(dist_end)
             if dist > 10 or dist_end > 10:
@@ -222,4 +236,8 @@ def clean_sequences(sequences):
         return sequences
 
 if __name__ == "__main__":
-    examine()
+    if len(s.argv) > 1:
+        print("getting prediction")
+        get_prediction(s.argv[1])
+    else:
+        evaluate()

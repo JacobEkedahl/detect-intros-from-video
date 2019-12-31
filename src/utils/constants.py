@@ -16,12 +16,16 @@ DOWNSCALE_FACTOR = 10
 
 MARGIN_BETWEEN_PITCH = 1
 MIN_SEQ_LENGTH = 10 #seconds
-
 SEGMENT_LENGTH = 0.1 #seconds
+
+NUMBER_OF_NEIGHBOR_VIDEOS = 6
+
 HASH_NAME = "hashes"
-PITCH_NAME = "pitches"
-
-
+DESCRIPTION_INTRO = "intro"
 DESCRIPTION_MATCHES_INTRO = "matches_intro"
 DESCRIPTION_MATCHES = "matches"
 DESCRIPTION_PITCHES = "pitches"
+
+#HMM
+TRAIN_SIZE = 0.7 # fraction of the training set size, rest is test
+START_SEED = 0
