@@ -21,7 +21,7 @@ import utils.file_handler as file_handler
 import db.annotation_repo as ann_repo
 import db.video_repo as video_repo 
 
-ACCEPTED_ERR = 0.5
+ACCEPTED_ERR = 4.0
 
 def __detect_black_sequences_for_all(forced):
     count = 0
@@ -38,40 +38,30 @@ def __detect_black_sequences_for_all(forced):
     print("Blackdetection was used on %d/%d files." % (count, len(files)))
 
 
-def has_black_sequence(sequences):
-    for seq in sequences:
-        if 'start' in seq:
-            return True 
-        else:
-            return False 
-    return False 
-
 def __stats_intro_correlation():
     blackIntroStartCount = 0
     blackIntroEndCount = 0
     processedIntrosCount = 0
-    for ann in ann_repo.find_by_tag("intro"):
+    annotations = ann_repo.find_by_tag("intro")
+    for ann in annotations:
         video = video_repo.find_by_url(ann['url'])
         introStart = time_handler.to_seconds(ann['start'])
         introEnd =time_handler.to_seconds(ann['end'])
         if 'blackSequences' in video: 
-            if has_black_sequence(video['blackSequences']): 
-                processedIntrosCount = processedIntrosCount + 1
-                print()
-                print("%s s%02de%02d %f-%f" % (video['show'], video['season'], video['episode'], introStart, introEnd) )
-                for seq in video['blackSequences']:
-                    if seq['start'] <= introStart + ACCEPTED_ERR and introStart - ACCEPTED_ERR <= seq['end']: 
-                        print("intro match: %f" % (seq['start'] ))
-                        blackIntroStartCount = blackIntroStartCount + 1
-                    elif seq['start'] <= introEnd + ACCEPTED_ERR and introEnd <= seq['end'] + ACCEPTED_ERR: 
-                        print("outro match: %f" % (seq['start'] ))
-                        blackIntroEndCount = blackIntroEndCount + 1 
-                    else:
-                        print(seq)
+            processedIntrosCount = processedIntrosCount + 1
+            print()
+            print("%s s%02de%02d %f-%f" % (video['show'], video['season'], video['episode'], introStart, introEnd) )
+            for seq in video['blackSequences']:
+                if seq['start'] <= introStart + ACCEPTED_ERR and introStart - ACCEPTED_ERR <= seq['end']: 
+                    blackIntroStartCount = blackIntroStartCount + 1
+                elif seq['end'] <= introEnd + ACCEPTED_ERR and introEnd - ACCEPTED_ERR <= seq['end']: 
+                    blackIntroEndCount = blackIntroEndCount + 1 
+                print(seq)
     print()
-    print("Intro start: %f%% " % (blackIntroStartCount/processedIntrosCount*100))
-    print("Intro end: %f%% " % (blackIntroEndCount/processedIntrosCount*100))
-    print("Processed: %d" % processedIntrosCount)
+    print("Intro start: %f%% of %d " % (blackIntroStartCount/processedIntrosCount*100, processedIntrosCount))
+    print("Intro end: %f%% of %d" % (blackIntroEndCount/processedIntrosCount*100, processedIntrosCount))
+    print("has black sequences: %d/%d" % (processedIntrosCount,len(annotations)))
+
 
 def execute(argv):
     if args_helper.is_key_present(argv, "-all"):
