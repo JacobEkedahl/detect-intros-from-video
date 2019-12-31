@@ -1,7 +1,7 @@
 import os
 import pprint
 import sys as s
-from commands import cmd_dataset, cmd_query, cmd_segment, cmd_videos
+from commands import cmd_dataset, cmd_segment, cmd_videos
 
 import downloader.scrapesvt as scrapesvt
 import pipeline
@@ -25,7 +25,7 @@ if __name__ == "__main__":
         if s.argv[2] == "--series":
             cleaner.remove_annotation_from_series(s.argv[3], s.argv[4])
         elif s.argv[2] == "--all":
-            cleaner.remove_annotations(s.argv[2])
+            cleaner.remove_annotations(s.argv[3])
         elif s.argv[2] == "--format":
             if s.argv[3] == "--file":
                 cleaner.format_file(s.argv[4])

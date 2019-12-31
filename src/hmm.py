@@ -129,7 +129,8 @@ def swap_positions(data, labels, pos1, pos2):
     return data, labels
     
 def startHMM():
-    obs, labels = swap_entries(get_dataset_for_hmm())
+    obs, labels = get_dataset_for_hmm()
+    obs, labels = swap_entries(obs, labels)
     len_of_training = int(len(obs) * constants.TRAIN_SIZE)
     len_of_test = len(obs) - len_of_training
     trainX, trainY = obs[:len_of_training], labels[:len_of_training]
@@ -176,11 +177,12 @@ def startHMM():
                     closest_pred = pre
                     dist = diff
 
-            no_pred += 1
-            diff_start.append(dist)
-            diff_end.append(dist_end)
-            if dist > 10 or dist_end > 10:
+            if dist + dist_end > 20:
                 print("real: " + str(one_res['start']) + " - " + str(one_res["end"]) + ", pred: " + str(seq_pred))
+            else:
+                no_pred += 1
+                diff_start.append(dist)
+                diff_end.append(dist_end)
         except:
             print("no true result in this one")
             
