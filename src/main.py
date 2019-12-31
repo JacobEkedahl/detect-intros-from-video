@@ -15,7 +15,7 @@ from utils import extractor
 
 import downloader.scrapesvt as scrapesvt
 
-from commands import cmd_videos, cmd_segment, cmd_dataset
+from commands import cmd_videos, cmd_segment, cmd_dataset, cmd_black
 
 if __name__ == "__main__":
     file_handler.create_folderstructure_if_not_exists()
@@ -96,6 +96,10 @@ if __name__ == "__main__":
     
     elif (s.argv[1] == "--dataset"):
         cmd_dataset.execute(s.argv)
+        exit()
+
+    elif (s.argv[1] == "--black"):
+        cmd_black.execute(s.argv)
         exit()
 
     elif (s.argv[1] == "--subs"):
