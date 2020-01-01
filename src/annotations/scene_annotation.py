@@ -27,13 +27,12 @@
 #    
 #   Deletes the tag from all scenes and any associated metadata
                                                                        
+import json
 import os
-import json 
 
 import utils.time_handler as time
-from .annotate import set_presence_of_interval
-from .annotate import TimeInterval
 
+from .annotate import TimeInterval, set_presence_of_interval
 
 # Annotates all scenes that intersect with the start and end time
 
@@ -220,4 +219,3 @@ def execute(argv):
          delete_annotation(annotationTag, filePath)
 
     annotate_segments_loose(annotationTag.lower(), filePath, startTime, endTime, displayAllScenes)    
-    

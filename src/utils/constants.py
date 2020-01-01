@@ -8,21 +8,28 @@ THRESHOLD_ORB = 0.90
 THRESHOLD_ORB_MATCH = 0.95
 HASH_CUTOFF = 5
 
-SEQUENCE_THRESHOLD = 2 # seconds
+SEQUENCE_THRESHOLD = 4 # seconds
 MIN_LENGTH_SEQUENCE = 5 # seconds
+FRACTION_SIZE_PREINTRO = 0.35 #35 percentage
+PREINTRO_START = 30 # limit for a preintro to start in seconds
 DOWNSCALE_FACTOR = 10
 
 MARGIN_BETWEEN_PITCH = 1
-MAX_SEQ_LENGTH_PITCH = 5 #seconds
-
+MIN_SEQ_LENGTH = 10 #seconds
 SEGMENT_LENGTH = 0.1 #seconds
+
+NUMBER_OF_NEIGHBOR_VIDEOS = 6
+
 HASH_NAME = "hashes"
-PITCH_NAME = "pitches"
-
-
+DESCRIPTION_INTRO = "intro"
 DESCRIPTION_MATCHES_INTRO = "matches_intro"
 DESCRIPTION_MATCHES = "matches"
 DESCRIPTION_PITCHES = "pitches"
 
+#HMM
+TRAIN_SIZE = 0.7 # fraction of the training set size, rest is test
+START_SEED = 0
+
+# Black Detection 
 BLACK_DETECTOR_THRESHOLD = 0.1  # 0.0 complete blackness 
 BLACK_DETECTOR_MIN_DUR = 0.1    # minimum sequence duration 

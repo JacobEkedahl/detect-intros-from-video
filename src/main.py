@@ -1,29 +1,51 @@
+import os
 import pprint
 import sys as s
+from commands import cmd_videos, cmd_segment, cmd_dataset, cmd_black
 
+import downloader.scrapesvt as scrapesvt
 import pipeline
 import utils.file_handler as file_handler
-from annotations import (annotate_subtitles, annotation_summary,
-                         scene_annotation, dataset_annotation)
-from audio_extraction import video_to_pitches as v_p
+from annotations import (annotation_summary, dataset_annotation,
+                         scene_annotation)
 from downloader import svtplaywrapper
 from frame_matcher import frame_comparer as comparer
 from frame_matcher import video_matcher as v_matcher
 from frame_matcher import video_to_hashes as vf
 from segmenter import scenedetector
-from utils import extractor
+from stats import prob_calculator
+from utils import cleaner, extractor
 
-import downloader.scrapesvt as scrapesvt
-
-from commands import cmd_videos, cmd_segment, cmd_dataset, cmd_black
 
 if __name__ == "__main__":
     file_handler.create_folderstructure_if_not_exists()
     if (len(s.argv) - 1 < 1):
         print("need more arguments! (--dlv --file nameOfTxtFile numberOfEpisodes)")
         exit()
+    elif (s.argv[1] == "--clean"):
+        if s.argv[2] == "--series":
+            cleaner.remove_annotation_from_series(s.argv[3], s.argv[4])
+        elif s.argv[2] == "--all":
+            cleaner.remove_annotations(s.argv[3])
+        elif s.argv[2] == "--format":
+            if s.argv[3] == "--file":
+                cleaner.format_file(s.argv[4])
+            else:
+                cleaner.reformat_segmentation_files()
+    elif (s.argv[1] == "--testMatcher"):
+        v_matcher.find_errors()
     elif (s.argv[1] == "--build"):
-        pipeline.build_dataset_from_step(s.argv[2], s.argv[3])
+        try:
+            if "--f" in s.argv:
+                pipeline.build_dataset_from_step(s.argv[2], s.argv[3], True)
+            else:
+                pipeline.build_dataset_from_step(s.argv[2], s.argv[3], False)
+        except:  
+                print("restarting..")      
+                python = s.executable
+                os.execl(python, python, ' '.join(s.argv))
+                exit()
+        exit()
     elif (s.argv[1] == "--frames"):
         mp4_files = file_handler.get_all_mp4_files()
         for mp4_file in mp4_files:
@@ -31,12 +53,7 @@ if __name__ == "__main__":
         exit()
     elif (s.argv[1] == "--match"):
         if len(s.argv) > 2:
-            if s.argv[2] == "--files":
-                file_one = s.argv[3]
-                file_two = s.argv[4]
-                v_matcher.find_all_matches_hash(file_one, file_two)
-                exit()
-            elif s.argv[2] == "--file":
+            if s.argv[2] == "--file":
                 file_one = s.argv[3]
                 v_matcher.find_all_matches(file_one)
                 exit()
@@ -97,6 +114,8 @@ if __name__ == "__main__":
     elif (s.argv[1] == "--dataset"):
         cmd_dataset.execute(s.argv)
         exit()
+<<<<<<< HEAD
+=======
 
     elif (s.argv[1] == "--black"):
         cmd_black.execute(s.argv)
@@ -106,5 +125,7 @@ if __name__ == "__main__":
         annotate_subtitles.execute(s.argv)
         exit()
 
+>>>>>>> febc54e6842e57983bd1082d067161f6dfa9cc82
     else:
-        print("no valid arguments found")
+
+        print("no valid arguments found: " + str(s.argv))
