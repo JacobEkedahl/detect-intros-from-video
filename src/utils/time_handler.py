@@ -19,6 +19,8 @@ def timestamp(time_string):
         milliseconds = 0
     return (hours*3600 + minutes*60 + seconds) * 1000 + milliseconds
 
+def to_seconds(time_string):
+    return float(timestamp(time_string))/1000
 
 def validate_timeformat(t):
     try: 

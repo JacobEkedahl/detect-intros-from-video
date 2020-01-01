@@ -29,3 +29,7 @@ DESCRIPTION_PITCHES = "pitches"
 #HMM
 TRAIN_SIZE = 0.7 # fraction of the training set size, rest is test
 START_SEED = 0
+
+# Black Detection 
+BLACK_DETECTOR_THRESHOLD = 0.1  # 0.0 complete blackness 
+BLACK_DETECTOR_MIN_DUR = 0.1    # minimum sequence duration 

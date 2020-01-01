@@ -1,7 +1,7 @@
 import os
 import pprint
 import sys as s
-from commands import cmd_dataset, cmd_segment, cmd_videos
+from commands import cmd_videos, cmd_segment, cmd_dataset, cmd_black
 
 import downloader.scrapesvt as scrapesvt
 import pipeline
@@ -15,6 +15,7 @@ from frame_matcher import video_to_hashes as vf
 from segmenter import scenedetector
 from stats import prob_calculator
 from utils import cleaner, extractor
+
 
 if __name__ == "__main__":
     file_handler.create_folderstructure_if_not_exists()
@@ -113,6 +114,18 @@ if __name__ == "__main__":
     elif (s.argv[1] == "--dataset"):
         cmd_dataset.execute(s.argv)
         exit()
+<<<<<<< HEAD
+=======
+
+    elif (s.argv[1] == "--black"):
+        cmd_black.execute(s.argv)
+        exit()
+
+    elif (s.argv[1] == "--subs"):
+        annotate_subtitles.execute(s.argv)
+        exit()
+
+>>>>>>> febc54e6842e57983bd1082d067161f6dfa9cc82
     else:
 
         print("no valid arguments found: " + str(s.argv))
