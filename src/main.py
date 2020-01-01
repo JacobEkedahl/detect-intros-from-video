@@ -1,6 +1,7 @@
 import pprint
 import sys as s
 
+import routine_work as work 
 import pipeline
 import utils.file_handler as file_handler
 from annotations import (annotate_subtitles, annotation_summary,
@@ -100,6 +101,10 @@ if __name__ == "__main__":
 
     elif (s.argv[1] == "--subs"):
         annotate_subtitles.execute(s.argv)
+        exit()
+
+    elif(s.argv[1] == "--work"): 
+        work.start()
         exit()
 
     else:
