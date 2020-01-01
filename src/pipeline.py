@@ -51,6 +51,9 @@ def build_dataset_from_step(fromStep, toStep):
     elif fromStep == "--sim":
         fromSim(toStep)
 
+
+    
+
 def fromFrames(toStep):
     # find all videofiles
     video_files = file_handler.get_all_mp4_files()

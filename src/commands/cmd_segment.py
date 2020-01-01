@@ -1,3 +1,23 @@
+"""
+    Commands:
+
+    * --seg -stats     
+        Loops through all annotated data creating statistics, includes a optional filter, example: 
+        --seg -stats -startfilter lt 1
+        --seg -stats -endfilter gt 5
+
+        Requires --seg all has been performed on sufficent amount of videos. 
+
+    * --seg -i temp/videos/video.mp4 
+        Detects all scenes for input video.
+
+    * --seg -all
+        Applies scenedetection on all videos under temp/ that hasn't been processed previously. 
+
+    * --seg -all -force
+        Applies scenedetection on all videos under temp/ regardless of if they have been processed previously. 
+"""
+
 import os 
 import json 
 import statistics 
