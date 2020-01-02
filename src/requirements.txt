@@ -1,6 +1,7 @@
 numpy
 imageio-ffmpeg
-
+beautifulsoup4
+lxml
 scenedetect[opencv,progress_bar]
 opencv-python                         
 Click

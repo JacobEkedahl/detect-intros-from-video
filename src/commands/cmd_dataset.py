@@ -12,8 +12,8 @@
 
     * --dataset -annotate -tag $tag -s $start -e $end -url $url
         Saves a manual annotation in the database
-    
 """
+
 import json 
 import statistics 
 
@@ -41,7 +41,6 @@ def __export_dataset(path):
                     })
     with open(path, 'w') as outfile:
         json.dump(output, outfile, indent=4, sort_keys=True)
-
 
 def __import_dataset(path):
     print("imported from %s " % path)
