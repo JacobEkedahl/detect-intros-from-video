@@ -16,14 +16,9 @@ import json
 import os
 import copy
 
-from db import video_repo
+from db import video_repo, show_repo
 from db.video_repo import Video 
-
-
-class Show:
-    def __init__(self, title, url):
-        self.name = title
-        self.url = url
+from db.show_repo import Show 
 
 
 SVT_URL = "https://www.svtplay.se"
@@ -91,8 +86,8 @@ def scrape_genre(genre):
         title = meta.h2.span.text
         link = meta.a['href']
         show = Show(title, SVT_URL + link)
-        #file.write("\n%d: %s, %s\n\n" % (i, show.title, show.url))
-        print("%d: %s, %s" % (i, show.name, show.url))
+        show_repo.insert(show)
+        print("%d: %s, %s %s" % (i, show.name, show.url, show.dirname))
         scrape_show(show, genre)
         i = i + 1
 

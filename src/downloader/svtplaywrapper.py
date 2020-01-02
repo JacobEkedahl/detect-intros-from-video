@@ -5,6 +5,10 @@ import sys
 import time
 from pathlib import Path
 
+import subprocess
+from subprocess import STDOUT, check_output
+from pathlib import Path
+
 import numpy as np
 
 import utils.file_handler as file_handler
@@ -12,8 +16,9 @@ from moviepy.editor import VideoFileClip
 
 from . import videoMerger
 
+TIMEOUT_TIME_IN_SECONDS = 60 
 
-def download_video(url):
+def download(url):
     command = ["sh", "lib/runSvtPlay.sh", "--config", "lib/svtplay-dl.yaml", url, "--capture_time", "8"]
     if try_to_download(command) is None:
         return None
@@ -65,7 +70,7 @@ def start_download(urls, number_of_episodes):
     if num_epi < len(urls):
         urls = urls[:-len(urls)+num_epi]
     for url in urls:
-        download_video(url)
+        download(url)
 
 def start(name_textfile, number_of_episodes):
     urls = file_handler.get_all_urls_from_file(name_textfile)

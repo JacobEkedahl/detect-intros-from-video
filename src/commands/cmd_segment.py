@@ -40,16 +40,16 @@ def __segment_all_scendetect(forced):
     if forced: 
         for file in files: 
             count = count + 1
-            scenedetector.segment_video(file)
+            scenedetector.detect_scenes(file)
     else:
         for file in files: 
             if not scenedetector.file_has_been_segmented(file): 
                 count = count + 1
-                scenedetector.segment_video(file)
+                scenedetector.detect_scenes(file)
     print("Scendetection was used on %d/%d files." % (count, len(files)))
 
 def __segment_scendetect(video_file):
-    scenedetector.segment_video(video_file)
+    scenedetector.detect_scenes(video_file)
 
 # Compares the scenes with the annotated intro to determine the margin of error between when scene breaks and intro sequence 
 def __get_compare_scenes_to_intro(url, scenes, startStr, endStr):

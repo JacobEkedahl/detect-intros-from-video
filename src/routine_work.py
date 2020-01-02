@@ -5,8 +5,11 @@ import multiprocessing
 import utils.constants as constants 
 import db.video_repo as video_repo 
 import downloader.scrapesvt as scraper 
-import downloader.svtplaywrapper as dl 
+#import downloader.svtplaywrapper as dl 
 
+import downloader.download_video as dl 
+
+from segmenter import blackdetector, scenedetector, simple_segmentor
 
 HAS_STARTED = False 
 GENRES = constants.VIDEO_GENRES
@@ -29,27 +32,37 @@ def __handle_season_videos(videos):
     for video in videos: 
         if not video['downloaded']:
             # if a video was not previously downloaded --> extract video features
-            videofile = dl.download_video(video['url'])
-
+            videofile, subsfile = dl.download(video['url'])
         
             if videofile is None: 
                 print("videofile is none...")
-                continue 
+                exit()
+            else:
+                print("Download completed: %s " % videofile)
 
-            
             if APPLY_BLACK_DETECTION: 
-                print("Black detection")
+                blackSequences, blackFrames = blackdetector.detect_blackness(videofile)
+                for blackSequence in blackSequences: 
+                    print(blackSequence)
+                
+            if APPLY_SCENE_DETECTION:
+                scenes = scenedetector.detect_scenes(videofile)
+                for scene in scenes: 
+                    print(scene)
+
+  
+                
 
             any_video_was_downlaoded = True 
                 
-
-
-
             # Delete video 
             if DELETE_VIDEO_AFTER_EXTRACTION:
                 print("Delete video")
         else:
             print("%s %02d %02d was downloaded before" % (video['show'], video['season'], video['episode']))
+
+
+    # If there are more seasons but only one video comparison should still be made
 
     # if a video was downloaded and there are more than one --> perform video comparison 
     if any_video_was_downlaoded and len(videos) > 1: 

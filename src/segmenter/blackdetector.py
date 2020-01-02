@@ -28,9 +28,9 @@ def file_has_been_detected(video_file):
             with open(json_path) as json_file:
                 data = json.load(json_file)
                 return (SEQ_KEY in data) and (FRAMES_KEY in data)
-    
-def detect_black_sequences(video_file):
 
+def detect_blackness(video_file):
+    
     cmd = ( "%s -i %s -vf blackdetect=d=%f:pix_th=%f -an -f null -y /dev/null" % (ffmpeg._utils.get_ffmpeg_exe(), video_file, DURATION, THRESHOLD) ).split(" ")
     output = subprocess.Popen( cmd, stderr=subprocess.PIPE ).communicate()[1]
     

@@ -6,10 +6,8 @@
     *   find_by_tag_show_season(tag, show, season)
     *   get_shows()
     *   get_show_seasons(show)
-
     *   delete_by_url(url)
     *   drop_collection()
-
     *   get_prediction_comparison(url, tag)
     
 """
@@ -34,7 +32,6 @@ mongoClient = pymongo.MongoClient(url)
 db = mongoClient[dbName]
 annotationCollection = db["annotations"]
 
-# API
 
 def insert(srcs_annotation):
     if not isinstance(srcs_annotation, Annotation):

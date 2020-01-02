@@ -70,15 +70,12 @@ def generate_file_name(show, title, season, episode):
 secret = None
 with open(".secret.json") as json_file:
     secret = json.load(json_file)
-    
 dbName = secret['dbname']
 url = secret['url']
 mongoClient = pymongo.MongoClient(url)
 db = mongoClient[dbName]
 videoCollection = db["videos"]
 
-
-# API
 
 def insert(srcs_video):
     if not isinstance(srcs_video, Video):

@@ -20,7 +20,7 @@ def build_dataset_from_step(fromStep, toStep, override):
         urls = file_handler.get_all_urls_from_temp()
         for url in urls:
             print("downloading: " + url)
-            file_name = svtplaywrapper.download_video(url)
+            file_name = svtplaywrapper.download(url)
             if toStep == "--seg": #not adviced to skip this step after start (miss the urlconnection for later intro connections)
                 exit()
             if file_name == None: # download or merge failed, try next video
@@ -37,14 +37,10 @@ def build_dataset_from_step(fromStep, toStep, override):
     elif fromStep == "--sim":
         fromSim(toStep, override)
 
-<<<<<<< HEAD
-def fromFrames(toStep, override):
-=======
 
     
 
-def fromFrames(toStep):
->>>>>>> febc54e6842e57983bd1082d067161f6dfa9cc82
+def fromFrames(toStep, override):
     # find all videofiles
     video_files = file_handler.get_all_mp4_files()
     for video_file in video_files:

@@ -29,12 +29,12 @@ def __detect_black_sequences_for_all(forced):
     if forced: 
         for file in files: 
             count = count + 1
-            black.detect_black_sequences(file)
+            black.detect_blackness(file)
     else:
         for file in files: 
             if not black.file_has_been_detected(file): 
                 count = count + 1
-                black.detect_black_sequences(file)
+                black.detect_blackness(file)
     print("Blackdetection was used on %d/%d files." % (count, len(files)))
 
 
@@ -115,5 +115,5 @@ def execute(argv):
 
     file = args_helper.get_value_after_key(argv, "-input", "-i")
     if file != "" and ".mp4" in file: 
-        black.detect_black_sequences(file)
+        black.detect_blackness(file)
         return 

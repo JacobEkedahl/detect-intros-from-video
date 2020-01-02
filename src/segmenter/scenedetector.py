@@ -58,7 +58,7 @@ def file_has_been_segmented(video_file):
                 return DATA_KEY in data
 
 
-def segment_video(video_file):
+def detect_scenes(video_file):
     # requires that they all have the same frame size, and optionally, framerate.
     if not os.path.exists(video_file):
         print("Error: %s does not exists." % video_file)
