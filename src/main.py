@@ -5,7 +5,7 @@ import sys as s
 
 from commands import cmd_videos, cmd_segment, cmd_dataset, cmd_black
 
-import routine_work as work 
+import process_all_videos
 import downloader.scrapesvt as scrapesvt
 from downloader import svtplaywrapper
 
@@ -130,7 +130,7 @@ if __name__ == "__main__":
         exit()
 
     elif(s.argv[1] == "--work"): 
-        work.start()
+        process_all_videos.start()
         exit()
 
     else:

@@ -66,11 +66,11 @@ def __stats_intro_correlation(errMargin):
                     blackFrameIntroEnd = blackFrameIntroEnd + 1
                     endHasBlackness = True 
 
-        if black.SEQ_KEY in video: 
+        if black.SEQUENCES_KEY in video: 
             processedIntrosCount = processedIntrosCount + 1
             print()
             print("%s s%02de%02d %f-%f" % (video['show'], video['season'], video['episode'], introStart, introEnd) )
-            for seq in video[black.SEQ_KEY]:
+            for seq in video[black.SEQUENCES_KEY]:
                 if seq['start'] <= introStart + errMargin and introStart - errMargin <= seq['end']: 
                     blackIntroStartCount = blackIntroStartCount + 1
                     startHasBlackness = True 
@@ -82,7 +82,7 @@ def __stats_intro_correlation(errMargin):
             startBlackCombinedCount = startBlackCombinedCount + 1
         if endHasBlackness:
             endBlackCombinedCount = endBlackCombinedCount + 1
-        if black.SEQ_KEY in video or black.FRAMES_KEY in video:
+        if black.SEQUENCES_KEY in video or black.FRAMES_KEY in video:
             totalBlackCombinedCount = totalBlackCombinedCount + 1 
 
     print("\nmargin of error: %f " % errMargin)

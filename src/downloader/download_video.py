@@ -117,7 +117,7 @@ def download(url):
         logging.error("%s duration was %d, expected %d.", url, duration, CUT_OFF_TIME)
         return None, None 
     
-    # move files to correct sub-directory based on show name 
+    # move files to correct sub-directory based on show name
     head, filename = os.path.split(mp4)
     root, subdir = os.path.split(head) # /temp/videos
     showname = filename.split(".")[0]
@@ -130,4 +130,5 @@ def download(url):
         newfullpath = os.path.join(subdir, filename)
         os.rename(subs, newfullpath)
         subs = newfullpath
+        
     return mp4, subs

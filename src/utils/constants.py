@@ -34,10 +34,12 @@ START_SEED = 0
 BLACK_DETECTOR_THRESHOLD = 0.1  # 0.0 complete blackness 
 BLACK_DETECTOR_MIN_DUR = 0.1    # minimum sequence duration 
 
-# Routine Work 
+# Processing  
 VIDEO_GENRES = ["serier"]
+VIDEO_START_LEN = 480 
 DELETE_VIDEO_AFTER_EXTRACTION = False  
-APPLY_BLACK_DETECTION = False 
-APPLY_SCENE_DETECTION = False  
-
+APPLY_BLACK_DETECTION = True 
+APPLY_SCENE_DETECTION = True  
+SAVE_TO_FILE = True 
+SAVE_TO_DB = True 
 

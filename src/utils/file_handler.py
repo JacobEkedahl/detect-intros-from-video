@@ -10,6 +10,22 @@ TEMPFOLDERNAME = "temp"
 VIDEOFOLDERNAME = "videos"
 URLSTEXTFILENAME = "video-serier.txt"
 
+def save_to_file(video_file, key, element):
+    data = {}
+    json_path = video_file.replace('.mp4', '') + '.json'
+    if os.path.exists(json_path):
+        with open(json_path) as json_file:
+            data = json.load(json_file)
+    data[key] = element           
+    with open(json_path, 'w') as outfile:
+        json.dump(data, outfile, indent=4, sort_keys=False)
+
+def load_from_file(video_file):
+    data = {}
+    with open(get_seg_file_from_video(video_file)) as json_file:
+        data = json.load(json_file)
+    return data                   
+
 def create_folderstructure_if_not_exists():
     if not os.path.exists(get_full_path_videos()):
         os.makedirs(get_full_path_videos())
