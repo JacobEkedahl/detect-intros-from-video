@@ -11,6 +11,8 @@ from pathlib import Path
 import imageio_ffmpeg as ffmpeg
 from moviepy.editor import VideoFileClip
 
+import utils.file_handler as file_handler 
+
 CAPTURE_TIME_IN_MIN = "8"
 CUT_OFF_TIME = 480 # seconds
 MAX_ATTEMPTS = 5
@@ -30,7 +32,7 @@ def get_new_files(startTime):
 
 def merge_video_audio(video, audio):
     output = video.replace(".ts", "-converted.mp4")
-    cmd = [ffmpeg._utils.get_ffmpeg_exe(), "-i", audio, "-i", video, "-c", "copy", "-t", CUT_OFF_TIME, "-y", output]
+    cmd = [ffmpeg._utils.get_ffmpeg_exe(), "-i", audio, "-i", video, "-c", "copy", "-t", "00:08:00.0", "-y", output]
     p = subprocess.Popen(cmd, shell=True) 
     p.wait()
     return output 
@@ -51,7 +53,8 @@ def download_files(url):
     timeBeforeDownload = dt.datetime.now()
     cmd = ["sh", "lib/runSvtPlay.sh", "--config", "lib/svtplay-dl.yaml", url, "--capture_time", CAPTURE_TIME_IN_MIN]
     try:
-        subprocess.check_call(cmd, shell=False)
+        p = subprocess.Popen(cmd, shell=True)
+        p.wait()
         return get_new_files(timeBeforeDownload)
     except Exception as e:
         files = get_new_files(timeBeforeDownload)
@@ -100,35 +103,47 @@ def download(url):
     if video != None and audio != None and mp4 == None: 
         mp4 = merge_video_audio(video, audio)
 
-    if video != None: 
+    if video != None:
         os.remove(os.path.abspath(video))
 
-    if audio != None: 
-        os.remove(os.path.abspath(video))
+    if audio != None:
+        os.remove(os.path.abspath(audio))
 
-    # Cuts the film if in case that its longer than it should be 
+    # Cuts the film if in case that its longer than it should be
     clip = VideoFileClip(str(mp4))
-    duration = int(clip.duration)
-    if  duration > CUT_OFF_TIME:
+    try:  
+        duration = int(clip.duration)
+        if  duration > CUT_OFF_TIME:
+            clip.close()
+            output = cut_video(mp4, 0, CUT_OFF_TIME)
+            mp4 = output
+        elif duration < CUT_OFF_TIME - 10:
+            logging.error("%s duration was %d, expected %d.", url, duration, CUT_OFF_TIME)
+            return None, None 
+    finally:
         clip.close()
-        output = cut_video(mp4, 0, CUT_OFF_TIME)
-        mp4 = output
-    elif duration < CUT_OFF_TIME - 10:
-        logging.error("%s duration was %d, expected %d.", url, duration, CUT_OFF_TIME)
-        return None, None 
-    
-    # move files to correct sub-directory based on show name
+
+    delay = 0
+    while file_handler.file_is_in_use(mp4): 
+        time.sleep(1)
+        delay = delay + 1
+    if delay > 0:
+        logging.warning("file %s was still in use for %d seconds", mp4, delay)
+
     head, filename = os.path.split(mp4)
     root, subdir = os.path.split(head) # /temp/videos
     showname = filename.split(".")[0]
-    subdir = os.path.join(root, showname)
-    Path(subdir).mkdir(parents=True, exist_ok=True)
-    newfullpath = os.path.join(subdir, filename)
-    os.rename(mp4, newfullpath)
-    if subs:
-        head, filename = os.path.split(subs)
+     # move files to correct sub-directory based on show name
+    if subdir != showname: 
+        subdir = os.path.join(root, showname)
+        Path(subdir).mkdir(parents=True, exist_ok=True)
         newfullpath = os.path.join(subdir, filename)
-        os.rename(subs, newfullpath)
-        subs = newfullpath
-        
+        os.rename(mp4, newfullpath)
+        if subs:
+            # move subtitles
+            head, filename = os.path.split(subs)
+            newfullpath = os.path.join(subdir, filename)
+            os.rename(subs, newfullpath)
+            subs = newfullpath
+
     return mp4, subs

@@ -26,6 +26,14 @@ def load_from_file(video_file):
         data = json.load(json_file)
     return data                   
 
+def file_is_in_use(file):
+    if os.path.exists(file):
+        try:
+            os.rename(file, file)
+            return False 
+        except OSError:
+            return True 
+
 def create_folderstructure_if_not_exists():
     if not os.path.exists(get_full_path_videos()):
         os.makedirs(get_full_path_videos())

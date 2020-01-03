@@ -40,7 +40,7 @@ def insert(srcs_annotation):
     if video is None: 
         print("Error: %s video does not exists inside the video repository. This is likely because the web scraper failed to find it." % srcs_annotation.url)
         return 
-    if len(find_by_tag_url(srcs_annotation.url, srcs_annotation.tag)) > 0:
+    if find_by_tag_url(srcs_annotation.url, srcs_annotation.tag) is not None: 
         print("Warning: updating: %s %s" % (srcs_annotation.url, srcs_annotation.tag))
         # Update 
         annotationCollection.update_one(
@@ -67,12 +67,12 @@ def find_by_tag(tag):
     return list(annotationCollection.find({"tag": tag}))
 
 def find_by_tag_url(url, tag):
-    return list(annotationCollection.find({
+    return annotationCollection.find_one({
         '$and': [
             {'url': url}, 
             {"tag": tag}
         ]
-    }))
+    })
 
 
 def find_by_tag_show(tag, show):

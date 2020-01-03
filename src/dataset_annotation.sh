@@ -1,10 +1,10 @@
 #!/bin/sh
 
-url="https://www.svtplay.se/video/24876742/unga-kvinnor/unga-kvinnor-sasong-1-avsnitt-2"
+url="https://www.svtplay.se/video/20332466/andra-aket/andra-aket-sasong-1-avsnitt-6?start=auto"
 
 
-start="00:01:14"
-end="00:01:44"
+start="00:01:02"
+end="00:01:16"
 
 tag="intro"
 

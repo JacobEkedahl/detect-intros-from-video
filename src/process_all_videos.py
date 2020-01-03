@@ -10,11 +10,9 @@ import downloader.scrapesvt as scraper
 import downloader.download_video as dl 
 
 from segmenter import blackdetector, scenedetector, simple_segmentor
+from annotations import annotate_black, annotate_scenes,annotate, annotate_intro
 
-from annotations import annotate_black
-
-import annotations.annotate_meta as meta
-import annotations.annotate as annotate 
+from frame_matcher import video_to_hashes, video_matcher
 
 HAS_STARTED = False 
 GENRES = constants.VIDEO_GENRES
@@ -31,15 +29,13 @@ DELETE_VIDEO_AFTER_EXTRACTION = constants.DELETE_VIDEO_AFTER_EXTRACTION
 CPU_COUNT = multiprocessing.cpu_count()
 processedUrls = []
 
-
-
-
 def __handle_season_videos(videos):
     # Downloads all previously not downloaded videos 
     any_video_was_downlaoded = False 
     for video in videos: 
         if not video['downloaded']:
             # if a video was not previously downloaded --> extract video features
+            
             videofile, subsfile = dl.download(video['url'])
             if videofile:
                 print("Download completed: %s " % videofile)
@@ -53,29 +49,29 @@ def __handle_season_videos(videos):
                 blackSequences, blackFrames = blackdetector.detect_blackness(videofile)
                 segments = annotate_black.annotate_black_frames(segments, blackdetector.FRAME_KEY, blackFrames)
                 segments = annotate_black.annotate_black_sequences(segments, blackdetector.SEQUENCE_KEY, blackSequences)
-                # Combines previous annotations into one 
                 segments = annotate_black.combine_annotation_into(segments, "black", blackdetector.SEQUENCE_KEY, blackdetector.FRAME_KEY, True)
-                if SAVE_TO_FILE:
-                    file_handler.save_to_file(videofile, simple_segmentor.SCENES_KEY, segments)
-                
-
-                for blackFrame in blackFrames:
-                    print(blackFrame)    
-                for blackSequence in blackSequences: 
-                    print(blackSequence)
-                
+            
             if APPLY_SCENE_DETECTION:
-                exit()
                 scenes = scenedetector.detect_scenes(videofile)
-                  # meta.annotate_meta_data(scenes, scenedetector.DATA_KEY, videofile)
-                # annotate here 
-                for scene in scenes: 
-                    print(scene)
-                
+                segments = annotate_scenes.annotate_detected_scenes(segments, scenes, scenedetector.DATA_KEY)
 
             
-           
-  
+            annotate_intro.apply_annotated_intro_on_scenes(video['url'], segments)
+            
+            exit()
+
+            print("video to hashesh")
+            video_to_hashes.save_hashes(videofile)
+            print("video to hashes done")
+            video_matcher.find_all_matches(videofile)
+            print("video matcher done")
+
+            exit()
+            if SAVE_TO_FILE:
+                file_handler.save_to_file(videofile, simple_segmentor.SCENES_KEY, segments)
+            
+
+            
                 
 
             any_video_was_downlaoded = True 

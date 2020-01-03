@@ -118,6 +118,8 @@ def set_presence_of_time_interval_improved(annotation, scenes, TimeIntervals):
             scene_end = time.timestamp(scene['end'])
             if scene_start >= interval_start and scene_end <= interval_end:
                 scene[annotation] = True 
+            else:
+                scene[annotation] = False
     return scenes
 
 

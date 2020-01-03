@@ -2,9 +2,7 @@ import json
 
 from segmenter import simple_segmentor
 from utils import file_handler, time_handler
-
 from . import annotate as ann
-
 from annotations.annotate import TimeInterval
 
 
@@ -17,7 +15,7 @@ def annotate_black_frames(segments, annotation, blackFrames):
     segments = ann.set_presence_of_timestamps(annotation, segments, timestampsInSeconds, True)
     return segments
 
-  
+
 def annotate_black_sequences(segments, annotation, blackSequences):
     if len(segments) == 0 or len(blackSequences) == 0:
         return segments
@@ -28,7 +26,7 @@ def annotate_black_sequences(segments, annotation, blackSequences):
         seg[annotation] = False 
     return ann.set_presence_of_time_interval_improved(annotation, segments, timeIntervals)
 
-
+#TODO: Create a customized multi annotation to improve performance and replace this 
 def combine_annotation_into(segments, annotation, blakcSequencKey, blackFrameKey, removeOld):
     for seg in segments: 
         if seg[blakcSequencKey] or seg[blackFrameKey]: 

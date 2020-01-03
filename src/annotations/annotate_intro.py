@@ -4,12 +4,12 @@ import os
 from segmenter import simple_segmentor
 from stats import prob_calculator
 from utils import extractor, file_handler, time_handler
-
 from . import annotate as ann
 from .annotate import TimeInterval
 
 
-def annotate_intro(video_file, seq):
+
+def __annotate_intro(video_file, seq):
     segmentationFile = file_handler.get_seg_file_from_video(video_file)
     scenes = None
     timeIntervals = []
@@ -39,4 +39,14 @@ def annotate_intro_from_url(video_file, url):
         print("could not find any intro to annotate with")
         return
 
-    annotate_intro(video_file, seq)
+    __annotate_intro(video_file, seq)
+
+from db import video_repo, annotation_repo
+
+# Fetches annotated intro from the repository and applies it on the scenes
+def apply_annotated_intro_on_scenes(url, segments):
+    intro = annotation_repo.find_by_tag_url(url, "intro")
+    timeIntervals = []
+    timeIntervals.append(TimeInterval(intro['start'], intro['end']))
+    ann.set_presence_of_time_interval_improved('intro', segments, timeIntervals)
+    return segments
