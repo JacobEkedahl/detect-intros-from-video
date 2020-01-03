@@ -9,6 +9,7 @@ import process_all_videos
 import downloader.scrapesvt as scrapesvt
 from downloader import svtplaywrapper
 
+
 import pipeline
 import utils.file_handler as file_handler
 from annotations import (annotation_summary, dataset_annotation,
@@ -22,7 +23,6 @@ from utils import cleaner, extractor
 
 
 if __name__ == "__main__":
-
     
     # Setup logger
     logging.basicConfig(filename='log.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')

@@ -27,12 +27,11 @@ import matplotlib
 import utils.args_helper as args_helper
 import utils.file_handler as file_handler
 import segmenter.scenedetector as scenedetector
-import db.annotation_repo as ann_repo 
 import db.video_repo as video_repo
 import utils.time_handler as time_handler
 
 SCENEDETECT_STATS_FILE  = "temp/stats_scendetect.json"
-KEY_SCENES              = 'sd_scenes'
+KEY_SCENES              = scenedetector.DATA_KEY
 
 def __segment_all_scendetect(forced):
     count = 0
@@ -106,26 +105,21 @@ def __get_compare_scenes_to_intro(url, scenes, startStr, endStr):
     }
 
 def __create_scendetect_intro_stats():
-    intros = ann_repo.find_by_tag("intro")
-    urls = []
-    for intro in intros:
-        urls.append(intro['url'])
-    videos = video_repo.find_by_urls(urls)
+    annotatedVideos = video_repo.find_all_with_intro_annotation()
     hasScenesCount = 0
     data = []
-    for video in videos:
+    for video in annotatedVideos:
         if KEY_SCENES in video:
             hasScenesCount = hasScenesCount + 1
-            for intro in intros: 
-                if intro['url'] == video['url']:
-                    result = __get_compare_scenes_to_intro(intro['url'], video[KEY_SCENES], intro['start'], intro['end'])
-                    if result: 
-                        data.append(result)
+            intro = video[video_repo.INTRO_ANNOTATION_KEY]
+            result = __get_compare_scenes_to_intro(video['url'], video[KEY_SCENES], intro['start'], intro['end'])
+            if result: 
+                data.append(result)
 
     with open(SCENEDETECT_STATS_FILE, 'w') as outfile:
         json.dump(data, outfile, indent=4, sort_keys=False)
 
-    print("Processed from annotated set: %d/%d\nSegment the remainder to improve the coverage." % (hasScenesCount, len(videos)))
+    print("Processed from annotated set: %d/%d\nSegment the remainder to improve the coverage." % (hasScenesCount, len(annotatedVideos)))
 
 
 def __display_scendetect_stats(startFilter, endFilter):

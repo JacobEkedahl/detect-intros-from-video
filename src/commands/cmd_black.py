@@ -18,7 +18,6 @@ import segmenter.blackdetector as black
 import utils.args_helper as args_helper
 import utils.time_handler as time_handler
 import utils.file_handler as file_handler
-import db.annotation_repo as ann_repo
 import db.video_repo as video_repo 
 
 ACCEPTED_ERR = 2.0
@@ -49,11 +48,12 @@ def __stats_intro_correlation(errMargin):
     startBlackCombinedCount = 0
     endBlackCombinedCount = 0
     totalBlackCombinedCount = 0 
-    annotations = ann_repo.find_by_tag("intro")
-    for ann in annotations:
-        video = video_repo.find_by_url(ann['url'])
-        introStart = time_handler.to_seconds(ann['start'])
-        introEnd =time_handler.to_seconds(ann['end'])
+
+    annotatedVideos = video_repo.find_all_with_intro_annotation()
+    for v in annotatedVideos:
+        intro = v[video_repo.INTRO_ANNOTATION_KEY]
+        introStart = time_handler.to_seconds(intro['start'])
+        introEnd =time_handler.to_seconds(intro['end'])
         startHasBlackness = False 
         endHasBlackness = False 
         if black.FRAMES_KEY in video:
@@ -89,15 +89,15 @@ def __stats_intro_correlation(errMargin):
     print("\nBlack sequences:")
     print("Intro start: %f%% of %d " % (blackIntroStartCount/processedIntrosCount*100, processedIntrosCount))
     print("Intro end: %f%% of %d" % (blackIntroEndCount/processedIntrosCount*100, processedIntrosCount))
-    print("has black sequences: %d/%d" % (processedIntrosCount,len(annotations)))
+    print("has black sequences: %d/%d" % (processedIntrosCount,len(annotatedVideos)))
     print("\nblack frames")
     print("Intro start: %f%% of %d " % (blackFrameIntroStart/blackFramePresentCount*100, blackFramePresentCount))
     print("Intro end: %f%% of %d" % (blackFrameIntroEnd/blackFramePresentCount*100, blackFramePresentCount))
-    print("has black frames: %d/%d" % (blackFramePresentCount,len(annotations)))
+    print("has black frames: %d/%d" % (blackFramePresentCount,len(annotatedVideos)))
     print("\nCombined")
     print("Intro start: %f%% of %d " % (startBlackCombinedCount/totalBlackCombinedCount*100, totalBlackCombinedCount))
     print("Intro end: %f%% of %d" % (endBlackCombinedCount/totalBlackCombinedCount*100, totalBlackCombinedCount))
-    print("has any blackness: %d/%d" % (totalBlackCombinedCount,len(annotations)))
+    print("has any blackness: %d/%d" % (totalBlackCombinedCount,len(annotatedVideos)))
 
 def execute(argv):
     if args_helper.is_key_present(argv, "-all"):

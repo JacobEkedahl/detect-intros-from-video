@@ -19,17 +19,24 @@
     *   get_shows()
     *   get_show_seasons(show):
 
+
+    *   find_by_presence_of_key(key)
+    *   find_all_with_intro_prediction()
+    *   find_all_with_intro_annotation():
+
     *   save_after_download(url, mp4_fullpath)
     *   set_downloaded_flag(url, flag)
     *   change_fullpath(file, fullpath)
     *   set_data_by_file(file, key, data):
     *   set_data_by_url(url, key, data):
 
+    *   set_intro_prediction(url, start, end)
+    *   set_intro_annotation(url, start, end)
+    
     *   delete_by_file(videoFileName):
     *   delete_by_url(url):
     *   delete_show(show)
 
-    *   set_prediction(url, tag, start, end)
 """
 
 import pymongo
@@ -63,9 +70,16 @@ class Video:
         return '{}.s{:02}e{:02}'.format(self.show, self.season, self.episode)
 
 
-def generate_file_name(show, title, season, episode):
-    return Video(show, title, season, episode).filename
-
+INTRO_ANNOTATION_KEY    = 'intro_ann'
+INTRO_PREDICTION_KEY    = 'intro_pre'
+PREINTRO_ANNOTATION_KEY = 'prei_ann'
+PREVIOUS_ANNOTATION_KEY = 'prev_ann'
+URL_KEY                 = 'url'
+SHOW_KEY                = 'show'
+TITLE_KEY               = 'title'
+SEASON_KEY              = 's'
+EPISODE_KEY             = 'e'
+DOWNLOADED_KEY          = 'dl'
 
 secret = None
 with open(".secret.json") as json_file:
@@ -77,28 +91,34 @@ db = mongoClient[dbName]
 videoCollection = db["videos"]
 
 
-def insert(srcs_video):
-    if not isinstance(srcs_video, Video):
-        raise TypeError('Inappropriate type: {}, Expected: {}.'.format(type(srcs_video), type(Video)))
-    if find_by_url(srcs_video.url) is not None: 
+def insert(video):
+    if not isinstance(video, Video):
+        raise TypeError('Inappropriate type: {}, Expected: {}.'.format(type(video), type(Video)))
+    if find_by_url(video.url) is not None: 
         return None
-    x = videoCollection.insert_one(srcs_video.__dict__)
-    return x.inserted_id
+    return videoCollection.insert_one({
+        SHOW_KEY: video.show,
+        TITLE_KEY: video.title, 
+        SEASON_KEY: video.season, 
+        EPISODE_KEY: video.episode, 
+        URL_KEY: video.url, 
+        DOWNLOADED_KEY: video.downloaded
+    }).inserted_id
 
 def find_all():
     return list(videoCollection.find())
 
 def find_all_not_dl():
-    return list(videoCollection.find({"downloaded": False}))
+    return list(videoCollection.find({DOWNLOADED_KEY: False}))
 
 def find_all_dl():
-     return list(videoCollection.find({"downloaded": True}))
+     return list(videoCollection.find({DOWNLOADED_KEY: True}))
 
 def find_by_url(url):
-    return videoCollection.find_one({"url": url})
+    return videoCollection.find_one({ URL_KEY: url})
 
 def find_by_urls(urls):
-    return list(videoCollection.find({ "url": {
+    return list(videoCollection.find({ URL_KEY: {
          "$in": urls 
          }
     }))
@@ -107,53 +127,68 @@ def find_by_file(filename):
     return videoCollection.find_one({"file": filename})
 
 def find_by_show(show):
-    return list(videoCollection.find({"show": show}))
+    return list(videoCollection.find({SHOW_KEY: show}))
 
 def find_by_show_not_dl(show):
     return list( videoCollection.find({
         "$and": [
-            {"show": show}, 
-            {"downloaded": False}
+            {SHOW_KEY: show}, 
+            {DOWNLOADED_KEY: False}
         ]
     }))
 
 def find_by_show_and_season(show, season):
     return list( videoCollection.find({
         "$and": [
-            {"show": show}, 
-            {"season": season}
+            {SHOW_KEY: show}, 
+            {SEASON_KEY: season}
         ]
     }))
     
 def find_by_show_and_season_not_dl(show, season):
     return list( videoCollection.find({
         '$and': [
-            {'show': show}, 
-            {"season": season},
-            {"downloaded": False}
+            {SHOW_KEY: show}, 
+            {SEASON_KEY: season},
+            {DOWNLOADED_KEY: False}
         ]
     }))
 
 def find_by_show_season_episode(show, season, episode):
     return list( videoCollection.find({
     '$and': [
-        {'show': show}, 
-        {"season": season},
-        {"episode": episode}
+        {SHOW_KEY: show}, 
+        {SEASON_KEY: season},
+        {EPISODE_KEY: episode}
     ]
 }))
 
+def find_by_presence_of_key(key):
+    return list(videoCollection.find({key: {
+            "$exists": True 
+        }
+    }))
 
+def find_all_with_intro_prediction():
+    return find_by_presence_of_key(INTRO_PREDICTION_KEY)
+
+def find_all_with_intro_annotation():
+    return find_by_presence_of_key(INTRO_ANNOTATION_KEY)
+
+
+
+# TODO: Remove? 
 def save_after_download(url, mp4_fullpath):
-    return videoCollection.update_one({ "url": url }, 
+    return videoCollection.update_one({ URL_KEY: url }, 
     {
         "$set": {
-             "downloaded": True, 
+             DOWNLOADED_KEY: True, 
              "file": os.path.basename(mp4_fullpath),
              "fullpath": mp4_fullpath
         }
     }, upsert = False).matched_count
 
+# TODO: Remove? 
 def change_fullpath(file, fullpath):
     return videoCollection.update_one({ "file": file }, 
     {
@@ -162,8 +197,9 @@ def change_fullpath(file, fullpath):
         }
     }, upsert = False).matched_count
 
+# TODO: Remove ? 
 def set_downloaded_flag(url, flag):
-    return set_data_by_url(url, "downloaded", flag)
+    return set_data_by_url(url, DOWNLOADED_KEY, flag)
 
 def set_data_by_file(videoFileName, key, data):
     return videoCollection.update_one({ "file": videoFileName }, 
@@ -171,32 +207,36 @@ def set_data_by_file(videoFileName, key, data):
         "$set": { key: data }
     }, upsert = False).matched_count
 
-
 def set_data_by_url(url, key, data):
-    return videoCollection.update_one({ "url": url }, 
+    return videoCollection.update_one({ URL_KEY: url }, 
     {
         "$set": { key: data }
     }, upsert = False).matched_count
 
-def set_prediction(url, tag, start, end):
-    return set_data_by_url(url, tag, {
-            "start": start,
-            "end": end
-        }
-    )
+def unset_data_by_url(url, key):
+     return videoCollection.update_one({ URL_KEY: url }, 
+    {
+        "$unset": key 
+    }, upsert = False).matched_count
+
+def set_intro_prediction(url, start, end):
+    return set_data_by_url(url, INTRO_PREDICTION_KEY, { "start": start, "end": end } )
+
+def set_intro_annotation(url, start, end):
+    return set_data_by_url(url, INTRO_ANNOTATION_KEY, { "start": start, "end": end } )
 
 def get_shows():
-    return list(videoCollection.distinct("show"))
+    return list(videoCollection.distinct(SHOW_KEY))
 
 def get_show_seasons(show):
-    return list(videoCollection.distinct("season", {"show": show})) 
+    return list(videoCollection.distinct(SEASON_KEY, {SHOW_KEY: show})) 
 
 def delete_by_file(videoFileName):
     return videoCollection.delete_one({"file": videoFileName}).deleted_count
 
 def delete_by_url(url):
-    return videoCollection.delete_one({"url": url}).deleted_count
+    return videoCollection.delete_one({URL_KEY: url}).deleted_count
 
-def delete_show(show):
-    return videoCollection.delete_many({"show": show}).deleted_count
+def delete_by_show(show):
+    return videoCollection.delete_many({SHOW_KEY: show}).deleted_count
 

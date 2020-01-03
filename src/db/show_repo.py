@@ -29,6 +29,10 @@ class Show:
         self.url = url 
 
 
+URL_KEY                 = 'url'
+NAME_KEY                = 'name'
+DIRECTORY_KEY           = 'dir'
+
 secret = None
 with open(".secret.json") as json_file:
     secret = json.load(json_file)
@@ -43,17 +47,21 @@ def insert(srcs_show):
         raise TypeError('Inappropriate type: {}, Expected: {}.'.format(type(srcs_show), type(Show)))
     if find_by_url(srcs_show.url) is not None: 
         return None
-    x = showCollection.insert_one(srcs_show.__dict__)
+    x = showCollection.insert_one({
+        NAME_KEY: srcs_show.name,
+        DIRECTORY_KEY: srcs_show.dirname,
+        URL_KEY: srcs_show.url
+    })
     return x.inserted_id
 
 def find_by_url(url):
-    return showCollection.find_one({"url": url})
+    return showCollection.find_one({URL_KEY: url})
 
 def find_by_name(name):
-    return showCollection.find_one({"name": name})
+    return showCollection.find_one({NAME_KEY: name})
 
 def find_by_dir(dirname):
-    return showCollection.find_one({"dir": dirname})
+    return showCollection.find_one({DIRECTORY_KEY: dirname})
 
 def find_all():
     return list(showCollection.find())

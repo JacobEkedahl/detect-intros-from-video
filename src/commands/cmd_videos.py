@@ -3,11 +3,7 @@ import json
 
 import db.video_repo as video_repo 
 import utils.args_helper as args_helper
-
 import annotations.dataset_annotation as dataset_annotation
-from db.annotation_repo import Annotation
-import db.annotation_repo as ann_repo
-
 import utils.time_handler as time_handler
 
 
