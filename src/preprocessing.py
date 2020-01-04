@@ -83,7 +83,7 @@ def preprocess_video(video):
     # if video was not downloaded --> download
     if not video[DL]:
         try: 
-            videofile = dl.download(video[URL])
+            videofile = dl.download_videos(video[URL])
             if videofile: 
                 video[DL] = True
                 video[PATH] = videofile 
@@ -94,6 +94,7 @@ def preprocess_video(video):
         except Exception as err: 
             logging.error(err)
             logging.error("failed to download: %s" % video[URL])
+            if DEBUG: print(err)
 
             return False # We skip this video, try again on next schedule 
     else:
