@@ -74,7 +74,7 @@ def preprocess_url(url):
     file_handler.save_to_video_file(videofile, simple_segmentor.SCENES_KEY, segments)
 
     return True # Success
-    
+
 
 def preprocess_video(video):
     start = datetime.now()
@@ -157,6 +157,7 @@ def __get_start_end_time_now():
         start_time = now.replace(minute=int(start[1]), hour=int(start[0]), day=now.day + 1)
     return start_time, end_time, now
 
+
 def do_work():
 
     start_time, end_time, now = __get_start_end_time_now()
@@ -181,6 +182,7 @@ def do_work():
 
     #else: 
     #   print(output) possibly loop through all the urls in the output from webscraper
+
 
 def start_schedule():
     start_time, end_time, now = __get_start_end_time_now()
