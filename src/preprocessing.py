@@ -47,7 +47,7 @@ SEGMENTS = video_repo.SEGMENTS_KEY
 # Not really tested but something which may or may not be useful
 def preprocess_url(url):
     try: 
-        videofile = dl.download_videos(url)
+        videofile = dl.download_video(url)
     except Exception as err: 
         logging.error(err)
         logging.error("failed to download: %s" % url)
@@ -83,7 +83,7 @@ def preprocess_video(video):
     # if video was not downloaded --> download
     if not video[DL]:
         try: 
-            videofile = dl.download_videos(video[URL])
+            videofile = dl.download_video(video[URL])
             if videofile: 
                 video[DL] = True
                 video[PATH] = videofile 
