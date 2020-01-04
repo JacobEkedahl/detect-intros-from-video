@@ -181,7 +181,7 @@ def do_work():
                 if now < end_time: 
                     try: 
                         preprocess_video(video)
-                    except Exception as err
+                    except Exception as err:
                         logging.error(err)
                 else: 
                     logging.info("Finished preprocessing for today at: %s" % now)
