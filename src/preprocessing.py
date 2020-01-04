@@ -1,3 +1,7 @@
+"""
+    Calling preprocessing.start_schedule() will scrape all videos from svtplay and begin the preprocessing process inbetween the allocated time window defined in constants. 
+"""
+
 import logging 
 
 import time 
@@ -15,9 +19,8 @@ from segmenter import blackdetector, scenedetector, simple_segmentor
 from annotations import annotate_black, annotate_scenes,annotate, annotate_intro
 from frame_matcher import video_to_hashes, video_matcher
 
-HAS_STARTED = False 
-START_WORK = "05:57"
-END_WORK = "06:01"
+START_WORK = constants.SCHEDULED_PREPROCESSING_START
+END_WORK = constants.SCHEDULED_PREPROCESSING_END
 PENDING_CHECK_INTERVAL = 5
 
 GENRES = constants.VIDEO_GENRES
@@ -26,8 +29,6 @@ APPLY_SCENE_DETECTION = constants.APPLY_SCENE_DETECTION
 
 
 CPU_COUNT = multiprocessing.cpu_count()
-processedUrls = []
-
 
 SAVE_TO_FILE = constants.SAVE_TO_FILE
 SAVE_TO_DB = constants.SAVE_TO_DB
@@ -140,13 +141,13 @@ def preprocess_video(video):
         })
 
         if DELETE_VIDEO_FILES_AFTER_EXTRACTION:
-            os.remove(video[PATH])
-            os.remove(video[PATH].replace("-converted.mp4", ".srt"))
+            if os.path.exists(video[PATH]):
+                os.remove(video[PATH])
+            subs = video[PATH].replace("-converted.mp4", ".srt")
+            if os.path.exists(subs):
+                os.remove(video[PATH].replace("-converted.mp4", ".srt"))
     
-
-def do_work():
-
-    # set the time for which the work shall be running between
+def __get_start_end_time_now():
     start = START_WORK.split(":")
     end = END_WORK.split(":")
     now = datetime.now()
@@ -154,8 +155,12 @@ def do_work():
     end_time = now.replace(minute=int(end[1]), hour=int(end[0]))
     if start_time > end_time: 
         start_time = now.replace(minute=int(start[1]), hour=int(start[0]), day=now.day + 1)
-    logging.info("Starting daily web scraping and preprocessing (%s to %s)." % (start_time, end_time))
+    return start_time, end_time, now
 
+def do_work():
+
+    start_time, end_time, now = __get_start_end_time_now()
+    logging.info("Starting daily web scraping and preprocessing (%s to %s)." % (start_time, end_time))
     # Scrape SVT Play 
     urls_file = scraper.scrape_genres(GENRES)
 
@@ -177,8 +182,11 @@ def do_work():
     #else: 
     #   print(output) possibly loop through all the urls in the output from webscraper
 
-
 def start_schedule():
+    start_time, end_time, now = __get_start_end_time_now()
+    if start_time < now and now < end_time:
+        do_work()
+    
     schedule.every().day.at(START_WORK).do(do_work)
     while True:
         schedule.run_pending()
