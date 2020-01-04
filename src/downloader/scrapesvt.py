@@ -8,7 +8,6 @@
 """
 
 from bs4 import BeautifulSoup
-
 import lxml
 import requests
 import re
@@ -27,8 +26,6 @@ SAVE_TO_DB = constants.SAVE_TO_DB
 
 SVT_URL = "https://www.svtplay.se"
 FILE_DIR = "temp/scraped_urls.txt"
-json_data = {}
-json_data['videos'] = []
 
 # Writes the url to a file
 def scrape_show(show, genre):
@@ -122,17 +119,3 @@ def scrape_genres(genres):
     file.close()
     return file 
     
-
-def execute(argv):
-    genres = []
-    for i in range(1, len(argv)):
-        if (argv[i] == "-g" or argv[i] == "-genre") and i + 1 < len(argv):
-            genres.append(argv[i + 1])
-        if (argv[i] == "help"):
-            print("To scrape SVT-Play you need to specify which genres to extract data from by appending -g, followed by a genre, for each genre.")
-            return
-    if (len(genres) == 0):
-        print("Error: no genres specified.")
-        return 
-    scrape_genres(genres)
-

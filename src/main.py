@@ -112,8 +112,20 @@ if __name__ == "__main__":
         print("finnished downloading!")
         exit()
 
+    # DEBUG PURPOSES
     elif (s.argv[1] == "--scrape"):
-        scrapesvt.execute(s.argv)
+        genres = []
+        for i in range(1, len(s.argv)):
+            if (s.argv[i] == "-g" or s.argv[i] == "-genre") and i + 1 < len(s.argv):
+                genres.append(s.argv[i + 1])
+            if (s.argv[i] == "help"):
+                print("To scrape SVT-Play you need to specify which genres to extract data from by appending -g, followed by a genre, for each genre.")
+                exit()
+        if (len(genres) == 0):
+            print("Error: no genres specified.")
+            exit() 
+        scrapesvt.scrape_genres(genres)
+
         exit()
     elif (s.argv[1] == "--videos"):
         cmd_videos.execute(s.argv)
@@ -134,6 +146,7 @@ if __name__ == "__main__":
     elif(s.argv[1] == "--work"): 
         preprocessing.start_schedule()
         exit()
+
 
     else:
 
