@@ -16,8 +16,6 @@ from moviepy.editor import VideoFileClip
 
 from . import videoMerger
 
-TIMEOUT_TIME_IN_SECONDS = 60 
-
 def download_video(url):
     command = ["sh", "lib/runSvtPlay.sh", "--config", "lib/svtplay-dl.yaml", url, "--capture_time", "8"]
     if try_to_download(command) is None:

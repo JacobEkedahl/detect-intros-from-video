@@ -33,7 +33,7 @@ def scrape_show(show, genre):
     try: 
         data = json.loads(re.findall(r"root\['__svtplay_apollo'\] = (\{.*?\});", requests.get(show.url).text)[0])
     except Exception as err: 
-        logging.error(err)
+        logging.exception(err)
         logging.error("Failed to scrap data for %s " % show.title)
         return []
     
@@ -103,7 +103,8 @@ def scrape_genre(genre, file):
         title = meta.h2.span.text
         link = meta.a['href']
         show = Show(title, SVT_URL + link)
-        show_repo.insert(show)
+        if SAVE_TO_DB:
+            show_repo.insert(show)
         if DEBUG: 
             print("%d: %s, %s %s" % (i, show.name, show.url, show.dirname))
         file.write("\n%d: %s --- %s \n" % (i, show.name, show.url))

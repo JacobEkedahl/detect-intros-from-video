@@ -41,7 +41,7 @@ DEFAULT_START_TIME      = 0.0        # 00:00:00.30
 DEFAULT_END_TIME        = constants.VIDEO_START_LEN + 0.30
 DOWNSCALE_FACTOR        = constants.DOWNSCALE_FACTOR
 DATA_KEY                = 'sd_scenes'
-SAVE_TO_DB = constants.SAVE_TO_DB 
+SAVE_TO_DB = False 
 SAVE_TO_FILE = constants.SAVE_TO_FILE 
 PRINT_OUTPUT = False 
 
@@ -104,7 +104,7 @@ def detect_scenes(video_file):
             try: 
                 video_repo.set_data_by_file(os.path.basename(video_file), DATA_KEY, scenes)
             except Exception as e: 
-                print(e)
+                logging.exception(e)
         if PRINT_OUTPUT:
             for scene in scenes: 
                 print(scene)
@@ -114,7 +114,7 @@ def detect_scenes(video_file):
         return scenes 
 
     except Exception as e: 
-        logging.error(e)
+        logging.exception(e)
 
     finally:
         video_manager.release()

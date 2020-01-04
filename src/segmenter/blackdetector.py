@@ -15,7 +15,7 @@ SEQUENCE_KEY = 'blackSequence'
 FRAMES_KEY = 'blackFrames'  
 FRAME_KEY = 'blackFrame'
 BLACK_KEY = 'black'
-SAVE_TO_DB = constants.SAVE_TO_DB 
+SAVE_TO_DB = False 
 SAVE_TO_FILE = constants.SAVE_TO_FILE 
 PRINT_OUTPUT = False 
 THRESHOLD = constants.BLACK_DETECTOR_THRESHOLD
@@ -35,7 +35,7 @@ def file_has_been_detected(video_file):
             video = video_repo.find_by_file(os.path.basename(video_file))
             return (video is not None) and (SEQUENCES_KEY in video) and (FRAMES_KEY in video)
         except Exception as e: 
-            logging.error(e)
+            logging.exception(e)
     if SAVE_TO_FILE: 
         json_path = video_file.replace('.mp4', '') + '.json'
         if os.path.exists(json_path):
@@ -78,7 +78,7 @@ def detect_blackness(video_file):
             video_repo.set_data_by_file(os.path.basename(video_file), SEQUENCES_KEY, blackSequences)
             video_repo.set_data_by_file(os.path.basename(video_file), FRAMES_KEY, blackFrames)
         except Exception as e: 
-            logging.error(e)
+            logging.exception(e)
 
     if PRINT_OUTPUT: 
         if len(blackSequences) > 0:

@@ -27,14 +27,14 @@ def annotate_black_sequences(segments, annotation, blackSequences):
     return ann.set_presence_of_time_interval_improved(annotation, segments, timeIntervals)
 
 # This will replace the black frame and sequence annotations with a new combined key 
-def combine_annotation_into(segments, annotation, blakcSequencKey, blackSequences, blackFrameKey, blackFrames, removeOld):
+def combine_annotation_into(segments, annotation, blackSequencKey, blackSequences, blackFrameKey, blackFrames, removeOld):
     if (len(segments) > 0 and len(blackSequences) > 0 and len(blackFrames) > 0):
         for seg in segments: 
-            if seg[blakcSequencKey] or seg[blackFrameKey]: 
+            if seg[blackSequencKey] or seg[blackFrameKey]: 
                 seg[annotation] = True
             else:
                 seg[annotation] = False 
             if removeOld:
-                seg.pop(blakcSequencKey)
+                seg.pop(blackSequencKey)
                 seg.pop(blackFrameKey)
     return segments 

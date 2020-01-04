@@ -30,10 +30,10 @@ def __query_videos(argv):
         if displayDetails: 
             print(v)
         else:
-            if v['downloaded']:
-                print("%s s%02de%02d %s %s" % (v['show'], v['season'], v['episode'], v['downloaded'], v['fullpath']))
+            if v[video_repo.DOWNLOADED_KEY]:
+                print("%s s%02de%02d %s %s" % (v[video_repo.SHOW_KEY], v[video_repo.SEASON_KEY], v[video_repo.EPISODE_KEY], v[video_repo.DOWNLOADED_KEY], v[video_repo.FULL_PATH_KEY]))
             else:
-                print("%s s%02de%02d %s " % (v['show'], v['season'], v['episode'], v['downloaded']))
+                print("%s s%02de%02d %s %s" % (v[video_repo.SHOW_KEY], v[video_repo.SEASON_KEY], v[video_repo.EPISODE_KEY], v[video_repo.DOWNLOADED_KEY]))
 
 
 def execute(argv):  

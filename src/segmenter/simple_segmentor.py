@@ -36,4 +36,4 @@ def segment_video(video_file):
         return segments
 
     except Exception as e:
-        logging.error(e)
+        logging.exception(e)
