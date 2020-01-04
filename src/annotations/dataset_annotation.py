@@ -22,20 +22,24 @@ def manual_annotation(path, url, tag, start, end):
     video = video_repo.find_by_url(url)
     if video is None:
         return -1
+
+    if tag == "intro":    
+        count = len(video_repo.find_all_with_intro_annotation())
+        if video_repo.INTRO_ANNOTATION_KEY in video: 
+            intro = video[video_repo.INTRO_ANNOTATION_KEY]
+            print("Warning: %s was saved previously with %s - %s." % (video['url'], intro['start'], intro['end']))
+            print("Do you want to override it with %s %s? y/n" % (start, end))
+            if not ui.force_query_yes_or_no():
+                return count
+            else: 
+                video_repo.set_intro_annotation(url, start, end)
+                return count 
         
-    count = len(video_repo.find_all_with_intro_annotation())
-    if video_repo.INTRO_ANNOTATION_KEY in video: 
-        intro = video[video_repo.INTRO_ANNOTATION_KEY]
-        print("Warning: %s was saved previously with %s - %s." % (video['url'], intro['start'], intro['end']))
-        print("Do you want to override it with %s %s? y/n" % (start, end))
-        if not ui.force_query_yes_or_no():
-            return count
-        else: 
-            video_repo.set_intro_annotation(url, start, end)
-            return count 
-    
-    video_repo.set_intro_annotation(url, start, end)
-    return count + 1
+        video_repo.set_intro_annotation(url, start, end)
+        return count + 1
+    else:
+        print("tag %s is not managed" % tag)
+        return -1
     
 
     

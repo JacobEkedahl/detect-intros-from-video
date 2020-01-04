@@ -13,7 +13,7 @@ def annotate_meta_data(sequences, description, video_file):
         return
     print(description + " is annotating")
     timeIntervals = []
-    data = file_handler.load_from_file(video_file)
+    data = file_handler.load_from_video_file(video_file)
     scenes = data["scenes"]
     for scene in scenes:
         scene[description] = False
@@ -23,7 +23,7 @@ def annotate_meta_data(sequences, description, video_file):
         end = time_handler.timestamp_to_str(seq["end"] * 1000)
         timeIntervals.append(TimeInterval(start, end))
         ann.set_presence_of_time_interval_improved(description, data['scenes'], timeIntervals)
-    file_handler.save_to_file(video_file, "scenes", scenes)
+    file_handler.save_to_video_file(video_file, "scenes", scenes)
     return scenes 
 
   

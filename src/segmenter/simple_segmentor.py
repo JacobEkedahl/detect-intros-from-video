@@ -9,7 +9,7 @@ SCENES_KEY = 'scenes'
 SAVE_TO_FILE = constants.SAVE_TO_FILE
 
 def segment_video_with_url(video_file, url):
-    file_handler.save_to_file(video_file, "url", url)
+    file_handler.save_to_video_file(video_file, "url", url)
     return segment_video(video_file) 
     
 def segment_video(video_file):
@@ -31,7 +31,7 @@ def segment_video(video_file):
             scene_index += 1
 
         if SAVE_TO_FILE:
-            file_handler.save_to_file(video_file, SCENES_KEY, segments)
+            file_handler.save_to_video_file(video_file, SCENES_KEY, segments)
     
         return segments
 

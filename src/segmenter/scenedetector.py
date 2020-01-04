@@ -99,7 +99,7 @@ def detect_scenes(video_file):
             })
 
         if SAVE_TO_FILE:  
-            file_handler.save_to_file(video_file, DATA_KEY, scenes)
+            file_handler.save_to_video_file(video_file, DATA_KEY, scenes)
         if SAVE_TO_DB: 
             try: 
                 video_repo.set_data_by_file(os.path.basename(video_file), DATA_KEY, scenes)

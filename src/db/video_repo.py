@@ -80,6 +80,11 @@ TITLE_KEY               = 'title'
 SEASON_KEY              = 's'
 EPISODE_KEY             = 'e'
 DOWNLOADED_KEY          = 'dl'
+PREPROCESSED_KEY        = 'preproc'
+FULL_PATH_KEY           = 'fullpath'
+FILE_KEY                = 'file'
+SEGMENTS_KEY            = 'segs'
+
 
 secret = None
 with open(".secret.json") as json_file:
@@ -124,7 +129,7 @@ def find_by_urls(urls):
     }))
 
 def find_by_file(filename):
-    return videoCollection.find_one({"file": filename})
+    return videoCollection.find_one({FILE_KEY: filename})
 
 def find_by_show(show):
     return list(videoCollection.find({SHOW_KEY: show}))
@@ -175,34 +180,15 @@ def find_all_with_intro_prediction():
 def find_all_with_intro_annotation():
     return find_by_presence_of_key(INTRO_ANNOTATION_KEY)
 
-
-
-# TODO: Remove? 
-def save_after_download(url, mp4_fullpath):
+def set_many_by_url(url, KeyValuePairs):
     return videoCollection.update_one({ URL_KEY: url }, 
     {
-        "$set": {
-             DOWNLOADED_KEY: True, 
-             "file": os.path.basename(mp4_fullpath),
-             "fullpath": mp4_fullpath
-        }
+        "$set": KeyValuePairs
     }, upsert = False).matched_count
 
-# TODO: Remove? 
-def change_fullpath(file, fullpath):
-    return videoCollection.update_one({ "file": file }, 
-    {
-        "$set": {
-             "fullpath": fullpath
-        }
-    }, upsert = False).matched_count
-
-# TODO: Remove ? 
-def set_downloaded_flag(url, flag):
-    return set_data_by_url(url, DOWNLOADED_KEY, flag)
 
 def set_data_by_file(videoFileName, key, data):
-    return videoCollection.update_one({ "file": videoFileName }, 
+    return videoCollection.update_one({ FILE_KEY: videoFileName }, 
     {
         "$set": { key: data }
     }, upsert = False).matched_count
@@ -232,7 +218,7 @@ def get_show_seasons(show):
     return list(videoCollection.distinct(SEASON_KEY, {SHOW_KEY: show})) 
 
 def delete_by_file(videoFileName):
-    return videoCollection.delete_one({"file": videoFileName}).deleted_count
+    return videoCollection.delete_one({FILE_KEY: videoFileName}).deleted_count
 
 def delete_by_url(url):
     return videoCollection.delete_one({URL_KEY: url}).deleted_count

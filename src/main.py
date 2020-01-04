@@ -5,7 +5,7 @@ import sys as s
 
 from commands import cmd_videos, cmd_segment, cmd_dataset, cmd_black
 
-import process_all_videos
+import preprocessing
 import downloader.scrapesvt as scrapesvt
 from downloader import svtplaywrapper
 
@@ -26,7 +26,8 @@ if __name__ == "__main__":
     
     # Setup logger
     logging.basicConfig(filename='log.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
-   
+    logging.getLogger().setLevel(logging.INFO)
+    
     # Main 
     file_handler.create_folderstructure_if_not_exists()
     if (len(s.argv) - 1 < 1):
@@ -50,11 +51,12 @@ if __name__ == "__main__":
                 pipeline.build_dataset_from_step(s.argv[2], s.argv[3], True)
             else:
                 pipeline.build_dataset_from_step(s.argv[2], s.argv[3], False)
-        except:  
-                print("restarting..")      
-                python = s.executable
-                os.execl(python, python, ' '.join(s.argv))
-                exit()
+        except Exception as e:
+            print(e)  
+            print("restarting..")  
+            python = s.executable
+            os.execl(python, python, ' '.join(s.argv))
+            exit()
         exit()
     elif (s.argv[1] == "--frames"):
         mp4_files = file_handler.get_all_mp4_files()
@@ -130,7 +132,7 @@ if __name__ == "__main__":
         exit()
 
     elif(s.argv[1] == "--work"): 
-        process_all_videos.start()
+        preprocessing.start_schedule()
         exit()
 
     else:

@@ -70,8 +70,8 @@ def detect_blackness(video_file):
             })   
         
     if SAVE_TO_FILE: 
-        file_handler.save_to_file(video_file, SEQUENCES_KEY, blackSequences)
-        file_handler.save_to_file(video_file, FRAMES_KEY, blackFrames)
+        file_handler.save_to_video_file(video_file, SEQUENCES_KEY, blackSequences)
+        file_handler.save_to_video_file(video_file, FRAMES_KEY, blackFrames)
     
     if SAVE_TO_DB: 
         try: 

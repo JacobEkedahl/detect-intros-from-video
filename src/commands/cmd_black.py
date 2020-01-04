@@ -50,8 +50,8 @@ def __stats_intro_correlation(errMargin):
     totalBlackCombinedCount = 0 
 
     annotatedVideos = video_repo.find_all_with_intro_annotation()
-    for v in annotatedVideos:
-        intro = v[video_repo.INTRO_ANNOTATION_KEY]
+    for video in annotatedVideos:
+        intro = video[video_repo.INTRO_ANNOTATION_KEY]
         introStart = time_handler.to_seconds(intro['start'])
         introEnd =time_handler.to_seconds(intro['end'])
         startHasBlackness = False 
@@ -112,8 +112,9 @@ def execute(argv):
             __stats_intro_correlation(float(errMargin))
         else: 
             __stats_intro_correlation(ACCEPTED_ERR)
-
+      
     file = args_helper.get_value_after_key(argv, "-input", "-i")
     if file != "" and ".mp4" in file: 
         black.detect_blackness(file)
         return 
+    
