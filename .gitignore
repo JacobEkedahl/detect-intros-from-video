@@ -4,6 +4,7 @@
 
 # Directories
 temp/
+gui/files/
 !lib/**
 
 # Video and audio
