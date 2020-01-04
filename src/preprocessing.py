@@ -22,6 +22,7 @@ from frame_matcher import video_to_hashes, video_matcher
 START_WORK = constants.SCHEDULED_PREPROCESSING_START
 END_WORK = constants.SCHEDULED_PREPROCESSING_END
 PENDING_CHECK_INTERVAL = 5
+DEBUG = True 
 
 GENRES = constants.VIDEO_GENRES
 APPLY_BLACK_DETECTION = constants.APPLY_BLACK_DETECTION
@@ -46,7 +47,7 @@ SEGMENTS = video_repo.SEGMENTS_KEY
 # Not really tested but something which may or may not be useful
 def preprocess_url(url):
     try: 
-        videofile = dl.download(url)
+        videofile = dl.download_videos(url)
     except Exception as err: 
         logging.error(err)
         logging.error("failed to download: %s" % url)
@@ -153,8 +154,10 @@ def __get_start_end_time_now():
     now = datetime.now()
     start_time = now.replace(minute=int(start[1]), hour=int(start[0]))
     end_time = now.replace(minute=int(end[1]), hour=int(end[0]))
+
     if start_time > end_time: 
-        start_time = now.replace(minute=int(start[1]), hour=int(start[0]), day=now.day + 1)
+        end_time = now.replace(minute=int(start[1]), hour=int(start[0]), day=now.day + 1)
+
     return start_time, end_time, now
 
 

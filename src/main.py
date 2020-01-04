@@ -107,7 +107,7 @@ if __name__ == "__main__":
             svtplaywrapper.start(name_textfile, number_of_episodes)
         elif (s.argv[2] == "--url"):
             url_path = s.argv[3]
-            svtplaywrapper.download(url_path)
+            svtplaywrapper.download_video(url_path)
             
         print("finnished downloading!")
         exit()

@@ -18,7 +18,7 @@ from . import videoMerger
 
 TIMEOUT_TIME_IN_SECONDS = 60 
 
-def download(url):
+def download_video(url):
     command = ["sh", "lib/runSvtPlay.sh", "--config", "lib/svtplay-dl.yaml", url, "--capture_time", "8"]
     if try_to_download(command) is None:
         return None
@@ -70,7 +70,7 @@ def start_download(urls, number_of_episodes):
     if num_epi < len(urls):
         urls = urls[:-len(urls)+num_epi]
     for url in urls:
-        download(url)
+        download_video(url)
 
 def start(name_textfile, number_of_episodes):
     urls = file_handler.get_all_urls_from_file(name_textfile)

@@ -73,7 +73,8 @@ def scrape_show(show, genre):
 
                 if SAVE_TO_DB: 
                     video_repo.insert(copy.copy(video)) # only videos not saved before get inserted
-
+                if DEBUG:
+                    print("downloaded: %s" % video.url)
                 urls.append(video.url)
                     
             video.url = ""
