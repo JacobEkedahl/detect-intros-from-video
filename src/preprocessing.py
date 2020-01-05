@@ -37,8 +37,8 @@ SEGMENTS = video_repo.SEGMENTS_KEY
 
 def preprocess_video(video):
 
-    start = datetime.now()
-    logging.info("\n---\nPreprocessing of %s started at: %s", video[URL], start)
+    initStart = datetime.now()
+    logging.info("\n---\nPreprocessing of %s started at: %s", video[URL], initStart)
     # if video was not downloaded --> download
     if not video[DL]:
         try: 
@@ -53,7 +53,7 @@ def preprocess_video(video):
                     FILE:  video[FILE] 
                 } # save meta
                 video_repo.set_many_by_url(video[URL], changes)
-                logging.info("Download complete: %s, time taken: %s" % (videofile, datetime.now()  - start))
+                logging.info("download complete: %s, time taken: %s" % (videofile, datetime.now()  - initStart))
             else:
                 logging.error("Could not find video file associated with: %s" % video[URL])
                 return False 
@@ -91,7 +91,7 @@ def preprocess_video(video):
     # Extrach frame hashes from videofile     
     start = datetime.now()
     video_to_hashes.save_hashes(videofile) 
-    logging.info("hash extraction complete, time taken: %s" % (datetime.now()  - start))
+    logging.info("frame-hash extraction complete, time taken: %s" % (datetime.now()  - start))
 
     if DELETE_VIDEO_FILES_AFTER_EXTRACTION:
         subs = video[PATH].replace("-converted.mp4", ".srt")
@@ -112,7 +112,7 @@ def preprocess_video(video):
         PREPROCESSED: video[PREPROCESSED] 
     })
 
-    logging.info("Saved changes for: %s" % video[URL])
+    logging.info("preprocessing complete, time taken: %s" % (datetime.now() - initStart))
     return True 
 
 
