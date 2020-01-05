@@ -15,14 +15,16 @@ START_TIME = 0
 WIDTH_VIDEO = 480
 HEIGHT_VIDEO = 253
 MARGIN_TOP = 30
+MARGIN_SLIDER_SIDE = 50
 WIDTH_MARKER = 5 # only possible value atm
+PREDICTION_MARKER_WIDTH = 1
 
 #"gui/temp/al-pitcher-pa-paus.s01e01.avsnitt-1-converted.mp4"
 class App:
     def __init__(self, root, window_title):
         #clear temp of old downloads, or missdownloads
         file_handler.init_temp()
-        file_handler.clear_temp()
+       # file_handler.clear_temp()
 
         #init root window with title and setting a reference for it within this class
         self.root = root
@@ -51,6 +53,14 @@ class App:
         self.videoFrame = Frame(self.root)
         self.videoFrame.grid(row=1, column=0, padx=10, sticky=N+S+W+E)
 
+        self.start = 10
+        self.end = 44.5
+        self.predicted_start = 9.5
+        self.predicted_end = 44
+        self.set_new_video()
+        self.init_slider()
+        self.display(self.start)
+
     def replace_text_in_box(self, text):
         self.txt.delete(0,END)
         self.txt.insert(0,text)
@@ -63,7 +73,7 @@ class App:
         self.root.after(1000,self.refresh)
     
     def init_slider(self):
-        self.w = Canvas(self.videoFrame, width=WIDTH_VIDEO + 20, height=55)
+        self.w = Canvas(self.videoFrame, width=WIDTH_VIDEO + MARGIN_SLIDER_SIDE * 2, height=55)
         self.move_start = False
         self.move_end = False
         self.w.bind("<ButtonRelease-1>", self.leave)
@@ -71,26 +81,58 @@ class App:
         self.w.bind ("<Leave>", self.leave)
         self.w.bind ("<Motion>", self.motion)
         self.w.pack()
-        self.w.create_rectangle(10, MARGIN_TOP, WIDTH_VIDEO + 10, MARGIN_TOP, fill="black")
+        self.w.create_rectangle(MARGIN_SLIDER_SIDE, MARGIN_TOP, WIDTH_VIDEO + MARGIN_SLIDER_SIDE, MARGIN_TOP, fill="black")
 
         self.add_start_marker()
         self.add_end_marker()
-        self.start_marker_pred = self.w.create_rectangle(self.predicted_start + (WIDTH_MARKER * 2) + 2, MARGIN_TOP - 10, (self.predicted_start + WIDTH_MARKER * 3) - 2, MARGIN_TOP + 10, fill="blue")
-        self.end_marker_pred = self.w.create_rectangle(self.predicted_end + (WIDTH_MARKER * 2) +2, MARGIN_TOP - 10, (self.predicted_end + WIDTH_MARKER * 3) - 2, MARGIN_TOP + 10, fill="blue")
-        self.start_lbl_pred = self.w.create_text(self.predicted_start + 10,10,fill="blue",font="Times 8",
+        self.start_marker_pred = self.w.create_rectangle(MARGIN_SLIDER_SIDE + self.predicted_start, MARGIN_TOP - 10, self.predicted_start + 51, MARGIN_TOP + 10, fill="blue")
+        self.end_marker_pred = self.w.create_rectangle(self.predicted_end + 50, MARGIN_TOP - 10, self.predicted_end + PREDICTION_MARKER_WIDTH + MARGIN_SLIDER_SIDE, MARGIN_TOP + 10, fill="blue")
+        self.start_lbl_pred = self.w.create_text(self.predicted_start + MARGIN_SLIDER_SIDE,10,fill="blue",font="Times 8",
                     text=self.predicted_start)
-        self.end_lbl_pred = self.w.create_text(self.predicted_end + 10,10,fill="blue",font="Times 8",
+        self.end_lbl_pred = self.w.create_text(self.predicted_end + MARGIN_SLIDER_SIDE,10,fill="blue",font="Times 8",
             text=self.predicted_end)
 
     def add_end_marker(self):
-        self.end_marker = self.w.create_rectangle(self.end + WIDTH_MARKER * 2, MARGIN_TOP - 10, self.end + WIDTH_MARKER * 3, MARGIN_TOP + 10, fill="red")
-        self.end_lbl = self.w.create_text(self.end + 12, MARGIN_TOP + 20,fill="red",font="Times 8",
-            text=self.end)
+        self.end_marker = self.w.create_rectangle(self.end + MARGIN_SLIDER_SIDE, MARGIN_TOP - 10, self.end + MARGIN_SLIDER_SIDE + 5, MARGIN_TOP + 10, fill="red")
+        self.focus_end_entry()
+
+    def focus_end_entry(self):
+        self.end_entry = Entry(self.w, width= 4, textvariable=self.end)
+        self.end_entry.delete(0,END)
+        self.end_entry.insert(0,self.end)
+        self.end_entry.bind('<Return>', self.change_end)
+        self.end_lbl = self.w.create_window(self.end + MARGIN_SLIDER_SIDE + 25,MARGIN_TOP,window=self.end_entry)
+
+    def change_end(self, event):
+        new_end = float(self.end_entry.get())
+        if new_end >= 5 and new_end <= 480:
+            if new_end - 5 < self.start:
+                self.start = new_end - 5
+                self.draw_start()
+            self.end = new_end
+            self.draw_end()
+            self.display(self.end)
+
+    def change_start(self, event):
+        new_start = float(self.start_entry.get())
+        if new_start >= 0 and new_start <= 475:
+            if new_start + 5 > self.end:
+                self.end = new_start + 5
+                self.draw_end()
+            self.start = new_start
+            self.draw_start()
+            self.display(self.start)
+
+    def focus_start_entry(self):
+        self.start_entry = Entry(self.w, width= 4, textvariable=self.start)
+        self.start_entry.delete(0,END)
+        self.start_entry.insert(0,self.start)
+        self.start_entry.bind('<Return>', self.change_start)
+        self.start_lbl = self.w.create_window(self.start + MARGIN_SLIDER_SIDE - 20,MARGIN_TOP,window=self.start_entry)
 
     def add_start_marker(self):
-        self.start_marker = self.w.create_rectangle(self.start + WIDTH_MARKER * 2, MARGIN_TOP - 10, self.start + WIDTH_MARKER * 3, MARGIN_TOP + 10, fill="green")
-        self.start_lbl = self.w.create_text(self.start + 12,MARGIN_TOP + 20,fill="green",font="Times 8",
-                    text=self.start)
+        self.start_marker = self.w.create_rectangle(self.start + MARGIN_SLIDER_SIDE, MARGIN_TOP - 10, self.start + MARGIN_SLIDER_SIDE + 5, MARGIN_TOP + 10, fill="green")
+        self.focus_start_entry()
 
     def draw_start(self):
         self.w.delete(self.start_marker)
@@ -105,9 +147,9 @@ class App:
     def down(self, event):
         x, y = event.x, event.y
         self.is_pressed = True
-        if x >= self.start + 10 and x <= self.start + 15:
+        if x >= self.start + MARGIN_SLIDER_SIDE and x <= self.start + MARGIN_SLIDER_SIDE + 5:
             self.move_start = True
-        elif x >= self.end and x <= self.end + 15:
+        elif x >= self.end + MARGIN_SLIDER_SIDE and x <= self.end + MARGIN_SLIDER_SIDE + 5:
             self.move_end = True
         else:
             self.move_start = False
@@ -120,18 +162,19 @@ class App:
     def motion(self, event):
         x, y = event.x, event.y
         #if x >= self.start and x <= self.start + 25:
-        if x >= self.start + 10 and x <= self.start + 15 or self.move_start:
+        if x >= self.start + MARGIN_SLIDER_SIDE and x <= self.start + MARGIN_SLIDER_SIDE + 5 or self.move_start:
             self.root.config(cursor='hand2')
-        elif x >= self.end and x <= self.end + 15 or self.move_end:
+        elif x >= self.end + MARGIN_SLIDER_SIDE and x <= self.end + MARGIN_SLIDER_SIDE + 5 or self.move_end:
             self.root.config(cursor='hand2')
         else:
             self.root.config(cursor='')
 
+        x -= MARGIN_SLIDER_SIDE
         if self.move_start:
-            if x <= 492 and x > 0:
-                if x - 12 > self.end:
+            if x <= 480 and x > 0:
+                if x - 2 > self.end:
                     return 
-                self.start = x - 12
+                self.start = x - 2
                 if self.start < 0:
                     self.start = 0
                 elif self.start > 480:
@@ -141,10 +184,11 @@ class App:
                 self.draw_start()
                 self.display(self.start)
         elif self.move_end:
-            if x <= 492 and x > 0:
-                if self.start + 5 > x - 12:
+            if x <= 490 and x > 0:
+                if self.start + 5 > x - 2:
                     return
-                self.end = x - 12
+                self.end = x - 2
+                print(x)
                 if self.end < 0:
                     self.end = 0
                 elif self.end > 480:
