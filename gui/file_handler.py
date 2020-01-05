@@ -23,6 +23,10 @@ def clear_temp():
     for f in files:
         os.unlink(f)
 
+def init_temp():
+    if not os.path.exists(get_full_path_temp()):
+        os.makedirs(get_full_path_temp())
+
 audioVideoTranslator = {".audio.ts": ".ts", ".m4a": ".mp4"}
 class FileInfo:
     def __init__(self, fileName, audioName, videoName):
