@@ -113,6 +113,9 @@ def insert(video):
 def find_all():
     return list(videoCollection.find())
 
+def find_all_not_preprocessed():
+    return list(videoCollection.find({PREPROCESSED_KEY: { "$ne": True }}))  # Not True or does not exists
+
 def find_all_not_dl():
     return list(videoCollection.find({DOWNLOADED_KEY: False}))
 
@@ -127,6 +130,7 @@ def find_by_urls(urls):
          "$in": urls 
          }
     }))
+
 
 def find_by_file(filename):
     return videoCollection.find_one({FILE_KEY: filename})

@@ -21,8 +21,7 @@ from frame_matcher import video_to_hashes, video_matcher
 
 START_WORK = constants.SCHEDULED_PREPROCESSING_START
 END_WORK = constants.SCHEDULED_PREPROCESSING_END
-PENDING_CHECK_INTERVAL = 5
-DEBUG = True 
+PENDING_CHECK_INTERVAL = 10
 
 GENRES = constants.VIDEO_GENRES
 APPLY_BLACK_DETECTION = constants.APPLY_BLACK_DETECTION
@@ -39,7 +38,7 @@ SEGMENTS = video_repo.SEGMENTS_KEY
 def preprocess_video(video):
 
     start = datetime.now()
-    logging.info("\n---\nPreprocessing of video started at: %s", start)
+    logging.info("\n---\nPreprocessing of %s started at: %s", video[URL], start)
     # if video was not downloaded --> download
     if not video[DL]:
         try: 
@@ -48,22 +47,27 @@ def preprocess_video(video):
                 video[DL] = True
                 video[PATH] = videofile 
                 video[FILE] = os.path.basename(videofile)
-                entry = { DL: video[DL], PATH: video[PATH] , FILE:  video[FILE] } # save dl meta
-                video_repo.set_many_by_url(video[URL], entry)
+                changes = { 
+                    DL: video[DL], 
+                    PATH: video[PATH], 
+                    FILE:  video[FILE] 
+                } # save meta
+                video_repo.set_many_by_url(video[URL], changes)
                 logging.info("Download complete: %s, time taken: %s" % (videofile, datetime.now()  - start))
             else:
-                logging.error("failed to download: %s" % video[URL])
-                return 
+                logging.error("Could not find video file associated with: %s" % video[URL])
+                return False 
         except Exception as e: 
             logging.exception(e) 
             logging.error("failed to download: %s" % video[URL])
+            return False 
     else:
         videofile = video[video_repo.FULL_PATH_KEY]
 
+    # factory method for creating or getting previously created segments 
+    segments = simple_segmentor.get_video_segments(videofile)
+    file_handler.save_to_video_file(videofile, URL, video[URL])
     
-
-    segments = simple_segmentor.segment_video(videofile)
-
     if APPLY_BLACK_DETECTION: 
         start = datetime.now()
         blackSequences, blackFrames = blackdetector.detect_blackness(videofile)
@@ -83,32 +87,33 @@ def preprocess_video(video):
         intro = video[video_repo.INTRO_ANNOTATION_KEY]
         segments = annotate_intro.apply_annotated_intro_on_segments(video[video_repo.URL_KEY], segments, intro)
         logging.info("intro annotation complete, time taken: %s" % (datetime.now()  - start))
-            
-        start = datetime.now()
-        video_to_hashes.save_hashes(videofile) 
-        logging.info("hash extraction complete, time taken: %s" % (datetime.now()  - start))
 
-        video[SEGMENTS] = segments 
-        video[PREPROCESSED] = True 
-    
-        # save changes to file 
-        if SAVE_TO_FILE:
-            file_handler.save_to_video_file(videofile, simple_segmentor.SCENES_KEY, segments)
+    # Extrach frame hashes from videofile     
+    start = datetime.now()
+    video_to_hashes.save_hashes(videofile) 
+    logging.info("hash extraction complete, time taken: %s" % (datetime.now()  - start))
 
-        # Mark as preprocessed
-        video_repo.set_many_by_url(video[URL], {
-            # Could save segments here if desired
-            PREPROCESSED: video[PREPROCESSED] 
-        })
+    if DELETE_VIDEO_FILES_AFTER_EXTRACTION:
+        subs = video[PATH].replace("-converted.mp4", ".srt")
+        if os.path.exists(subs):
+            os.remove(subs)
+        if os.path.exists(video[PATH]):
+            os.remove(video[PATH])
 
-        logging.info("Saved changes for: %s" % video[URL])
+    video[SEGMENTS] = segments 
+    video[PREPROCESSED] = True 
 
-        if DELETE_VIDEO_FILES_AFTER_EXTRACTION:
-            if os.path.exists(video[PATH]):
-                os.remove(video[PATH])
-            subs = video[PATH].replace("-converted.mp4", ".srt")
-            if os.path.exists(subs):
-                os.remove(video[PATH].replace("-converted.mp4", ".srt"))
+    if SAVE_TO_FILE:
+        file_handler.save_to_video_file(videofile, simple_segmentor.SCENES_KEY, segments)
+
+    # Mark as preprocessed
+    video_repo.set_many_by_url(video[URL], {
+        # Could save segments here if desired
+        PREPROCESSED: video[PREPROCESSED] 
+    })
+
+    logging.info("Saved changes for: %s" % video[URL])
+    return True 
 
 
 def __get_start_end_time_now():
@@ -121,42 +126,47 @@ def __get_start_end_time_now():
         end_time = now.replace(minute=int(start[1]), hour=int(start[0]), day=now.day + 1)
     return start_time, end_time, now
 
-
+    
 def do_work():
 
-    # if the dataset is zero we import everything from the dataset to the database. Otherwise we assume that this has already been done.
+    # TODO: if the dataset is zero we import everything from the dataset to the database. Otherwise we assume that this has already been done ???
 
     start_time, end_time, now = __get_start_end_time_now()
     logging.info("\n---\nStarting daily web scraping and preprocessing (%s to %s).\n---" % (start_time, end_time))
+    scraper.scrape_genres(GENRES)
 
-    urls_file = scraper.scrape_genres(GENRES)
+    # Keep preprocessing videos until end time is exceeded. 
+    # Any failed preprocessed are attempted again in the next iteration.  
+    count_success = 0
+    count_failure = 0
 
-    shows = video_repo.get_shows()
-    for show in shows: 
-        seasons = video_repo.get_show_seasons(show)
-        for season in seasons: 
-            videos = video_repo.find_by_show_and_season(show, season)
-            for video in videos: 
-                now = datetime.now()
-                if now < end_time: 
-                    try: 
-                        if PREPROCESSED in video and video[PREPROCESSED]:
-                            logging.info("Video already preprocessed: %s" % video[URL])
-                            continue 
-                        preprocess_video(video)
-                    except Exception as e:
-                        logging.exception(e)
-                else: 
-                    # Perhaps restart the process if there is time left and some videos failed ?
-                    logging.info("Finished preprocessing for today at: %s" % now)
-                    return 
 
+    while datetime.now() < end_time: 
+        videos = video_repo.find_all_not_preprocessed()
+        if len(videos) == 0:
+            break 
+        for video in videos: 
+            if datetime.now() > end_time:
+                break 
+            if not (PREPROCESSED in video and video[PREPROCESSED]):
+                try: 
+                    result = preprocess_video(video)
+                    if not result: 
+                        logging.error("Failed to preprocess: %s" % video[URL])
+                        count_failure = count_failure + 1 
+                    else: 
+                        count_success = count_success + 1 
+                except Exception as e:
+                    logging.exception(e)
+
+    logging.info("Finished preprocessing session at: %s\nSuccess: %d\nFailure: %d" % (datetime.now(), count_success, count_failure))
+            
 
 def start_schedule():
     start_time, end_time, now = __get_start_end_time_now()
+    logging.info("Preprocess schedule started between %s and %s." %(start_time, end_time))
     if start_time < now and now < end_time:
         do_work()
-    
     schedule.every().day.at(START_WORK).do(do_work)
     while True:
         schedule.run_pending()

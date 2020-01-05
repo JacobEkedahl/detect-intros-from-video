@@ -37,11 +37,8 @@ def file_has_been_detected(video_file):
         except Exception as e: 
             logging.exception(e)
     if SAVE_TO_FILE: 
-        json_path = video_file.replace('.mp4', '') + '.json'
-        if os.path.exists(json_path):
-            with open(json_path) as json_file:
-                data = json.load(json_file)
-                return (SEQUENCES_KEY in data) and (FRAMES_KEY in data)
+        data = file_handler.load_from_video_file(video_file)
+        return (SEQUENCES_KEY in data) and (FRAMES_KEY in data)
 
 
 def detect_blackness(video_file):

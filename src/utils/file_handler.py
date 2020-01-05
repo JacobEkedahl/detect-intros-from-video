@@ -3,6 +3,8 @@ import os
 from os import listdir
 from os.path import isfile, join
 from pathlib import Path
+import time
+import datetime as dt
 
 from . import constants as c
 
@@ -22,8 +24,10 @@ def save_to_video_file(video_file, key, element):
 
 def load_from_video_file(video_file):
     data = {}
-    with open(get_seg_file_from_video(video_file)) as json_file:
-        data = json.load(json_file)
+    path = get_seg_file_from_video(video_file)
+    if os.path.exists(path):
+        with open(get_seg_file_from_video(video_file)) as json_file:
+            data = json.load(json_file)
     return data                   
 
 def file_is_in_use(file):
@@ -45,7 +49,6 @@ def get_new_files(startTime, path):
                 out = os.path.join(root, file)
                 newFiles.append(os.path.abspath(out))
     return newFiles
-
 
 def create_folderstructure_if_not_exists():
     if not os.path.exists(get_full_path_videos()):

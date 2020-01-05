@@ -105,6 +105,7 @@ def scrape_genre(genre, file):
         show = Show(title, SVT_URL + link)
         if SAVE_TO_DB:
             show_repo.insert(show)
+            
         if DEBUG: 
             print("%d: %s, %s %s" % (i, show.name, show.url, show.dirname))
         file.write("\n%d: %s --- %s \n" % (i, show.name, show.url))

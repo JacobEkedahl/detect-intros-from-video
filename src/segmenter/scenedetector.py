@@ -52,13 +52,10 @@ def file_has_been_segmented(video_file):
             video = video_repo.find_by_file(os.path.basename(video_file))
             return (video is not None) and (DATA_KEY in video)
         except Exception as e: 
-            print(e)
+            logging.exception(e)
     if SAVE_TO_FILE: 
-        json_path = video_file.replace('.mp4', '') + '.json'
-        if os.path.exists(json_path):
-            with open(json_path) as json_file:
-                data = json.load(json_file)
-                return DATA_KEY in data
+        data = file_handler.load_from_video_file(video_file)
+        return DATA_KEY in data
 
 
 def detect_scenes(video_file):
@@ -70,7 +67,7 @@ def detect_scenes(video_file):
         video_manager = VideoManager([video_file])
     except Exception as e: 
         logging.error("Error: failed to read %s, data might be corrupted.", video_file)
-        logging.error(e)
+        logging.exception(e)
         return 
     
     stats_manager = StatsManager()

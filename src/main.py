@@ -24,12 +24,11 @@ from utils import cleaner, extractor
 
 if __name__ == "__main__":
     
-    # Setup logger
     logging.basicConfig(filename='log.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
     logging.getLogger().setLevel(logging.DEBUG)
 
-    # Main 
     file_handler.create_folderstructure_if_not_exists()
+
     if (len(s.argv) - 1 < 1):
         print("need more arguments! (--dlv --file nameOfTxtFile numberOfEpisodes)")
         exit()

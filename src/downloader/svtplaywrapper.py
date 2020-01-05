@@ -3,17 +3,15 @@ import pprint
 import subprocess
 import sys
 import time
+import logging 
 from pathlib import Path
-
-import subprocess
 from subprocess import STDOUT, check_output
 from pathlib import Path
 
 import numpy as np
 
-import utils.file_handler as file_handler
+from utils import file_handler
 from moviepy.editor import VideoFileClip
-
 from . import videoMerger
 
 def download_video(url):
@@ -34,8 +32,9 @@ def try_to_download(command):
         try:
             output = subprocess.check_call(command, shell=True) 
             return True
-        except:
-            print("error while downloading and calling subprocess, retrying.. #" + str(attemps))
+        except Exception as e:
+            logging.exception(e)
+            logging.error("Failed executing subprocess... #%d " % attemps)
             time.sleep(1)
             newCommand = command[:]
             if "--force" not in command:
@@ -50,13 +49,13 @@ def try_to_merge():
         clip = VideoFileClip(str(video_path))
         video_length = int(clip.duration)
         if video_length < 400:
-            print('error after merging, size of videofile is under 400 seconds, trying again..')
+            logging.error("Failed to merge, size of videofile is under 400 seconds. Trying again...")
             os.remove(video_path)
             time.sleep(1)
         else:
             return video_path
-    except:
-        print("error while merging, retrying..")
+    except Exception as e:
+        logging.exception(e)
         time.sleep(1)
     return None
 
