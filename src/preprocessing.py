@@ -73,7 +73,7 @@ def preprocess_video(video):
         blackSequences, blackFrames = blackdetector.detect_blackness(videofile)
         segments = annotate_black.annotate_black_frames(segments, blackdetector.FRAME_KEY, blackFrames)
         segments = annotate_black.annotate_black_sequences(segments, blackdetector.SEQUENCE_KEY, blackSequences)
-        segments = annotate_black.combine_annotation_into(segments, "black", blackdetector.SEQUENCE_KEY, blackSequences, blackdetector.FRAME_KEY, blackFrames, True)
+        segments = annotate_black.combine_annotation_into(segments, "black", blackdetector.SEQUENCE_KEY, blackSequences, blackdetector.FRAME_KEY, blackFrames, False)
         logging.info("blackdetection complete, time taken: %s" % (datetime.now()  - start))
     
     if APPLY_SCENE_DETECTION:
