@@ -5,9 +5,9 @@ import db.video_repo as video_repo
 
 
 app = Flask(__name__)
-DEBUG_ON = True 
+DEBUG_ON = False 
 
-INTERAL_SERVER_ERROR = 500
+INTERNAL_SERVER_ERROR = 500
 BAD_REQUEST = 400
 NOT_FOUND = 404
 OK = 200
@@ -79,7 +79,7 @@ def get_video():
                     return video
                 return __response(NOT_FOUND, {"success": False, "message": NO_MATCHING_URL})
             except Exception:
-                return __response(INTERAL_SERVER_ERROR, {"success": False, "message": QUERY_REQUEST_FAILURE_MSG})
+                return __response(INTERNAL_SERVER_ERROR, {"success": False, "message": QUERY_REQUEST_FAILURE_MSG})
 
         return __response(BAD_REQUEST, {"success": False, "message": NO_URL_FOUND_MSG})
     except Exception as e: 
@@ -100,7 +100,7 @@ def find_by_show_id(show_id):
         videos = video_repo.find_by_show_id(show_id)
         return __format_videos(videos)
     except Exception: 
-        return __response(INTERAL_SERVER_ERROR, {"success": False, "message": QUERY_REQUEST_FAILURE_MSG})
+        return __response(INTERNAL_SERVER_ERROR, {"success": False, "message": QUERY_REQUEST_FAILURE_MSG})
 
 
 @app.route('/videos/get/<string:show_id>/<int:season>', methods=['GET', 'POST'])
@@ -109,7 +109,7 @@ def find_by_show_id_season(show_id, season):
         videos = video_repo.find_by_show_id_and_season(show_id, season)
         return __format_videos(videos)
     except Exception: 
-        return __response(INTERAL_SERVER_ERROR, {"success": False, "message": QUERY_REQUEST_FAILURE_MSG})
+        return __response(INTERNAL_SERVER_ERROR, {"success": False, "message": QUERY_REQUEST_FAILURE_MSG})
 
 
 @app.route('/videos/set/intro-annotation', methods=["POST"])
@@ -128,7 +128,7 @@ def set_annotation():
                     return __success_response()
                 return __response(NOT_FOUND, {"success": False, "message": NO_URL_FOUND_MSG})
             except Exception:
-                return __response(INTERAL_SERVER_ERROR, {"success": False, "message": QUERY_REQUEST_FAILURE_MSG})
+                return __response(INTERNAL_SERVER_ERROR, {"success": False, "message": QUERY_REQUEST_FAILURE_MSG})
 
         return __response(BAD_REQUEST, {"success": False, "message": INTRO_ANN_MSG})
     except Exception as e: 
@@ -142,9 +142,8 @@ def get_video_prediction():
         if "url" in data: 
             try: 
                 video = video_repo.find_by_url(data["url"])
-                __format_video(video)
                 if video is not None:
-
+                    __format_video(video)
                    # TODO: Perform prediction 
                    # simulated response 
                     import time
@@ -159,7 +158,7 @@ def get_video_prediction():
                     #
                 return __response(NOT_FOUND, {"success": False, "message": NO_MATCHING_URL})
             except Exception:
-                return __response(INTERAL_SERVER_ERROR, {"success": False, "message": QUERY_REQUEST_FAILURE_MSG})
+                return __response(INTERNAL_SERVER_ERROR, {"success": False, "message": QUERY_REQUEST_FAILURE_MSG})
 
         return __response(BAD_REQUEST, {"success": False, "message": NO_URL_FOUND_MSG})
     except Exception as e: 
