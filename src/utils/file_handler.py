@@ -3,12 +3,52 @@ import os
 from os import listdir
 from os.path import isfile, join
 from pathlib import Path
+import time
+import datetime as dt
 
 from . import constants as c
 
 TEMPFOLDERNAME = "temp"
 VIDEOFOLDERNAME = "videos"
 URLSTEXTFILENAME = "video-serier.txt"
+
+def save_to_video_file(video_file, key, element):
+    data = {}
+    json_path = video_file.replace('.mp4', '') + '.json'
+    if os.path.exists(json_path):
+        with open(json_path) as json_file:
+            data = json.load(json_file)
+    data[key] = element           
+    with open(json_path, 'w') as outfile:
+        json.dump(data, outfile, indent=4, sort_keys=False)
+
+def load_from_video_file(video_file):
+    data = {}
+    path = get_seg_file_from_video(video_file)
+    if os.path.exists(path):
+        with open(get_seg_file_from_video(video_file)) as json_file:
+            data = json.load(json_file)
+    return data                   
+
+def file_is_in_use(file):
+    if os.path.exists(file):
+        try:
+            os.rename(file, file)
+            return False 
+        except OSError:
+            return True 
+
+def get_new_files(startTime, path):
+    newFiles = []
+    for root, dirs, files in os.walk(path):  
+        for file in files:
+            path = os.path.join(root, file)
+            st = os.stat(path)    
+            mtime = dt.datetime.fromtimestamp(st.st_mtime)
+            if mtime > startTime:
+                out = os.path.join(root, file)
+                newFiles.append(os.path.abspath(out))
+    return newFiles
 
 def create_folderstructure_if_not_exists():
     if not os.path.exists(get_full_path_videos()):

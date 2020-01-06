@@ -1,14 +1,19 @@
+import logging 
 import os
 import pprint
 import sys as s
+
 from commands import cmd_videos, cmd_segment, cmd_dataset, cmd_black
 
+import preprocessing
 import downloader.scrapesvt as scrapesvt
+from downloader import svtplaywrapper
+
+
 import pipeline
 import utils.file_handler as file_handler
 from annotations import (annotation_summary, dataset_annotation,
                          scene_annotation)
-from downloader import svtplaywrapper
 from frame_matcher import frame_comparer as comparer
 from frame_matcher import video_matcher as v_matcher
 from frame_matcher import video_to_hashes as vf
@@ -18,9 +23,23 @@ from utils import cleaner, extractor
 
 from api import app
 
+import db.video_repo as video_repo 
+import db.show_repo as show_repo
 
 if __name__ == "__main__":
+
+
+    #for v in video_repo.find_all():
+    #    url = v["url"]
+     #   video_repo.set_data_by_url(url, video_repo.SHOW_ID_KEY, show_repo.get_show_from_dl_url(url))
+     ##  
+    #exit()
+
+    logging.basicConfig(filename='log.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
+    logging.getLogger().setLevel(logging.DEBUG)
+
     file_handler.create_folderstructure_if_not_exists()
+
     if (len(s.argv) - 1 < 1):
         print("need more arguments! (--dlv --file nameOfTxtFile numberOfEpisodes)")
         exit()
@@ -42,11 +61,12 @@ if __name__ == "__main__":
                 pipeline.build_dataset_from_step(s.argv[2], s.argv[3], True)
             else:
                 pipeline.build_dataset_from_step(s.argv[2], s.argv[3], False)
-        except:  
-                print("restarting..")      
-                python = s.executable
-                os.execl(python, python, ' '.join(s.argv))
-                exit()
+        except Exception as e:
+            print(e)  
+            print("restarting..")  
+            python = s.executable
+            os.execl(python, python, ' '.join(s.argv))
+            exit()
         exit()
     elif (s.argv[1] == "--frames"):
         mp4_files = file_handler.get_all_mp4_files()
@@ -102,8 +122,20 @@ if __name__ == "__main__":
         print("finnished downloading!")
         exit()
 
+    # DEBUG PURPOSES
     elif (s.argv[1] == "--scrape"):
-        scrapesvt.execute(s.argv)
+        genres = []
+        for i in range(1, len(s.argv)):
+            if (s.argv[i] == "-g" or s.argv[i] == "-genre") and i + 1 < len(s.argv):
+                genres.append(s.argv[i + 1])
+            if (s.argv[i] == "help"):
+                print("To scrape SVT-Play you need to specify which genres to extract data from by appending -g, followed by a genre, for each genre.")
+                exit()
+        if (len(genres) == 0):
+            print("Error: no genres specified.")
+            exit() 
+        scrapesvt.scrape_genres(genres)
+
         exit()
     elif (s.argv[1] == "--videos"):
         cmd_videos.execute(s.argv)
@@ -124,6 +156,11 @@ if __name__ == "__main__":
     elif (s.argv[1] == "--api"):
         app.start()
         exit()
+
+    elif(s.argv[1] == "--work"): 
+        preprocessing.start_schedule()
+        exit()
+
 
     else:
 
