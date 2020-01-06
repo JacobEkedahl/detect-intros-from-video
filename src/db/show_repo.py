@@ -23,11 +23,13 @@ class Show:
     """ Holds information related to shows """
 
     def __init__(self, name, url):
-        self.name = name
-        arr = url.split("/")
-        self.dirname = arr[len(arr) - 1]
+        self.name = name.lower()
+        self.dirname = get_show_from_dl_url(url)
         self.url = url 
 
+def get_show_from_dl_url(url):
+    arr = url.split("/")
+    return arr[len(arr) - 2]
 
 URL_KEY                 = 'url'
 NAME_KEY                = 'name'

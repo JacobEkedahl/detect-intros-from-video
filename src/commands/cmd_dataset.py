@@ -30,10 +30,11 @@ def __export_dataset(path):
     for video in video_repo.find_all_with_intro_annotation():
         intro = video[video_repo.INTRO_ANNOTATION_KEY]
         output["intro"].append({
-            "start": intro['start'],
-            "end": intro['end'],
+            "start": time_handler.timestamp_to_str(intro['start']*1000),
+            "end": time_handler.timestamp_to_str(intro['end']*1000),
             "url": video['url']
         })
+        
     with open(path, 'w') as outfile:
         json.dump(output, outfile, indent=4, sort_keys=True)
 
@@ -42,7 +43,13 @@ def __import_dataset(path):
     with open(path) as json_file:
         data = json.load(json_file)
         for element in data["intro"]:
-            video_repo.set_intro_annotation(element['url'], element['start'], element['end'])
+            start = element['start']
+            end = element['end']
+            if isinstance(start, str):
+                start = time_handler.to_seconds(start)
+            if isinstance(end, str):
+                end = time_handler.to_seconds(end)
+            video_repo.set_intro_annotation(element['url'], start, end)
             print(element)
 
 def __do_present_length_varians():

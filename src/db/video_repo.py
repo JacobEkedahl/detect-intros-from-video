@@ -42,14 +42,15 @@
 import pymongo
 import json
 import os 
-
 from pathlib import Path
+
+import db.show_repo as show_repo
 
 class Video:
     """ Class containing video information """
 
     def __init__(self, show="", title="", season=0, episode=0, url="", downloaded=False):
-        self.show = show
+        self.show = show.lower() # save as lower case
         self.title = title
         self.season = season
         self.episode = episode 
@@ -76,6 +77,7 @@ PREINTRO_ANNOTATION_KEY = 'prei_ann'
 PREVIOUS_ANNOTATION_KEY = 'prev_ann'
 URL_KEY                 = 'url'
 SHOW_KEY                = 'show'
+SHOW_ID_KEY             = 'showId'
 TITLE_KEY               = 'title'
 SEASON_KEY              = 's'
 EPISODE_KEY             = 'e'
@@ -103,6 +105,7 @@ def insert(video):
         return None
     return videoCollection.insert_one({
         SHOW_KEY: video.show,
+        SHOW_ID_KEY: show_repo.get_show_from_dl_url(video.url),
         TITLE_KEY: video.title, 
         SEASON_KEY: video.season, 
         EPISODE_KEY: video.episode, 
@@ -116,21 +119,11 @@ def find_all():
 def find_all_not_preprocessed():
     return list(videoCollection.find({PREPROCESSED_KEY: { "$ne": True }}))  # Not True or does not exists
 
-def find_all_not_dl():
-    return list(videoCollection.find({DOWNLOADED_KEY: False}))
-
-def find_all_dl():
-     return list(videoCollection.find({DOWNLOADED_KEY: True}))
-
 def find_by_url(url):
     return videoCollection.find_one({ URL_KEY: url})
 
 def find_by_urls(urls):
-    return list(videoCollection.find({ URL_KEY: {
-         "$in": urls 
-         }
-    }))
-
+    return list(videoCollection.find({ URL_KEY: { "$in": urls } }))
 
 def find_by_file(filename):
     return videoCollection.find_one({FILE_KEY: filename})
@@ -138,40 +131,22 @@ def find_by_file(filename):
 def find_by_show(show):
     return list(videoCollection.find({SHOW_KEY: show}))
 
-def find_by_show_not_dl(show):
-    return list( videoCollection.find({
-        "$and": [
-            {SHOW_KEY: show}, 
-            {DOWNLOADED_KEY: False}
-        ]
-    }))
+def find_by_show_id(show_id):
+    return list(videoCollection.find({SHOW_ID_KEY: show_id}))
 
-def find_by_show_and_season(show, season):
-    return list( videoCollection.find({
-        "$and": [
-            {SHOW_KEY: show}, 
-            {SEASON_KEY: season}
-        ]
-    }))
+""" Example: queryArray = [ {SHOW_ID_KEY: show_id}, {SEASON_KEY: season} ] """
+def find_by_many(queryArray):
+    return list( videoCollection.find({ "$and": queryArray }))
+
+def find_by_show_id_and_season(show_id, season):
+    return find_by_many([{SHOW_ID_KEY: show_id}, {SEASON_KEY: season}])
     
-def find_by_show_and_season_not_dl(show, season):
-    return list( videoCollection.find({
-        '$and': [
-            {SHOW_KEY: show}, 
-            {SEASON_KEY: season},
-            {DOWNLOADED_KEY: False}
-        ]
-    }))
+def find_by_show_and_season(show, season):
+    return find_by_many([{SHOW_KEY: show}, {SEASON_KEY: season}])
 
 def find_by_show_season_episode(show, season, episode):
-    return list( videoCollection.find({
-    '$and': [
-        {SHOW_KEY: show}, 
-        {SEASON_KEY: season},
-        {EPISODE_KEY: episode}
-    ]
-}))
-
+    return find_by_many([{SHOW_KEY: show}, {SEASON_KEY: season},  {EPISODE_KEY: episode}])
+    
 def find_by_presence_of_key(key):
     return list(videoCollection.find({key: {
             "$exists": True 
@@ -189,7 +164,6 @@ def set_many_by_url(url, KeyValuePairs):
     {
         "$set": KeyValuePairs
     }, upsert = False).matched_count
-
 
 def set_data_by_file(videoFileName, key, data):
     return videoCollection.update_one({ FILE_KEY: videoFileName }, 
@@ -209,10 +183,22 @@ def unset_data_by_url(url, key):
         "$unset": key 
     }, upsert = False).matched_count
 
+
+def __validate_int_or_float(arg):
+    return isinstance(arg, int) or isinstance(arg, float)
+
+def __assert_time_start_end(start, end):
+    if not (__validate_int_or_float(start)):
+        raise TypeError("start: %s" % start)
+    if not (__validate_int_or_float(end)):
+        raise TypeError("end: %s" % end )  
+
 def set_intro_prediction(url, start, end):
+    __assert_time_start_end(start, end)
     return set_data_by_url(url, INTRO_PREDICTION_KEY, { "start": start, "end": end } )
 
 def set_intro_annotation(url, start, end):
+    __assert_time_start_end(start, end)
     return set_data_by_url(url, INTRO_ANNOTATION_KEY, { "start": start, "end": end } )
 
 def get_shows():

@@ -19,6 +19,9 @@ def manual_annotation(path, url, tag, start, end):
     if "?start=auto" in url: 
         url = url.split("?start=auto")[0]
 
+    start = time_handler.to_seconds(start)
+    end = time_handler.to_seconds(end)
+
     video = video_repo.find_by_url(url)
     if video is None:
         return -1
