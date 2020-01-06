@@ -20,82 +20,55 @@ import statistics
 import db.video_repo as video_repo 
 import utils.args_helper as args_helper
 import annotations.dataset_annotation as dataset_annotation
-from db.annotation_repo import Annotation
-import db.annotation_repo as ann_repo
 import utils.time_handler as time_handler
 import annotations.dataset_annotation as dataset_annotation
 
 
 def __export_dataset(path):
     print("exported to %s " % path)
-    tags = ["intro", "pre-intro", "previous"]
     output = { "intro": [], "pre-intro": [], "previous": []}
-    for show in ann_repo.get_shows():
-        for season in ann_repo.get_show_seasons(show):
-            for tag in tags: 
-                for element in ann_repo.find_by_tag_show_season(tag, show, season):
-                    output[tag].append({
-                        "start": element['start'],
-                        "end": element['end'],
-                        "url": element['url']
-                    })
+    for video in video_repo.find_all_with_intro_annotation():
+        intro = video[video_repo.INTRO_ANNOTATION_KEY]
+        output["intro"].append({
+            "start": intro['start'],
+            "end": intro['end'],
+            "url": video['url']
+        })
     with open(path, 'w') as outfile:
         json.dump(output, outfile, indent=4, sort_keys=True)
 
 def __import_dataset(path):
     print("imported from %s " % path)
-    tags = ["intro", "pre-intro", "previous"]
     with open(path) as json_file:
         data = json.load(json_file)
-        for tag in tags: 
-            print("\n%s\n" % tag)
-            for element in data[tag]:
-                ann_repo.insert(Annotation(element['url'], tag, element['start'], element['end']))
-                print(element)
-
-
-# TODO: not sure what statistics are relevant here tbh, you may wish to expand on this
-def __create_intro_stats(): 
-    shows = ann_repo.get_shows()
-    for show in shows: 
-        seasons = ann_repo.get_show_seasons(show)
-        for season in seasons: 
-            startList = []
-            endList = []
-            lengthList = []
-            intros = ann_repo.find_by_tag_show_season("intro", show, season)
-            for intro in intros:
-                start = time_handler.timestamp(intro['start'])/1000
-                end = time_handler.timestamp(intro['end'])/1000
-                startList.append(start)
-                endList.append(end)
-                lengthList.append(end - start)
-
-            if len(intros):
-                print("\n%s %02d" % (show, season))
-                startAvg = statistics.mean(startList)
-                startMedian = statistics.median(startList) 
-                startStdev = statistics.stdev(startList)
-                lenAvg = statistics.mean(lengthList)
-                lenMedian = statistics.median(lengthList) 
-                lenStdev = statistics.stdev(lengthList)
-                print("avg\tmedian\tstdev")
-                print("start: %f %f %f " % (startAvg, startMedian, startStdev))
-                print("length: %f %f %f %s" % (lenAvg, lenMedian, lenStdev, lengthList))
-
+        for element in data["intro"]:
+            video_repo.set_intro_annotation(element['url'], element['start'], element['end'])
+            print(element)
 
 def __do_present_length_varians():
-    shows = ann_repo.get_shows()
-    for show in shows: 
-        seasons = ann_repo.get_show_seasons(show)
-        for season in seasons: 
-            lengthList = []
-            intros = ann_repo.find_by_tag_show_season("intro", show, season)
+    annotatedVideos = video_repo.find_all_with_intro_annotation()
+    show = ""
+    season = -1
+    prevShow = ""
+    prevSeason = -1
+    lengthList = []
+    for v in annotatedVideos:
+        show = v['show']
+        season = v['s']
+        if show != prevShow:
+            print()
+        
+        if season != prevSeason: 
             print("\n%s %02d\n" % (show, season))
-            for intro in intros:
-                length = time_handler.timestamp(intro['end'])/1000 - time_handler.timestamp(intro['start'])/1000
-                lengthList.append(length)
-                print("%s\t%f" % (intro['url'], length))
+            lengthList = []
+
+        intro = v[video_repo.INTRO_ANNOTATION_KEY]
+        length = time_handler.timestamp(intro['end'])/1000 - time_handler.timestamp(intro['start'])/1000
+        lengthList.append(length)
+        print("%s\t%f" % (v['url'], length))
+
+        prevShow = v['show']
+        prevSeason = v['s']
 
 
 def __do_manual_annotation(argv):
@@ -132,10 +105,6 @@ def execute(argv):
     if importPath != "" and ".json" in importPath:
         __import_dataset(importPath)
         return 
-
-    if args_helper.is_key_present(argv, "-stats"):
-        __create_intro_stats()
-        return 
         
     if args_helper.is_key_present(argv, "-annotate"):
         __do_manual_annotation(argv)
@@ -144,18 +113,5 @@ def execute(argv):
     if args_helper.is_key_present(argv, "-length"):
         __do_present_length_varians()
         return
-
-    
-    show = args_helper.get_value_after_key(argv, "-show", "-show")
-    annotations = []
-    if show != "":
-        annotations = ann_repo.find_by_tag_show("intro", show)
-    else:
-        annotations = ann_repo.find_by_tag("intro")
-    for a in annotations: 
-        print("%s s%02de%02d" % (a['show'], a['season'], a['episode']))
-        
-        result = ann_repo.get_prediction_comparison(a['url'], "intro")
-        print(result)
 
 
