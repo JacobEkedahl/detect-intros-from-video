@@ -37,7 +37,7 @@ BLACK_DETECTOR_MIN_DUR = 0.1    # minimum sequence duration
 # Processing  
 VIDEO_GENRES = ["serier"]
 VIDEO_START_LEN = 480 
-DELETE_VIDEO_AFTER_EXTRACTION = True  
+DELETE_VIDEO_AFTER_EXTRACTION = False # Must first perform video comparison before video files are removed...  
 APPLY_BLACK_DETECTION = True 
 APPLY_SCENE_DETECTION = True  
 SAVE_TO_FILE = True 

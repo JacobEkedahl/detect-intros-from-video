@@ -40,8 +40,5 @@ def annotate_intro_from_url(video_file, url):
 
     __annotate_intro(video_file, seq)
 
-def apply_annotated_intro_on_segments(url, segments, intro):
-    timeIntervals = []
-    timeIntervals.append(TimeInterval(intro['start'], intro['end']))
-    ann.set_presence_of_time_interval_improved('intro', segments, timeIntervals)
-    return segments
+def apply_annotated_intro_on_segments(segments, intro):
+    ann.set_presence_of_interval('intro', segments, intro['start'], intro['end'], True)

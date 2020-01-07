@@ -3,7 +3,6 @@
 """
 
 import logging 
-
 import time 
 from datetime import datetime, date
 import schedule 
@@ -30,81 +29,110 @@ DELETE_VIDEO_FILES_AFTER_EXTRACTION = constants.DELETE_VIDEO_AFTER_EXTRACTION
 SAVE_TO_FILE = constants.SAVE_TO_FILE
 URL = video_repo.URL_KEY
 PATH = video_repo.FULL_PATH_KEY
-DL = video_repo.DOWNLOADED_KEY
+WAS_DL = video_repo.DOWNLOADED_KEY
 FILE = video_repo.FILE_KEY
 PREPROCESSED = video_repo.PREPROCESSED_KEY
 SEGMENTS = video_repo.SEGMENTS_KEY
 
+def __extract_frame_hashes(video):
+    start = datetime.now()
+    video_to_hashes.save_hashes(video[PATH]) 
+    logging.info("frame-hash extraction complete, time taken: %s" % (datetime.now()  - start))
+
+
+def __annotate_intro(video, segments):
+    start = datetime.now()
+    intro = video[video_repo.INTRO_ANNOTATION_KEY]
+    annotate_intro.apply_annotated_intro_on_segments(segments, intro)
+    logging.info("intro annotation complete (%s), time taken: %s" % (intro, datetime.now()  - start))
+
+
+def __annotate_detected_scene(video, segments):
+    start = datetime.now()
+    scenes = scenedetector.detect_scenes(video[PATH])
+    annotate_scenes.annotate_detected_scenes(segments, scenes, scenedetector.DATA_KEY)
+    logging.info("scenedetection complete, %d scenes, time taken: %s" % (len(scenes), datetime.now()  - start))
+
+
+def __annotate_detected_blackness(video, segments):
+    start = datetime.now()
+    blackSequences, blackFrames = blackdetector.detect_blackness(video[PATH])
+    annotate_black.annotate_black_frames(segments, blackdetector.FRAME_KEY, blackFrames)
+    annotate_black.annotate_black_sequences(segments, blackdetector.SEQUENCE_KEY, blackSequences)
+    annotate_black.combine_annotation_into(segments, "black", blackdetector.SEQUENCE_KEY, blackSequences, blackdetector.FRAME_KEY, blackFrames, False)
+    logging.info("blackdetection complete, %d black frames, %d black sequence, time taken: %s" % (len(blackFrames), len(blackSequences), datetime.now()  - start))
+
+
+def __download_video(video):
+    try: 
+        start = datetime.now()
+        videofile = dl.download_video(video[URL])
+        if videofile is not None: 
+            video[WAS_DL] = True
+            video[PATH] = videofile 
+            video[FILE] = os.path.basename(videofile)
+            changes = { 
+                WAS_DL: video[WAS_DL], 
+                PATH: video[PATH], 
+                FILE:  video[FILE] 
+            } # save meta
+            video_repo.set_many_by_url(video[URL], changes)
+            logging.info("download complete: %s, time taken: %s" % (videofile, datetime.now()  - start))
+            return True 
+        else:
+            logging.error("Could not find video file associated with: %s" % video[URL])
+            return False 
+    except Exception as e: 
+        logging.exception(e) 
+        logging.error("failed to download: %s" % video[URL])
+        return False 
+
+
+def __delete_video_files(video):
+    subs = video[PATH].replace("-converted.mp4", ".srt")
+    if os.path.exists(subs):
+        os.remove(subs)
+    if os.path.exists(video[PATH]):
+        os.remove(video[PATH])
+
+
 def preprocess_video(video):
+
+    # One could query the video again here if there is a desire to allow for concurrent preprocessing on multiple servers. 
+    # It would then check if the download or preprocessing has already been done elsewhere...
 
     initStart = datetime.now()
     logging.info("\n---\nPreprocessing of %s started at: %s", video[URL], initStart)
     # if video was not downloaded --> download
-    if not video[DL]:
-        try: 
-            videofile = dl.download_video(video[URL])
-            if videofile is not None: 
-                video[DL] = True
-                video[PATH] = videofile 
-                video[FILE] = os.path.basename(videofile)
-                changes = { 
-                    DL: video[DL], 
-                    PATH: video[PATH], 
-                    FILE:  video[FILE] 
-                } # save meta
-                video_repo.set_many_by_url(video[URL], changes)
-                logging.info("download complete: %s, time taken: %s" % (videofile, datetime.now()  - initStart))
-            else:
-                logging.error("Could not find video file associated with: %s" % video[URL])
-                return False 
-        except Exception as e: 
-            logging.exception(e) 
-            logging.error("failed to download: %s" % video[URL])
-            return False 
-    else:
-        videofile = video[video_repo.FULL_PATH_KEY]
+    if not video[WAS_DL]:
+        result = __download_video(video)
+        if result == False:
+            return result # download failure 
+   
+    segments = simple_segmentor.get_video_segments(video[PATH]) # factory method for creating or getting previously created segments 
 
-    # factory method for creating or getting previously created segments 
-    segments = simple_segmentor.get_video_segments(videofile)
-    file_handler.save_to_video_file(videofile, URL, video[URL])
-    
+    if video_repo.INTRO_ANNOTATION_KEY in video:  
+        __annotate_intro(video, segments)
+
     if APPLY_BLACK_DETECTION: 
-        start = datetime.now()
-        blackSequences, blackFrames = blackdetector.detect_blackness(videofile)
-        segments = annotate_black.annotate_black_frames(segments, blackdetector.FRAME_KEY, blackFrames)
-        segments = annotate_black.annotate_black_sequences(segments, blackdetector.SEQUENCE_KEY, blackSequences)
-        segments = annotate_black.combine_annotation_into(segments, "black", blackdetector.SEQUENCE_KEY, blackSequences, blackdetector.FRAME_KEY, blackFrames, False)
-        logging.info("blackdetection complete, time taken: %s" % (datetime.now()  - start))
-    
+        __annotate_detected_blackness(video, segments)
+
     if APPLY_SCENE_DETECTION:
-        start = datetime.now()
-        scenes = scenedetector.detect_scenes(videofile)
-        segments = annotate_scenes.annotate_detected_scenes(segments, scenes, scenedetector.DATA_KEY)
-        logging.info("scenedetection complete, time taken: %s" % (datetime.now()  - start))
+        __annotate_detected_scene(video, segments)
 
-    if video_repo.INTRO_ANNOTATION_KEY in video: 
-        start = datetime.now()
-        intro = video[video_repo.INTRO_ANNOTATION_KEY]
-        segments = annotate_intro.apply_annotated_intro_on_segments(video[video_repo.URL_KEY], segments, intro)
-        logging.info("intro annotation complete, time taken: %s" % (datetime.now()  - start))
-
-    # Extrach frame hashes from videofile     
-    start = datetime.now()
-    video_to_hashes.save_hashes(videofile) 
-    logging.info("frame-hash extraction complete, time taken: %s" % (datetime.now()  - start))
+    __extract_frame_hashes(video)
 
     if DELETE_VIDEO_FILES_AFTER_EXTRACTION:
-        subs = video[PATH].replace("-converted.mp4", ".srt")
-        if os.path.exists(subs):
-            os.remove(subs)
-        if os.path.exists(video[PATH]):
-            os.remove(video[PATH])
+        __delete_video_files(video)
+
+    if len(segments) <= 0:
+        raise ValueError("Something went wrong with the segmentation.")
 
     video[SEGMENTS] = segments 
     video[PREPROCESSED] = True 
 
     if SAVE_TO_FILE:
-        file_handler.save_to_video_file(videofile, simple_segmentor.SCENES_KEY, segments)
+        file_handler.save_to_video_file(video[PATH], simple_segmentor.SCENES_KEY, segments)
 
     # Mark as preprocessed
     video_repo.set_many_by_url(video[URL], {
@@ -128,12 +156,10 @@ def __get_start_end_time_now():
 
     
 def do_work():
-
-    # TODO: if the dataset is zero we import everything from the dataset to the database. Otherwise we assume that this has already been done ???
-
+    
     start_time, end_time, now = __get_start_end_time_now()
     logging.info("\n---\nStarting daily web scraping and preprocessing (%s to %s).\n---" % (start_time, end_time))
-    scraper.scrape_genres(GENRES)
+    #scraper.scrape_genres(GENRES)
 
     # Keep preprocessing videos until end time is exceeded. 
     # Any failed preprocessed are attempted again in the next iteration.  
@@ -163,6 +189,10 @@ def do_work():
             
 
 def start_schedule():
+    
+    logging.basicConfig(filename='log.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
+    logging.getLogger().setLevel(logging.DEBUG)
+
     start_time, end_time, now = __get_start_end_time_now()
     logging.info("Preprocess schedule started between %s and %s." %(start_time, end_time))
     if start_time < now and now < end_time:
