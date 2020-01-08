@@ -118,8 +118,6 @@ Returns a prediction of a specified URL, if none exists this request may take so
 
 ---
 
-# Resource: Models  
-
 ## Rebuild Model
 
 Rebuilds the model with all the current annotated videos. 
