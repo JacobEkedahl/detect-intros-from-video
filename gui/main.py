@@ -46,21 +46,22 @@ class App:
         self.buttonFrame.grid(row= 1, column=1, sticky=E, pady=5, padx=5)
         self.clear_btn = Button(self.buttonFrame, text="Clear", command=self.clear_box)
         self.clear_btn.grid(row= 0, column=2, padx=5)
-        self.intro_btn = Button(self.buttonFrame, text="Submit", command=self.load)
+        self.intro_btn = Button(self.buttonFrame, text="Load", command=self.load)
         self.intro_btn.grid(row= 0, column=3)
 
         # init frame for placing slider and video
         self.videoFrame = Frame(self.root)
         self.videoFrame.grid(row=1, column=0, padx=10, sticky=N+S+W+E)
-
-        self.start = 10
-        self.end = 44.5
-        self.predicted_start = 9.5
-        self.predicted_end = 44
-        self.set_new_video()
-        self.init_slider()
-        self.display(self.start)
-
+        '''
+self.start = 10
+self.end = 44.5
+self.predicted_start = 9.5
+self.predicted_end = 44
+self.set_new_video()
+self.init_slider()
+self.display(self.start)
+self.init_play_bar()
+'''
     def replace_text_in_box(self, text):
         self.txt.delete(0,END)
         self.txt.insert(0,text)
@@ -68,9 +69,68 @@ class App:
     def clear_box(self):
         self.txt.delete(0,END)
         
-    def refresh(self):
-        self.root.update()
-        self.root.after(1000,self.refresh)
+    def refresh_start(self):
+        if self.play_start:
+            new_start = self.start + 0.024
+            self.global_change_start(new_start)
+            self.root.update()
+            self.root.after(1,self.refresh_start)
+
+    def refresh_end(self):
+        if self.play_end:
+            new_end = self.end + 0.024
+            self.global_change_end(new_end)
+            self.root.update()
+            self.root.after(1,self.refresh_end)
+
+    def updatePlayBtns(self):
+        self.play_stop_start["text"] = "Pause Start" if self.play_start else "Play Start"
+        self.play_stop_end["text"] = "Pause End" if self.play_end else "Play End"
+
+    def startPlayingVideo(self, type):
+        def playStart():
+            self.refresh_start()
+        def playEnd():
+            self.refresh_end()
+
+        global play_video_thread
+        if type == "start" and self.play_start:
+            print("start playing")
+            play_video_thread = threading.Thread(target=playStart)
+            play_video_thread.start()
+        elif type == "end" and self.play_end:
+            print("play end")
+            play_video_thread = threading.Thread(target=playEnd)
+            play_video_thread.start()
+
+    def toggle_start(self):
+        self.play_start = not self.play_start
+        self.play_end = False if self.play_start else self.play_end
+        self.startPlayingVideo("start")
+        self.updatePlayBtns()
+        
+    def toggle_end(self):
+        self.play_end = not self.play_end
+        self.play_start = False if self.play_end else self.play_start
+        self.startPlayingVideo("end")
+        self.updatePlayBtns()
+
+    def init_play_bar(self):
+        self.play_start = False
+        self.play_end = False
+        self.sendPlayFrame = Frame(self.videoFrame)
+        self.sendPlayFrame.pack()
+        self.play_stop_start = Button(self.sendPlayFrame, command=self.toggle_start)
+        self.play_stop_start.grid(row= 0, column=2, padx=5, pady=5)
+        self.play_stop_end = Button(self.sendPlayFrame, command=self.toggle_end)
+        self.play_stop_end.grid(row= 0, column=3, padx=5, pady=5)
+        self.send_intro = Button(self.sendPlayFrame, text="Save", command=self.confirm_into)
+        self.send_intro.grid(row= 0, column=4, pady=5)
+        self.updatePlayBtns()
+
+    def confirm_into(self):
+        # start a new thread, load, then remove loading
+        print("sent!")
     
     def init_slider(self):
         self.w = Canvas(self.videoFrame, width=WIDTH_VIDEO + MARGIN_SLIDER_SIDE * 2, height=55)
@@ -103,8 +163,7 @@ class App:
         self.end_entry.bind('<Return>', self.change_end)
         self.end_lbl = self.w.create_window(self.end + MARGIN_SLIDER_SIDE + 25,MARGIN_TOP,window=self.end_entry)
 
-    def change_end(self, event):
-        new_end = float(self.end_entry.get())
+    def global_change_end(self, new_end):
         if new_end >= 5 and new_end <= 480:
             if new_end - 5 < self.start:
                 self.start = new_end - 5
@@ -113,8 +172,11 @@ class App:
             self.draw_end()
             self.display(self.end)
 
-    def change_start(self, event):
-        new_start = float(self.start_entry.get())
+    def change_end(self, event):
+        new_end = float(self.end_entry.get())
+        self.global_change_end(new_end)
+
+    def global_change_start(self, new_start):
         if new_start >= 0 and new_start <= 475:
             if new_start + 5 > self.end:
                 self.end = new_start + 5
@@ -122,6 +184,10 @@ class App:
             self.start = new_start
             self.draw_start()
             self.display(self.start)
+
+    def change_start(self, event):
+        new_start = float(self.start_entry.get())
+        self.global_change_start(new_start)
 
     def focus_start_entry(self):
         self.start_entry = Entry(self.w, width= 4, textvariable=self.start)
@@ -188,7 +254,6 @@ class App:
                 if self.start + 5 > x - 2:
                     return
                 self.end = x - 2
-                print(x)
                 if self.end < 0:
                     self.end = 0
                 elif self.end > 480:
@@ -211,7 +276,7 @@ class App:
 
     def load(self):
         url = self.txt.get()
-        if not url.startswith("http"):
+        if not url.startswith("http") or "svtplay" not in url:
             self.replace_text_in_box('http')
             print("not valid")
             return
@@ -281,6 +346,7 @@ class App:
             self.clear_video_frame()
             self.set_new_video()
             self.init_slider()
+            self.init_play_bar()
             self.display(self.start)
 
     # will check if this thread is done, (for future impl of loadingbar)
@@ -301,6 +367,7 @@ class App:
         ret, frame = self.vid.get_frame(seconds)
         if ret:
             self.photo = PIL.ImageTk.PhotoImage(image = PIL.Image.fromarray(frame))
+            self.canvas.delete("all")
             self.canvas.create_image(0, 0, image = self.photo, anchor = NW)
 
 class MyVideoCapture:
