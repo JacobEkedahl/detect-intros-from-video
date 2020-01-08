@@ -126,7 +126,7 @@ Rebuilds the model with all the current annotated videos.
 
 #### HTTP Request
 
-    POST: "/model/rebuild"
+    POST: "/videos/rebuild"
 
 #### HTTP Response 
 
