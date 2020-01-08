@@ -136,7 +136,7 @@ def find_errors():
     for i in range(0, len(all_videos), 8):
         video_file = all_videos[i]
         curr_intro = intros[i]
-        s = find_all_matches(video_file)
+        s = find_all_matches(video_file)[0]
         i_start = time_handler.timestamp(curr_intro["start"]) /1000
         i_end = time_handler.timestamp(curr_intro["end"]) /1000
         diff_s = abs(s["start"] - i_start)
