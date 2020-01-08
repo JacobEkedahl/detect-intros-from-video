@@ -180,6 +180,6 @@ def start():
     logging.basicConfig(filename='api.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
     logging.getLogger().setLevel(logging.DEBUG)
 
-    app.run(debug=DEBUG_ON)
+    app.run(debug=DEBUG_ON, threaded=True)
     
 
