@@ -1,26 +1,15 @@
 import time
 import re 
 
-def timestamp(time_string):
-    if ',' in time_string:
-        hours = int(re.findall(r'(\d+):\d+:\d+,\d+', time_string)[0])
-        minutes = int(re.findall(r'\d+:(\d+):\d+,\d+', time_string)[0])
-        seconds = int(re.findall(r'\d+:\d+:(\d+),\d+', time_string)[0])
-        milliseconds = int(re.findall(r'\d+:\d+:\d+,(\d+)', time_string)[0])
-    elif '.' in time_string: 
-        hours = int(re.findall(r'(\d+):\d+:\d+.\d+', time_string)[0])
-        minutes = int(re.findall(r'\d+:(\d+):\d+.\d+', time_string)[0])
-        seconds = int(re.findall(r'\d+:\d+:(\d+).\d+', time_string)[0])
-        milliseconds = int(re.findall(r'\d+:\d+:\d+.(\d+)', time_string)[0])
-    else:
-        hours = int(re.findall(r'(\d+):\d+:\d+', time_string)[0])
-        minutes = int(re.findall(r'\d+:(\d+):\d+', time_string)[0])
-        seconds = int(re.findall(r'\d+:\d+:(\d+)', time_string)[0])
-        milliseconds = 0
-    return (hours*3600 + minutes*60 + seconds) * 1000 + milliseconds
-
+# @TODO: Depreciated
 def to_seconds(time_string):
+    return str_to_seconds(time_string)
+
+def str_to_seconds(time_string):
     return float(timestamp(time_string))/1000
+
+def seconds_to_str(seconds):
+    return timestamp_to_str(seconds*1000)
 
 def validate_timeformat(t):
     try: 
@@ -55,3 +44,21 @@ def timestamp_to_str(timestamp):
         return "%02d:%02d:%02d.%03d" % (hours, minutes, seconds, milliseconds)
     return "%02d:%02d:%02d" % (hours, minutes, seconds)
 
+
+def timestamp(time_string):
+    if ',' in time_string:
+        hours = int(re.findall(r'(\d+):\d+:\d+,\d+', time_string)[0])
+        minutes = int(re.findall(r'\d+:(\d+):\d+,\d+', time_string)[0])
+        seconds = int(re.findall(r'\d+:\d+:(\d+),\d+', time_string)[0])
+        milliseconds = int(re.findall(r'\d+:\d+:\d+,(\d+)', time_string)[0])
+    elif '.' in time_string: 
+        hours = int(re.findall(r'(\d+):\d+:\d+.\d+', time_string)[0])
+        minutes = int(re.findall(r'\d+:(\d+):\d+.\d+', time_string)[0])
+        seconds = int(re.findall(r'\d+:\d+:(\d+).\d+', time_string)[0])
+        milliseconds = int(re.findall(r'\d+:\d+:\d+.(\d+)', time_string)[0])
+    else:
+        hours = int(re.findall(r'(\d+):\d+:\d+', time_string)[0])
+        minutes = int(re.findall(r'\d+:(\d+):\d+', time_string)[0])
+        seconds = int(re.findall(r'\d+:\d+:(\d+)', time_string)[0])
+        milliseconds = 0
+    return (hours*3600 + minutes*60 + seconds) * 1000 + milliseconds

@@ -34,7 +34,7 @@ def scrape_show(show, genre):
         data = json.loads(re.findall(r"root\['__svtplay_apollo'\] = (\{.*?\});", requests.get(show.url).text)[0])
     except Exception as err: 
         logging.exception(err)
-        logging.error("Failed to scrap data for %s " % show.title)
+        logging.error("Failed to scrap data for %s " % show.name)
         return []
     
     urls = []

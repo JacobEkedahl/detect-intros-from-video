@@ -6,6 +6,7 @@ import sys as s
 from commands import cmd_videos, cmd_segment, cmd_dataset, cmd_black
 
 import preprocessing
+import rebuild
 import downloader.scrapesvt as scrapesvt
 from downloader import svtplaywrapper
 
@@ -21,11 +22,18 @@ from segmenter import scenedetector
 from stats import prob_calculator
 from utils import cleaner, extractor
 
+from api import app
+
+import db.video_repo as video_repo 
+import db.show_repo as show_repo
+
+def foo(arg):
+    print("ARG: '%s'" % arg)
+    time.sleep(5)
+    print("thread done")
+    return "RESPONSE"
 
 if __name__ == "__main__":
-    
-    logging.basicConfig(filename='log.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
-    logging.getLogger().setLevel(logging.DEBUG)
 
     file_handler.create_folderstructure_if_not_exists()
 
@@ -142,8 +150,16 @@ if __name__ == "__main__":
         cmd_black.execute(s.argv)
         exit()
 
+    elif (s.argv[1] == "--api"):
+        app.start()
+        exit()
+
     elif(s.argv[1] == "--work"): 
         preprocessing.start_schedule()
+        exit()
+
+    elif(s.argv[1] == "--rebuild"): 
+        rebuild.start()
         exit()
 
 

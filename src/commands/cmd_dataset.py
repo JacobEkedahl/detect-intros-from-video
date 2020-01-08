@@ -22,28 +22,13 @@ import utils.args_helper as args_helper
 import annotations.dataset_annotation as dataset_annotation
 import utils.time_handler as time_handler
 import annotations.dataset_annotation as dataset_annotation
-
+import db.dataset_manager as dataset_manager
 
 def __export_dataset(path):
-    print("exported to %s " % path)
-    output = { "intro": [], "pre-intro": [], "previous": []}
-    for video in video_repo.find_all_with_intro_annotation():
-        intro = video[video_repo.INTRO_ANNOTATION_KEY]
-        output["intro"].append({
-            "start": intro['start'],
-            "end": intro['end'],
-            "url": video['url']
-        })
-    with open(path, 'w') as outfile:
-        json.dump(output, outfile, indent=4, sort_keys=True)
+    dataset_manager.export_dataset(path)
 
 def __import_dataset(path):
-    print("imported from %s " % path)
-    with open(path) as json_file:
-        data = json.load(json_file)
-        for element in data["intro"]:
-            video_repo.set_intro_annotation(element['url'], element['start'], element['end'])
-            print(element)
+    dataset_manager.import_dataset(path)
 
 def __do_present_length_varians():
     annotatedVideos = video_repo.find_all_with_intro_annotation()
