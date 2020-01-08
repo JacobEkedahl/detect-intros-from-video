@@ -1,10 +1,10 @@
+import datetime as dt
 import json
 import os
+import time
 from os import listdir
 from os.path import isfile, join
 from pathlib import Path
-import time
-import datetime as dt
 
 from . import constants as c
 
@@ -58,8 +58,9 @@ def get_video_file_from_seg(seg_file):
     return str(seg_file).replace('.json', '.mp4')
 
 def get_neighboring_videos(video_file):
-    parent_dir = os.path.dirname(video_file)
-    other_videos = get_all_files_by_type(parent_dir, 'mp4')
+    parent_dir = os.path.dirname(get_seg_file_from_video(video_file))
+    other_videos = get_all_files_by_type(parent_dir, 'json')
+    other_videos = list(map(lambda other: get_video_file_from_seg(other), other_videos))
     this_video_index = other_videos.index(video_file)
     other_videos.remove(str(video_file))
     season = get_season_from_video_file(video_file)
