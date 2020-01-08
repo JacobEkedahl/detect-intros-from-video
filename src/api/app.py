@@ -25,8 +25,10 @@ INTRO_PRED_KEY = "introPrediction"
 INTRO_ANN_KEY  = "introAnnotation"
 
 URL_DB = video_repo.URL_KEY
-INTRO_ANN_KEY_DB = video_repo.INTRO_ANNOTATION_KEY
-INTRO_PRED_KEY_DB = video_repo.INTRO_PREDICTION_KEY
+INTRO_ANN_DB = video_repo.INTRO_ANNOTATION_KEY
+INTRO_PRED_DB = video_repo.INTRO_PREDICTION_KEY
+DOWNLOADED_DB = video_repo.INTRO_PREDICTION_KEY
+DOWNLOADED_DB = video_repo.DOWNLOADED_KEY
 
 def __format_video(video):
     video.pop("_id")
@@ -40,16 +42,16 @@ def __format_video(video):
         video["preprocessed"] = video.pop(video_repo.PREPROCESSED_KEY)
     else:
         video["preprocessed"] = False 
-    if video_repo.DOWNLOADED_KEY in video:
-        video["downloaded"] = video.pop(video_repo.DOWNLOADED_KEY)
+    if DOWNLOADED_DB in video:
+        video["downloaded"] = video.pop(DOWNLOADED_DB)
     else: 
         video["downloaded"] = False 
-    if INTRO_ANN_KEY_DB in video:
-        video[INTRO_ANN_KEY] = video.pop(INTRO_ANN_KEY_DB)
+    if INTRO_ANN_DB in video:
+        video[INTRO_ANN_KEY] = video.pop(INTRO_ANN_DB)
     else: 
         video[INTRO_ANN_KEY] = None 
-    if INTRO_PRED_KEY_DB in video:
-        video[INTRO_PRED_KEY] = video.pop(INTRO_PRED_KEY_DB)
+    if INTRO_PRED_DB in video:
+        video[INTRO_PRED_KEY] = video.pop(INTRO_PRED_DB)
     else: 
         video[INTRO_PRED_KEY] = None 
 
@@ -153,9 +155,9 @@ def get_video_prediction():
             try: 
                 video = video_repo.find_by_url(data[URL_DB])
                 if video is not None:
-                    if INTRO_ANN_KEY_DB in video and video[INTRO_ANN_KEY_DB] is not None: 
+                    if INTRO_ANN_DB in video and video[INTRO_ANN_DB] is not None: 
                         return __response(OK, {
-                            "intro": video[INTRO_ANN_KEY_DB],
+                            "intro": video[INTRO_ANN_DB],
                             "type": INTRO_ANN_KEY
                         })
                     return __response(OK, {
