@@ -44,7 +44,7 @@ def get_intros_from_videos(video_files):
         intro = get_intro_from_video(video_file)
         if intro is not None:
             result.append(intro)
-    if len(intro) > 0:
+    if len(result) > 0:
         return result
     return None
 
