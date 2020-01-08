@@ -30,6 +30,7 @@ INTRO_PRED_DB = video_repo.INTRO_PREDICTION_KEY
 DOWNLOADED_DB = video_repo.INTRO_PREDICTION_KEY
 DOWNLOADED_DB = video_repo.DOWNLOADED_KEY
 
+
 def __format_video(video):
     video.pop("_id")
     video["season"] = video.pop(video_repo.SEASON_KEY)
