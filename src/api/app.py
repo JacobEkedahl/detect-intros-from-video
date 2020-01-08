@@ -4,6 +4,7 @@ import logging
 
 import db.video_repo as video_repo 
 import predicting
+import rebuild
 
 app = Flask(__name__)
 DEBUG_ON = False 
@@ -171,8 +172,10 @@ def get_video_prediction():
         return __response(BAD_REQUEST, {"success": False, "message": str(e)})
 
 
+@app.route('/videos/rebuild', methods=['GET', 'POST'])
 def do_build():
-    print("Not yet implemented")
+    rebuild.start()
+    return __response(OK, {"success": True})
 
 
 def start():

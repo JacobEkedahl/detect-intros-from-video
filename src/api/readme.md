@@ -116,3 +116,19 @@ Returns a prediction of a specified URL, if none exists this request may take so
         "type": "introPrediction" (or "introAnnotation")
     }
 
+---
+
+# Resource: Models  
+
+## Rebuild Model
+
+Rebuilds the model with all the current annotated videos. 
+
+#### HTTP Request
+
+
+    POST: "/model/rebuild"
+
+#### HTTP Response 
+
+  { "success": True }
