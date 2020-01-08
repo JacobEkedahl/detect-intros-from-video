@@ -133,6 +133,7 @@ def preprocess_video(video):
 
     if SAVE_TO_FILE:
         file_handler.save_to_video_file(video[PATH], simple_segmentor.SCENES_KEY, segments)
+        file_handler.save_to_video_file(video[PATH], URL, video[URL])
 
     # Mark as preprocessed
     video_repo.set_many_by_url(video[URL], {

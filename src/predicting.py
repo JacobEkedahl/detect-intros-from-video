@@ -96,12 +96,16 @@ def get_video_prediction(targetVideo):
                 count_failure = count_failure + 1
         if targetVideo[URL_DB] == video[URL_DB]:
             targetVideo = video 
-    
+
     __compare_video(targetVideo)
     predictions = __predict_video(targetVideo)
     prediction = None 
     if len(predictions) > 0:
         prediction = predictions[0]
+    else: 
+        logging.info("%s\nPrediction: %s\n" % (targetVideo[URL_DB], prediction))
+        return prediction 
+
     video_repo.set_intro_prediction(targetVideo[URL_DB], prediction[START], prediction[END])
 
     logging.info("%s\nPrediction: %s\nAnnotation: %s\n" % (
