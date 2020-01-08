@@ -1,8 +1,9 @@
 from flask import Flask, request, jsonify, render_template, abort
 import json 
+import logging 
 
 import db.video_repo as video_repo 
-
+import predicting
 
 app = Flask(__name__)
 DEBUG_ON = False 
@@ -22,6 +23,9 @@ NO_SHOW_WITH_NAME           = "No show found with that name."
 INTRO_PRED_KEY = "introPrediction"
 INTRO_ANN_KEY  = "introAnnotation"
 
+URL_DB = video_repo.URL_KEY
+INTRO_ANN_KEY_DB = video_repo.INTRO_ANNOTATION_KEY
+INTRO_PRED_KEY_DB = video_repo.INTRO_PREDICTION_KEY
 
 def __format_video(video):
     video.pop("_id")
@@ -39,12 +43,12 @@ def __format_video(video):
         video["downloaded"] = video.pop(video_repo.DOWNLOADED_KEY)
     else: 
         video["downloaded"] = False 
-    if video_repo.INTRO_ANNOTATION_KEY in video:
-        video[INTRO_ANN_KEY] = video.pop(video_repo.INTRO_ANNOTATION_KEY)
+    if INTRO_ANN_KEY_DB in video:
+        video[INTRO_ANN_KEY] = video.pop(INTRO_ANN_KEY_DB)
     else: 
         video[INTRO_ANN_KEY] = None 
-    if video_repo.INTRO_PREDICTION_KEY in video:
-        video[INTRO_PRED_KEY] = video.pop(video_repo.INTRO_ANNOTATION_KEY)
+    if INTRO_PRED_KEY_DB in video:
+        video[INTRO_PRED_KEY] = video.pop(INTRO_PRED_KEY_DB)
     else: 
         video[INTRO_PRED_KEY] = None 
 
@@ -64,7 +68,7 @@ def __success_response():
 
 @app.route("/")
 def index():
-    return "Echo" # TODO: Add resource description 
+    return "Videos" # TODO: Add resource description 
 
 
 @app.route('/videos/get/url', methods=['GET', 'POST'])
@@ -73,14 +77,15 @@ def get_video():
         data = request.json
         if "url" in data: 
             try: 
+                "print hello??"
                 video = video_repo.find_by_url(data["url"])
                 if video is not None: 
                     __format_video(video)
                     return video
                 return __response(NOT_FOUND, {"success": False, "message": NO_MATCHING_URL})
-            except Exception:
+            except Exception as e:
+                logging.exception(e)
                 return __response(INTERNAL_SERVER_ERROR, {"success": False, "message": QUERY_REQUEST_FAILURE_MSG})
-
         return __response(BAD_REQUEST, {"success": False, "message": NO_URL_FOUND_MSG})
     except Exception as e: 
         return __response(BAD_REQUEST, {"success": False, "message": str(e)})
@@ -90,7 +95,8 @@ def get_video():
 def get_all_videos():
     try: 
         return __format_videos(video_repo.find_all())
-    except Exception: 
+    except Exception as e:
+        logging.exception(e) 
         __response(BAD_REQUEST, {"success": False, "message": NO_URL_FOUND_MSG})
 
 
@@ -99,7 +105,8 @@ def find_by_show_id(show_id):
     try: 
         videos = video_repo.find_by_show_id(show_id)
         return __format_videos(videos)
-    except Exception: 
+    except Exception as e:
+        logging.exception(e) 
         return __response(INTERNAL_SERVER_ERROR, {"success": False, "message": QUERY_REQUEST_FAILURE_MSG})
 
 
@@ -108,7 +115,8 @@ def find_by_show_id_season(show_id, season):
     try: 
         videos = video_repo.find_by_show_id_and_season(show_id, season)
         return __format_videos(videos)
-    except Exception: 
+    except Exception as e: 
+        logging.exception(e)
         return __response(INTERNAL_SERVER_ERROR, {"success": False, "message": QUERY_REQUEST_FAILURE_MSG})
 
 
@@ -127,7 +135,8 @@ def set_annotation():
                 if updated:
                     return __success_response()
                 return __response(NOT_FOUND, {"success": False, "message": NO_URL_FOUND_MSG})
-            except Exception:
+            except Exception as e:
+                logging.exception(e)
                 return __response(INTERNAL_SERVER_ERROR, {"success": False, "message": QUERY_REQUEST_FAILURE_MSG})
 
         return __response(BAD_REQUEST, {"success": False, "message": INTRO_ANN_MSG})
@@ -141,32 +150,25 @@ def get_video_prediction():
         data = request.json
         if "url" in data: 
             try: 
-                video = video_repo.find_by_url(data["url"])
+                video = video_repo.find_by_url(data[URL_DB])
                 if video is not None:
-                    __format_video(video)
-                   # TODO: Perform prediction 
-                   # simulated response 
-                    import time
-                    time.sleep(6)
+                    if INTRO_ANN_KEY_DB in video and video[INTRO_ANN_KEY_DB] is not None: 
+                        return __response(OK, {
+                            "intro": video[INTRO_ANN_KEY_DB],
+                            "type": INTRO_ANN_KEY
+                        })
                     return __response(OK, {
-                        INTRO_PRED_KEY: {
-                        "start": 50.0,
-                        "end": 70.0 
-                        }, 
-                        INTRO_ANN_KEY: video[INTRO_ANN_KEY]
+                        "intro": predicting.get_video_prediction(video),
+                        "type": INTRO_PRED_KEY
                     })
-                    #
                 return __response(NOT_FOUND, {"success": False, "message": NO_MATCHING_URL})
-            except Exception:
+            except Exception as e:
+                logging.exception(e)
                 return __response(INTERNAL_SERVER_ERROR, {"success": False, "message": QUERY_REQUEST_FAILURE_MSG})
 
         return __response(BAD_REQUEST, {"success": False, "message": NO_URL_FOUND_MSG})
     except Exception as e: 
         return __response(BAD_REQUEST, {"success": False, "message": str(e)})
-  
-
-def do_scrape():
-    print("Not yet implemented")
 
 
 def do_build():
@@ -174,6 +176,10 @@ def do_build():
 
 
 def start():
+      
+    logging.basicConfig(filename='api.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
+    logging.getLogger().setLevel(logging.DEBUG)
+
     app.run(debug=DEBUG_ON)
     
 

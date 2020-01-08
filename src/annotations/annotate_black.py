@@ -20,7 +20,7 @@ def annotate_black_sequences(segments, annotation, blackSequences):
         return segments
     timeIntervals = []
     for seq in blackSequences:
-        timeIntervals.append(TimeInterval(seq['start'], seq['end']))
+        timeIntervals.append(TimeInterval(time_handler.seconds_to_str(seq['start']), time_handler.seconds_to_str(seq['end'])))
     for seg in segments:
         seg[annotation] = False 
     return ann.set_presence_of_time_interval_improved(annotation, segments, timeIntervals)

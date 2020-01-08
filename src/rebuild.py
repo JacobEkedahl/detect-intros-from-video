@@ -1,6 +1,12 @@
 
 """
     This script will build the model based on the current dataset. This process may take a while to finish...
+
+
+    Suggested Future Changes: 
+        - Make the web scraping directly from the video url, making it more decentralized and reduces initial bottleneck.
+
+    
 """
 import logging 
 import time 
@@ -12,14 +18,11 @@ import os
 import json
 
 from downloader import scrapesvt
-from db import dataset_manager
-from utils import constants
+from db import dataset_manager, video_repo
+from utils import constants, time_handler
 from frame_matcher import video_matcher
-import db.video_repo as video_repo 
 import preprocessing
 import hmm
-
-
 
 GENRES = constants.VIDEO_GENRES
 SHOW = video_repo.SHOW_KEY
@@ -27,7 +30,9 @@ SEASON = video_repo.SEASON_KEY
 PREPROCESSED = video_repo.PREPROCESSED_KEY
 URL = video_repo.URL_KEY
 PATH = video_repo.FULL_PATH_KEY
-
+ANN_INTRO = video_repo.INTRO_ANNOTATION_KEY
+START = "start"
+END = "end"
 DATASET_PATH = "data/dataset.json"
 
 def __scrape_svt():
@@ -51,14 +56,27 @@ def __export_dataset():
 def __compare_video(video):
     start = datetime.now()
     video_matcher.find_all_matches(video[PATH])
-    logging.info("Video comparison complete (%s), time taken: %s" % (video[URL], datetime.now()  - start))
+    logging.info("Video comparison complete, time taken: %s" % (datetime.now()  - start))
+
+
+def __make_time_interval_human_readable(timeInterval):
+    return {
+        START: time_handler.seconds_to_str(timeInterval[START]).split(":", 1)[1], 
+        END: time_handler.seconds_to_str(timeInterval[END]).split(":", 1)[1]
+    }
+
+def __make_predictions_human_readable(predictions):
+    outputList = []
+    for p in predictions: 
+        outputList.append(__make_time_interval_human_readable(p))
+    return outputList
 
 
 def __predict_video(video):
     start = datetime.now()
-    prediction = hmm.get_prediction(video[PATH])
-    logging.info("Prediction complete (%s), time taken %s" % (prediction, datetime.now()  - start))
-
+    predictions = hmm.get_prediction(video[PATH])
+    logging.info("prediction complete, time taken %s" % (datetime.now()  - start))
+    return predictions 
 
 def start():
 
@@ -71,7 +89,7 @@ def start():
     # Scrape Svt Play 
     __scrape_svt()
 
-    # Import dataset annotations 
+    # Import dataset annotations from file 
     __import_dataset()
     
     # Export dataset annotations - in case more have been added 
@@ -93,10 +111,8 @@ def start():
     # Iterate through all ordered videos 
     count_failure = 0
     count_success = 0
-    preprocessedInSeason = 0
     for show in dictVideos:
         for season in dictVideos[show]:
-            preprocessedInSeason = 0
             for video in dictVideos[show][season]:
                 if not (PREPROCESSED in video and video[PREPROCESSED]):
                     try: 
@@ -106,7 +122,6 @@ def start():
                             count_failure = count_failure + 1 
                         else: 
                             count_success = count_success + 1 
-                            preprocessedInSeason = preprocessedInSeason + 1
                     except Exception as e:
                         logging.exception(e)
                         count_failure = count_failure + 1 
@@ -114,9 +129,15 @@ def start():
             for video in dictVideos[show][season]:
                 try: 
                     __compare_video(video)
-                    __predict_video(video)
+                    predictions = __predict_video(video)
+                    for p in predictions: 
+                        video_repo.set_intro_prediction(video[URL], p[START], p[END])
+
+                    logging.info("%s\nPrediction: %s\nAnnotation: %s\n" % (
+                        video[URL], 
+                        __make_predictions_human_readable(predictions),
+                        __make_time_interval_human_readable(video[ANN_INTRO]))
+                    )   
                 except Exception as e: 
                     logging.exception(e)
-
-
 
