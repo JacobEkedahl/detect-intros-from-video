@@ -96,7 +96,7 @@ def get_video_prediction(targetVideo):
                 count_failure = count_failure + 1
         if targetVideo[URL_DB] == video[URL_DB]:
             targetVideo = video 
-
+    
     __compare_video(targetVideo)
     predictions = __predict_video(targetVideo)
     prediction = None 
