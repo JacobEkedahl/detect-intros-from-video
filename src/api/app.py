@@ -123,7 +123,7 @@ def find_by_show_id_season(show_id, season):
         return __response(INTERNAL_SERVER_ERROR, {"success": False, "message": QUERY_REQUEST_FAILURE_MSG})
 
 
-@app.route('/videos/set/intro-annotation', methods=["POST"])
+@app.route('/videos/set/annotation/intro', methods=["POST"])
 def set_annotation():
     try: 
         data = request.json
@@ -147,7 +147,7 @@ def set_annotation():
         return __response(BAD_REQUEST, {"success": False, "message": str(e)})
 
 
-@app.route('/videos/get/intro-prediction', methods=['GET', 'POST'])
+@app.route('/videos/get/prediction/intro', methods=['GET', 'POST'])
 def get_video_prediction():
     try: 
         data = request.json

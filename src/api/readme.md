@@ -84,7 +84,7 @@ Allows for manual annotation of video intros.
 
 #### HTTP Request
 
-    POST: "/videos/set/intro-annotation"
+    POST: "/videos/set/annotation/intro"
 
 #### Query Parameters
 
@@ -101,7 +101,7 @@ Allows for manual annotation of video intros.
 ## Get Video Prediction 
 Returns a prediction of a specified URL, if none exists this request may take some time to complete. 
 
-    GET: "/videos/get/intro-prediction"
+    GET: "/videos/get/prediction/intro"
 
 #### Query Parameters
 
