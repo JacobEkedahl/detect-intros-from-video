@@ -80,7 +80,6 @@ def get_video():
         data = request.json
         if "url" in data: 
             try: 
-                "print hello??"
                 video = video_repo.find_by_url(data["url"])
                 if video is not None: 
                     __format_video(video)
