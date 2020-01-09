@@ -27,6 +27,17 @@ from . import frame_comparer as comparer
 ALWAYS_OVERRIDE_PREV_COMPARISON = False  
 
 
+def __intro_has_changed(videofile, newIntro):
+    video_data = file_handler.load_from_video_file(videofile)
+    if "intro" in video_data:
+        old_intro = video_data["intro"]
+        if old_intro["start"] != newIntro["start"] or old_intro["end"] != newIntro["end"]:
+            return True # has changed
+        else:
+            return False 
+    return True 
+
+
 def find_all_matches(file_A):
     video_A = str(file_A)
     other_files_same_series = file_handler.get_neighboring_videos(video_A)
@@ -39,18 +50,30 @@ def find_all_matches(file_A):
 
     logging.info("comparing %s with:\n%s" % (file_A, other_files_same_series))
 
+    should_make_new_comparison = ALWAYS_OVERRIDE_PREV_COMPARISON # Default 
+    intro_A = extractor.get_intro_from_video(file_A)
+    video_data = file_handler.load_from_video_file(file_A)
+    if __intro_has_changed(file_A, intro_A):
+        logging.info("Intro for A has changed: %s " % file_A)
+        should_make_new_comparison = True 
+        file_handler.save_to_video_file(file_A, "intro", intro_A)
+
     for file_B in other_files_same_series:
         
         video_B = str(file_B)
         hashes_B = handler.open_obj_from_meta(c.HASH_NAME, video_B)
         intro_B = extractor.get_intro_from_video(video_B)
 
+        override_comparison = should_make_new_comparison # Default 
 
-        override_comparison = ALWAYS_OVERRIDE_PREV_COMPARISON
+        # Check if intro for B has changed
+        if __intro_has_changed(file_B, intro_B):
+            logging.info("Intro for B has changed: %s " % file_B)
+            file_handler.save_to_video_file(file_B, "intro", intro_B)
+            override_comparison = True # Toggle to make a new comparison
 
         # This part loads the frame comparison data for videofile A and checks to see if there is already a comparison between A and B. 
         # If no such comparison exists one is created and stored. 
-        video_data = file_handler.load_from_video_file(file_A)
         if "frame_matches" in video_data: 
             video_data_matches = video_data["frame_matches"]
         else: 
@@ -68,18 +91,17 @@ def find_all_matches(file_A):
 
         # Overrides any previously existing comparison with a new comparison --> 
         if override_comparison:
+            logging.info("Comparison is being made between %s and %s..." % (file_A, file_B))
             # Extracts frame hash comparison between file A and B.
             frames_matched, frames_matched_intro = comparer.find_all_matches_hash_intro(hashes_A, hashes_B, intro_B, c.HASH_CUTOFF)
             vide_data_matches_other_file = {
+                "intro": intro_B, 
                 "threshold": c.HASH_CUTOFF,
                 "frames_matched": frames_matched,
                 "frames_matched_intro": frames_matched_intro
             }
             video_data_matches[file_B] = vide_data_matches_other_file
             file_handler.save_to_video_file(file_A, "frame_matches", video_data_matches)
-
-            # TODO: Verify that the reverse comparison is exactly the same (it should be). If that is the case, simply save the result directly in file_B aswell 
-            
 
         for matched_item in frames_matched:
             count = matched_item["count"]

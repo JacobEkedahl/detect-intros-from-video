@@ -31,6 +31,8 @@ def video_to_hashes(video_filename, hashes):
         sec = sec + frameRate
         sec = round(sec, 2)
         success = get_hash(vidcap, sec, count, video_filename, hashes)
+    vidcap.release()
+
 
 def get_hash(vidcap, sec, count, video_filename, hashes):
     vidcap.set(cv2.CAP_PROP_POS_MSEC,sec*1000)
