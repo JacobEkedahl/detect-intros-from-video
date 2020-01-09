@@ -55,10 +55,7 @@ def __compare_video(video):
     logging.info("Video comparison complete, time taken: %s" % (datetime.now()  - start))
 
 
-def __make_time_interval_human_readable(video):
-    if not ANN_INTRO_DB in video:
-        return {}
-    timeInterval = video[ANN_INTRO_DB]
+def __make_time_interval_human_readable(timeInterval):
     return {
         START: time_handler.seconds_to_str(timeInterval[START]).split(":", 1)[1], 
         END: time_handler.seconds_to_str(timeInterval[END]).split(":", 1)[1]
@@ -71,6 +68,10 @@ def __make_predictions_human_readable(predictions):
         outputList.append(__make_time_interval_human_readable(p))
     return outputList
 
+def __make_annotations_human_readable(video):
+    if ANN_INTRO_DB in video:
+        __make_time_interval_human_readable
+    return {}
 
 def __predict_video(video):
     start = datetime.now()
@@ -99,6 +100,13 @@ def get_video_prediction(targetVideo):
 
     __compare_video(targetVideo)
     predictions = __predict_video(targetVideo)
+
+    logging.info("%s\nPrediction: %s\nAnnotation: %s\n" % (
+        targetVideo[URL_DB], 
+        __make_predictions_human_readable(predictions),
+        __make_annotations_human_readable(targetVideo)
+    ))   
+
     prediction = None 
     if len(predictions) > 0:
         prediction = predictions[0]
@@ -108,13 +116,8 @@ def get_video_prediction(targetVideo):
 
     video_repo.set_intro_prediction(targetVideo[URL_DB], prediction[START], prediction[END])
 
-    logging.info("%s\nPrediction: %s\nAnnotation: %s\n" % (
-        targetVideo[URL_DB], 
-        __make_predictions_human_readable(predictions),
-        __make_time_interval_human_readable(targetVideo)
-    ))   
-
     return prediction
+
 
 def get_prediction_by_url(url):
     targetVideo = video_repo.find_by_url(url)
