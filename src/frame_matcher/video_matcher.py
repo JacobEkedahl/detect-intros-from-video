@@ -23,8 +23,9 @@ from utils import time_handler
 
 from . import frame_comparer as comparer
 
+# Useful in case you change something about how the frame comparison works beyond changes to the threshold value and wish to apply it on all videos
+ALWAYS_OVERRIDE_PREV_COMPARISON = False  
 
-OVERRIDE_COMPARISON = False 
 
 def find_all_matches(file_A):
     video_A = str(file_A)
@@ -42,7 +43,7 @@ def find_all_matches(file_A):
         intro_B = extractor.get_intro_from_video(video_B)
 
 
-        override_comparison = OVERRIDE_COMPARISON
+        override_comparison = ALWAYS_OVERRIDE_PREV_COMPARISON
 
         # This part loads the frame comparison data for videofile A and checks to see if there is already a comparison between A and B. 
         # If no such comparison exists one is created and stored. 
@@ -56,9 +57,8 @@ def find_all_matches(file_A):
             vide_data_matches_other_file = video_data_matches[file_B]
             frames_matched = vide_data_matches_other_file["frames_matched"]
             frames_matched_intro = vide_data_matches_other_file["frames_matched_intro"]
-            prev_hash_cutoff = vide_data_matches_other_file["threshold"]
             # The threshold has changed from the previous comparison
-            if not "threshold" in vide_data_matches_other_file or prev_hash_cutoff != c.HASH_CUTOFF: 
+            if not "threshold" in vide_data_matches_other_file or vide_data_matches_other_file["threshold"] != c.HASH_CUTOFF: 
                override_comparison = True 
 
         # Overrides any previously existing comparison with a new comparison --> 
@@ -66,9 +66,9 @@ def find_all_matches(file_A):
             # Extracts frame hash comparison between file A and B.
             frames_matched, frames_matched_intro = comparer.find_all_matches_hash_intro(hashes_A, hashes_B, intro_B, c.HASH_CUTOFF)
             vide_data_matches_other_file = {
+                "threshold": c.HASH_CUTOFF,
                 "frames_matched": frames_matched,
-                "frames_matched_intro": frames_matched_intro,
-                "threshold": c.HASH_CUTOFF
+                "frames_matched_intro": frames_matched_intro
             }
             video_data_matches[file_B] = vide_data_matches_other_file
             file_handler.save_to_video_file(file_A, "frame_matches", video_data_matches)
@@ -112,6 +112,7 @@ def get_best_intro(matches):
     else:
         return [sequences[0]]
 
+
 def remove_preintro_if_present(sequences):
     highest_ranked = sequences[0]
     second_ranked = sequences[1]
@@ -120,6 +121,7 @@ def remove_preintro_if_present(sequences):
         return second_ranked
     else:
         return highest_ranked
+
 
 # Will find sequences of matches and filter out unrelevant sequences
 def extract_sequences(matches): 
@@ -164,6 +166,7 @@ def extract_sequences(matches):
         recorded_sequences.append(current_sequence)
 
     return recorded_sequences
+
 
 ## method for testing the error rate of this intro finder
 def find_errors():
