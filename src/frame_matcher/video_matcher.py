@@ -55,7 +55,7 @@ def find_all_matches(file_A):
             frames_matched_intro = vide_data_matches_other_file["frames_matched_intro"]
             prev_hash_cutoff = vide_data_matches_other_file["threshold"]
 
-            # If the threhold has changed or is not present a new comparison is generated -->
+            # If the threhold has changed or is not present, perform the comparison again -->
             if not "threshold" in vide_data_matches_other_file or prev_hash_cutoff != c.HASH_CUTOFF: 
                 # Extracts frame hash comparison between file A and B.
                 frames_matched, frames_matched_intro = comparer.find_all_matches_hash_intro(hashes_A, hashes_B, intro_B, c.HASH_CUTOFF)
@@ -66,6 +66,8 @@ def find_all_matches(file_A):
                 }
                 video_data_matches[file_B] = vide_data_matches_other_file
                 file_handler.save_to_video_file(file_A, "frame_matches", video_data_matches)
+
+        # No previous comparison exists, perform a new one --> 
         else: 
             # Extracts frame hash comparison between file A and B.
             frames_matched, frames_matched_intro = comparer.find_all_matches_hash_intro(hashes_A, hashes_B, intro_B, c.HASH_CUTOFF)
@@ -79,9 +81,6 @@ def find_all_matches(file_A):
 
             # TODO: Verify that the reverse comparison is exactly the same (it should be). If that is the case, simply save the result directly in file_B aswell 
             
-
-        print("frame_matched: %d --- %d" % (len(frames_matched), len(frames_matched_intro))) 
-        print(frames_matched[0])
 
         for matched_item in frames_matched:
             count = matched_item["count"]
