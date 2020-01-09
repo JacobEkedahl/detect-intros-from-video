@@ -24,6 +24,8 @@ from utils import time_handler
 from . import frame_comparer as comparer
 
 
+OVERRIDE_COMPARISON = False 
+
 def find_all_matches(file_A):
     video_A = str(file_A)
     other_files_same_series = file_handler.get_neighboring_videos(video_A)
@@ -39,6 +41,9 @@ def find_all_matches(file_A):
         hashes_B = handler.open_obj_from_meta(c.HASH_NAME, video_B)
         intro_B = extractor.get_intro_from_video(video_B)
 
+
+        override_comparison = OVERRIDE_COMPARISON
+
         # This part loads the frame comparison data for videofile A and checks to see if there is already a comparison between A and B. 
         # If no such comparison exists one is created and stored. 
         video_data = file_handler.load_from_video_file(file_A)
@@ -46,29 +51,18 @@ def find_all_matches(file_A):
             video_data_matches = video_data["frame_matches"]
         else: 
             video_data_matches = {}
-        
-        # If a previous comparison exists -->
-        if file_B in video_data_matches:
-
+        # If a previous comparison exists and we don't toggle automatic overriding -->
+        if not override_comparison and file_B in video_data_matches:
             vide_data_matches_other_file = video_data_matches[file_B]
             frames_matched = vide_data_matches_other_file["frames_matched"]
             frames_matched_intro = vide_data_matches_other_file["frames_matched_intro"]
             prev_hash_cutoff = vide_data_matches_other_file["threshold"]
-
-            # If the threhold has changed or is not present, perform the comparison again -->
+            # The threshold has changed from the previous comparison
             if not "threshold" in vide_data_matches_other_file or prev_hash_cutoff != c.HASH_CUTOFF: 
-                # Extracts frame hash comparison between file A and B.
-                frames_matched, frames_matched_intro = comparer.find_all_matches_hash_intro(hashes_A, hashes_B, intro_B, c.HASH_CUTOFF)
-                vide_data_matches_other_file = {
-                    "frames_matched": frames_matched,
-                    "frames_matched_intro": frames_matched_intro,
-                    "threshold": c.HASH_CUTOFF
-                }
-                video_data_matches[file_B] = vide_data_matches_other_file
-                file_handler.save_to_video_file(file_A, "frame_matches", video_data_matches)
+               override_comparison = True 
 
-        # No previous comparison exists, perform a new one --> 
-        else: 
+        # Overrides any previously existing comparison with a new comparison --> 
+        if override_comparison:
             # Extracts frame hash comparison between file A and B.
             frames_matched, frames_matched_intro = comparer.find_all_matches_hash_intro(hashes_A, hashes_B, intro_B, c.HASH_CUTOFF)
             vide_data_matches_other_file = {
