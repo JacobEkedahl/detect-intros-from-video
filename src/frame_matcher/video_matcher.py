@@ -7,7 +7,7 @@
 import json
 import pprint
 import statistics
-
+import logging 
 import imagehash
 from PIL import Image
 
@@ -37,7 +37,10 @@ def find_all_matches(file_A):
     intro_start_median = []
     intros = []
 
+    logging.info("comparing %s with:\n%s" % (file_A, other_files_same_series))
+
     for file_B in other_files_same_series:
+        
         video_B = str(file_B)
         hashes_B = handler.open_obj_from_meta(c.HASH_NAME, video_B)
         intro_B = extractor.get_intro_from_video(video_B)
