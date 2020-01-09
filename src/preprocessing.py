@@ -160,7 +160,7 @@ def __do_timed__work():
     
     start_time, end_time, now = __get_start_end_time_now()
     logging.info("\n---\nStarting daily web scraping and preprocessing (%s to %s).\n---" % (start_time, end_time))
-    #scraper.scrape_genres(GENRES)
+    scraper.scrape_genres(GENRES)
 
     # Keep preprocessing videos until end time is exceeded. 
     # Any failed preprocessed are attempted again in the next iteration.  
@@ -190,7 +190,7 @@ def __do_timed__work():
             
 
 def start_schedule():
-    
+
     logging.basicConfig(filename='log.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
     logging.getLogger().setLevel(logging.DEBUG)
 
