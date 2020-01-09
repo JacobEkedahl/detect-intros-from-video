@@ -1,3 +1,4 @@
+import datetime
 import threading
 import time
 from tkinter import *
@@ -7,8 +8,10 @@ import cv2
 import PIL.Image
 import PIL.ImageTk
 
+import extract_audio
 import file_handler
 import imutils
+import pygame
 import svtplaywrapper
 
 START_TIME = 0
@@ -52,16 +55,25 @@ class App:
         # init frame for placing slider and video
         self.videoFrame = Frame(self.root)
         self.videoFrame.grid(row=1, column=0, padx=10, sticky=N+S+W+E)
+
         '''
-self.start = 10
-self.end = 44.5
-self.predicted_start = 9.5
-self.predicted_end = 44
-self.set_new_video()
-self.init_slider()
-self.display(self.start)
-self.init_play_bar()
-'''
+        self.start = 10
+        self.end = 44.5
+        self.predicted_start = 9.5
+        self.predicted_end = 44
+        self.set_new_video()
+        self.init_slider()
+        self.display(self.start)
+        self.init_play_bar()
+        '''
+        
+    def load_audio(self):        
+        extract_audio.extract()
+        print("extracting")
+        pygame.mixer.init()
+        print("init pygame")
+        pygame.mixer.music.load("gui/temp/current.ogg")
+
     def replace_text_in_box(self, text):
         self.txt.delete(0,END)
         self.txt.insert(0,text)
@@ -71,14 +83,20 @@ self.init_play_bar()
         
     def refresh_start(self):
         if self.play_start:
-            new_start = self.start + 0.024
+            curr_time = datetime.datetime.now()
+            diff = curr_time - self.old_time
+            addon = (diff.total_seconds() * 1000) / 1000
+            new_start = self.old_start + addon
             self.global_change_start(new_start)
             self.root.update()
             self.root.after(1,self.refresh_start)
 
     def refresh_end(self):
         if self.play_end:
-            new_end = self.end + 0.024
+            curr_time = datetime.datetime.now()
+            diff = curr_time - self.old_time
+            addon = (diff.total_seconds() * 1000) / 1000
+            new_end = self.old_end + addon
             self.global_change_end(new_end)
             self.root.update()
             self.root.after(1,self.refresh_end)
@@ -88,9 +106,15 @@ self.init_play_bar()
         self.play_stop_end["text"] = "Pause End" if self.play_end else "Play End"
 
     def startPlayingVideo(self, type):
-        def playStart():
+        def playStart():           
+            self.old_time = datetime.datetime.now()
+            self.old_start = self.start
+            pygame.mixer.music.play(0, self.start)
             self.refresh_start()
         def playEnd():
+            self.old_time = datetime.datetime.now()
+            self.old_end = self.end
+            pygame.mixer.music.play(0, self.end)
             self.refresh_end()
 
         global play_video_thread
@@ -106,12 +130,16 @@ self.init_play_bar()
     def toggle_start(self):
         self.play_start = not self.play_start
         self.play_end = False if self.play_start else self.play_end
+        if not self.play_start:
+            pygame.mixer.music.stop()
         self.startPlayingVideo("start")
         self.updatePlayBtns()
         
     def toggle_end(self):
         self.play_end = not self.play_end
         self.play_start = False if self.play_end else self.play_start
+        if not self.play_end:
+            pygame.mixer.music.stop()
         self.startPlayingVideo("end")
         self.updatePlayBtns()
 
@@ -326,6 +354,27 @@ self.init_play_bar()
         submit_thread = threading.Thread(target=use_svtplay)
         submit_thread.start()
 
+    def extract(self):
+        def use_extraction():
+            print("starting extraction")
+            self.check_extraction_thread()
+            self.load_audio()
+
+        global extraction_thread
+        extraction_thread = threading.Thread(target=use_extraction)
+        extraction_thread.start()
+
+    def check_extraction_thread(self):
+        if extraction_thread.is_alive():
+            self.root.after(20, self.check_extraction_thread)
+        else:
+            self.download_completed = True
+            self.progress_download.pack_forget()
+            self.lbl = Label(self.videoFrame, text="Downloading of video has been completed")
+            self.lbl.pack()
+            self.check_if_both_is_completed()
+            print("done extraction audio") # set flag for loading intro to true
+
     # will check if this thread is done, (for future impl of loadingbar)
     def check_load_intro_thread(self):
         if load_intro_thread.is_alive():
@@ -354,11 +403,7 @@ self.init_play_bar()
         if submit_thread.is_alive():
             self.root.after(20, self.check_submit_thread)
         else:
-            self.download_completed = True
-            self.progress_download.pack_forget()
-            self.lbl = Label(self.videoFrame, text="Downloading of video has been completed")
-            self.lbl.pack()
-            self.check_if_both_is_completed()
+            self.extract()
             print("done loading video")
             #progressbar.stop()
 
