@@ -1,6 +1,6 @@
 # Resource: Videos  
 
-## Get Vieo by URL
+## Get Video by URL
 
 Returns a json object containing video information. 
 
@@ -63,13 +63,13 @@ Returns all videos managed by the system.
 
 ---
 
-## Get Vieos By Show and Season 
+## Get Videos By Show (and Season) 
 
 Queries for videos by show id and optinally by season index. Example: `/videos/get/var-tid-ar-nu/1`
 
 #### HTTP Request
 
-    GET: "/videos/get//videos/get/<string:show_id>/<int:season>"
+    GET: "/videos/get/<string:show_id>/<int:season>"
 
 #### HTTP Response
 
@@ -84,7 +84,7 @@ Allows for manual annotation of video intros.
 
 #### HTTP Request
 
-    POST: "/videos/set/intro-annotation"
+    POST: "/videos/set/annotation/intro"
 
 #### Query Parameters
 
@@ -101,7 +101,7 @@ Allows for manual annotation of video intros.
 ## Get Video Prediction 
 Returns a prediction of a specified URL, if none exists this request may take some time to complete. 
 
-    GET: "/videos/get/intro-prediction"
+    GET: "/videos/get/prediction/intro"
 
 #### Query Parameters
 
@@ -110,11 +110,22 @@ Returns a prediction of a specified URL, if none exists this request may take so
 #### HTTP Response 
 
     {   
-        "introPrediction": {
+        "intro": {
             "start": 50.0, "end": 70.0
         }, 
-        "introAnnotation": {
-            "start": 209.5, "end": 222.0 
-        }
+        "type": "introPrediction" (or "introAnnotation")
     }
 
+---
+
+## Rebuild Model
+
+Rebuilds the model with all the current annotated videos. 
+
+#### HTTP Request
+
+    POST: "/videos/rebuild"
+
+#### HTTP Response 
+
+  { "success": True }

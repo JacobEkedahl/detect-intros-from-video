@@ -41,21 +41,15 @@ DEFAULT_START_TIME      = 0.0        # 00:00:00.30
 DEFAULT_END_TIME        = constants.VIDEO_START_LEN + 0.30
 DOWNSCALE_FACTOR        = constants.DOWNSCALE_FACTOR
 DATA_KEY                = 'sd_scenes'
-SAVE_TO_DB = False 
 SAVE_TO_FILE = constants.SAVE_TO_FILE 
 PRINT_OUTPUT = False 
 
 
 def file_has_been_segmented(video_file):
-    if SAVE_TO_DB:
-        try: 
-            video = video_repo.find_by_file(os.path.basename(video_file))
-            return (video is not None) and (DATA_KEY in video)
-        except Exception as e: 
-            logging.exception(e)
     if SAVE_TO_FILE: 
         data = file_handler.load_from_video_file(video_file)
         return DATA_KEY in data
+    return False 
 
 
 def detect_scenes(video_file):
@@ -97,11 +91,7 @@ def detect_scenes(video_file):
 
         if SAVE_TO_FILE:  
             file_handler.save_to_video_file(video_file, DATA_KEY, scenes)
-        if SAVE_TO_DB: 
-            try: 
-                video_repo.set_data_by_file(os.path.basename(video_file), DATA_KEY, scenes)
-            except Exception as e: 
-                logging.exception(e)
+       
         if PRINT_OUTPUT:
             for scene in scenes: 
                 print(scene)

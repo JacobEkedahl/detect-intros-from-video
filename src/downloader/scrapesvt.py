@@ -27,6 +27,7 @@ SAVE_TO_DB = constants.SAVE_TO_DB
 SVT_URL = "https://www.svtplay.se"
 FILE_DIR = "temp/scraped_urls.txt"
 
+
 # Writes the url to a file
 def scrape_show(show, genre):
     # Extracts all json data from the show.url

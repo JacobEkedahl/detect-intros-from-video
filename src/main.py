@@ -3,15 +3,17 @@ import os
 import pprint
 import sys as s
 
-from commands import cmd_videos, cmd_segment, cmd_dataset, cmd_black
+from commands import cmd_segment, cmd_dataset, cmd_black
 
 import preprocessing
 import rebuild
+import predicting
+
+import pipeline
 import downloader.scrapesvt as scrapesvt
 from downloader import svtplaywrapper
 
 
-import pipeline
 import utils.file_handler as file_handler
 from annotations import (annotation_summary, dataset_annotation,
                          scene_annotation)
@@ -26,12 +28,6 @@ from api import app
 
 import db.video_repo as video_repo 
 import db.show_repo as show_repo
-
-def foo(arg):
-    print("ARG: '%s'" % arg)
-    time.sleep(5)
-    print("thread done")
-    return "RESPONSE"
 
 if __name__ == "__main__":
 
@@ -119,25 +115,6 @@ if __name__ == "__main__":
         print("finnished downloading!")
         exit()
 
-    # DEBUG PURPOSES
-    elif (s.argv[1] == "--scrape"):
-        genres = []
-        for i in range(1, len(s.argv)):
-            if (s.argv[i] == "-g" or s.argv[i] == "-genre") and i + 1 < len(s.argv):
-                genres.append(s.argv[i + 1])
-            if (s.argv[i] == "help"):
-                print("To scrape SVT-Play you need to specify which genres to extract data from by appending -g, followed by a genre, for each genre.")
-                exit()
-        if (len(genres) == 0):
-            print("Error: no genres specified.")
-            exit() 
-        scrapesvt.scrape_genres(genres)
-
-        exit()
-    elif (s.argv[1] == "--videos"):
-        cmd_videos.execute(s.argv)
-        exit()
-
     elif (s.argv[1] == "--seg"):
         cmd_segment.execute(s.argv)
         exit()
@@ -161,8 +138,5 @@ if __name__ == "__main__":
     elif(s.argv[1] == "--rebuild"): 
         rebuild.start()
         exit()
-
-
     else:
-
         print("no valid arguments found: " + str(s.argv))

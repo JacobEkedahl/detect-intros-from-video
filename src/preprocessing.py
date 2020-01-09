@@ -99,7 +99,7 @@ def __delete_video_files(video):
 def preprocess_video(video):
 
     # One could query the video again here if there is a desire to allow for concurrent preprocessing on multiple servers. 
-    # It would then check if the download or preprocessing has already been done elsewhere...
+    # It would then check if the download or preprocessing has already been done before continuing.
 
     initStart = datetime.now()
     logging.info("\n---\nPreprocessing of %s started at: %s", video[URL], initStart)
@@ -133,6 +133,7 @@ def preprocess_video(video):
 
     if SAVE_TO_FILE:
         file_handler.save_to_video_file(video[PATH], simple_segmentor.SCENES_KEY, segments)
+        file_handler.save_to_video_file(video[PATH], URL, video[URL])
 
     # Mark as preprocessed
     video_repo.set_many_by_url(video[URL], {
@@ -155,7 +156,7 @@ def __get_start_end_time_now():
     return start_time, end_time, now
 
     
-def do_work():
+def __do_timed__work():
     
     start_time, end_time, now = __get_start_end_time_now()
     logging.info("\n---\nStarting daily web scraping and preprocessing (%s to %s).\n---" % (start_time, end_time))
@@ -196,8 +197,8 @@ def start_schedule():
     start_time, end_time, now = __get_start_end_time_now()
     logging.info("Preprocess schedule started between %s and %s." %(start_time, end_time))
     if start_time < now and now < end_time:
-        do_work()
-    schedule.every().day.at(START_WORK).do(do_work)
+        __do_timed__work()
+    schedule.every().day.at(START_WORK).do(__do_timed__work)
     while True:
         schedule.run_pending()
         time.sleep(PENDING_CHECK_INTERVAL)
