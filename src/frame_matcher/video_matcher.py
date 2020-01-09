@@ -30,11 +30,13 @@ ALWAYS_OVERRIDE_PREV_COMPARISON = False
 def __intro_has_changed(videofile, newIntro):
     video_data = file_handler.load_from_video_file(videofile)
     if "intro" in video_data:
-        old_intro = video_data["intro"]
-        if old_intro["start"] != newIntro["start"] or old_intro["end"] != newIntro["end"]:
-            return True # has changed
-        else:
+        oldIntro = video_data["intro"]
+        if oldIntro is None and newIntro is None:
             return False 
+        if oldIntro is not None and (oldIntro["start"] == newIntro["start"] and oldIntro["end"] == newIntro["end"]):
+            return False 
+    elif newIntro is None: # There is no previous intro and the new one is none 
+        return False 
     return True 
 
 
@@ -51,12 +53,13 @@ def find_all_matches(file_A):
     logging.info("comparing %s with:\n%s" % (file_A, other_files_same_series))
 
     should_make_new_comparison = ALWAYS_OVERRIDE_PREV_COMPARISON # Default 
+
     intro_A = extractor.get_intro_from_video(file_A)
-    video_data = file_handler.load_from_video_file(file_A)
+
     if __intro_has_changed(file_A, intro_A):
-        logging.info("Intro for A has changed: %s " % file_A)
+        logging.info("Intro has changed for A: %s " % file_A)
         should_make_new_comparison = True 
-        file_handler.save_to_video_file(file_A, "intro", intro_A)
+    file_handler.save_to_video_file(file_A, "intro", intro_A)
 
     for file_B in other_files_same_series:
         
@@ -68,16 +71,18 @@ def find_all_matches(file_A):
 
         # Check if intro for B has changed
         if __intro_has_changed(file_B, intro_B):
-            logging.info("Intro for B has changed: %s " % file_B)
-            file_handler.save_to_video_file(file_B, "intro", intro_B)
+            logging.info("Intro has changed for B: %s " % file_B)
             override_comparison = True # Toggle to make a new comparison
+        file_handler.save_to_video_file(file_B, "intro", intro_B)
 
+        video_data = file_handler.load_from_video_file(file_A)
         # This part loads the frame comparison data for videofile A and checks to see if there is already a comparison between A and B. 
         # If no such comparison exists one is created and stored. 
         if "frame_matches" in video_data: 
             video_data_matches = video_data["frame_matches"]
         else: 
             video_data_matches = {}
+
         # If a previous comparison exists and we don't toggle automatic overriding -->
         if not override_comparison and file_B in video_data_matches:
             vide_data_matches_other_file = video_data_matches[file_B]
