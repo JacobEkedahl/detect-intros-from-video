@@ -60,6 +60,8 @@ def find_all_matches(file_A):
             # The threshold has changed from the previous comparison
             if not "threshold" in vide_data_matches_other_file or vide_data_matches_other_file["threshold"] != c.HASH_CUTOFF: 
                override_comparison = True 
+        else:
+            override_comparison = True 
 
         # Overrides any previously existing comparison with a new comparison --> 
         if override_comparison:
