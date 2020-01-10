@@ -1,14 +1,22 @@
+import logging 
 import os
 import pprint
 import sys as s
-from commands import cmd_videos, cmd_segment, cmd_dataset, cmd_black
 
-import downloader.scrapesvt as scrapesvt
+from commands import cmd_segment, cmd_dataset, cmd_black
+
+import preprocessing
+import rebuild
+import predicting
+
 import pipeline
+import downloader.scrapesvt as scrapesvt
+from downloader import svtplaywrapper
+
+
 import utils.file_handler as file_handler
 from annotations import (annotation_summary, dataset_annotation,
                          scene_annotation)
-from downloader import svtplaywrapper
 from frame_matcher import frame_comparer as comparer
 from frame_matcher import video_matcher as v_matcher
 from frame_matcher import video_to_hashes as vf
@@ -16,9 +24,15 @@ from segmenter import scenedetector
 from stats import prob_calculator
 from utils import cleaner, extractor
 
+from api import app
+
+import db.video_repo as video_repo 
+import db.show_repo as show_repo
 
 if __name__ == "__main__":
+
     file_handler.create_folderstructure_if_not_exists()
+
     if (len(s.argv) - 1 < 1):
         print("need more arguments! (--dlv --file nameOfTxtFile numberOfEpisodes)")
         exit()
@@ -40,11 +54,12 @@ if __name__ == "__main__":
                 pipeline.build_dataset_from_step(s.argv[2], s.argv[3], True)
             else:
                 pipeline.build_dataset_from_step(s.argv[2], s.argv[3], False)
-        except:  
-                print("restarting..")      
-                python = s.executable
-                os.execl(python, python, ' '.join(s.argv))
-                exit()
+        except Exception as e:
+            print(e)  
+            print("restarting..")  
+            python = s.executable
+            os.execl(python, python, ' '.join(s.argv))
+            exit()
         exit()
     elif (s.argv[1] == "--frames"):
         mp4_files = file_handler.get_all_mp4_files()
@@ -100,13 +115,6 @@ if __name__ == "__main__":
         print("finnished downloading!")
         exit()
 
-    elif (s.argv[1] == "--scrape"):
-        scrapesvt.execute(s.argv)
-        exit()
-    elif (s.argv[1] == "--videos"):
-        cmd_videos.execute(s.argv)
-        exit()
-
     elif (s.argv[1] == "--seg"):
         cmd_segment.execute(s.argv)
         exit()
@@ -119,10 +127,16 @@ if __name__ == "__main__":
         cmd_black.execute(s.argv)
         exit()
 
-    elif (s.argv[1] == "--subs"):
-        annotate_subtitles.execute(s.argv)
+    elif (s.argv[1] == "--api"):
+        app.start()
         exit()
 
-    else:
+    elif(s.argv[1] == "--work"): 
+        preprocessing.start_schedule()
+        exit()
 
+    elif(s.argv[1] == "--rebuild"): 
+        rebuild.start()
+        exit()
+    else:
         print("no valid arguments found: " + str(s.argv))

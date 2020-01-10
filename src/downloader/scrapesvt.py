@@ -8,32 +8,38 @@
 """
 
 from bs4 import BeautifulSoup
-
 import lxml
 import requests
 import re
 import json
 import os
 import copy
+import logging
 
-from db import video_repo
+from db import video_repo, show_repo
 from db.video_repo import Video 
+from db.show_repo import Show 
+from utils import constants
 
-
-class Show:
-    def __init__(self, title, url):
-        self.name = title
-        self.url = url
-
+DEBUG = True 
+SAVE_TO_DB = constants.SAVE_TO_DB 
 
 SVT_URL = "https://www.svtplay.se"
-json_data = {}
-json_data['videos'] = []
+FILE_DIR = "temp/scraped_urls.txt"
 
 
+# Writes the url to a file
 def scrape_show(show, genre):
     # Extracts all json data from the show.url
-    data = json.loads(re.findall(r"root\['__svtplay_apollo'\] = (\{.*?\});", requests.get(show.url).text)[0])
+    try: 
+        data = json.loads(re.findall(r"root\['__svtplay_apollo'\] = (\{.*?\});", requests.get(show.url).text)[0])
+    except Exception as err: 
+        logging.exception(err)
+        logging.error("Failed to scrap data for %s " % show.name)
+        return []
+    
+    urls = []
+
     video = Video(show.name, "", 0, 0, "", False )
     for element in data:
        # Extracting from metadata 
@@ -52,6 +58,7 @@ def scrape_show(show, genre):
             else:
                 video.season = 0
                 video.episode = 0
+
         # Extracting video url if present
         elif element.startswith('$Episode:') and element.endswith('urls'):
             video.url = data[element]['svtplay']
@@ -65,15 +72,21 @@ def scrape_show(show, genre):
                         elif arr[i] == "avsnitt" and i + 1 < len(arr):
                             video.episode = int(arr[i + 1])
 
-                video_repo.insert(copy.copy(video)) # only videos not saved before get inserted
-
+                if SAVE_TO_DB: 
+                    video_repo.insert(copy.copy(video)) # only videos not saved before get inserted
+                if DEBUG:
+                    print("fetched: %s" % video.url)
+                urls.append(video.url)
+                    
             video.url = ""
             video.season = 0
             video.episode = 0
             video.title = ""
 
+    return urls
 
-def scrape_genre(genre):
+
+def scrape_genre(genre, file):
     url = SVT_URL + "/genre/" + genre
     source = requests.get(url).text
     soup = BeautifulSoup(source, 'lxml')
@@ -91,23 +104,22 @@ def scrape_genre(genre):
         title = meta.h2.span.text
         link = meta.a['href']
         show = Show(title, SVT_URL + link)
-        #file.write("\n%d: %s, %s\n\n" % (i, show.title, show.url))
-        print("%d: %s, %s" % (i, show.name, show.url))
-        scrape_show(show, genre)
+        if SAVE_TO_DB:
+            show_repo.insert(show)
+            
+        if DEBUG: 
+            print("%d: %s, %s %s" % (i, show.name, show.url, show.dirname))
+        file.write("\n%d: %s --- %s \n" % (i, show.name, show.url))
+        urls = scrape_show(show, genre)
+        for url in urls: 
+          file.write("%s\n" % url)  
         i = i + 1
+    
 
-
-def execute(argv):
-    genres = []
-    for i in range(1, len(argv)):
-        if (argv[i] == "-g" or argv[i] == "-genre") and i + 1 < len(argv):
-            genres.append(argv[i + 1])
-        if (argv[i] == "help"):
-            print("To scrape SVT-Play you need to specify which genres to extract data from by appending -g, followed by a genre, for each genre.")
-            return
-    if (len(genres) == 0):
-        print("Error: no genres specified.")
-        return 
+def scrape_genres(genres):
+    file = open(FILE_DIR,"w+")
     for genre in genres: 
-        scrape_genre(genre)
-
+        scrape_genre(genre, file)
+    file.close()
+    return file 
+    

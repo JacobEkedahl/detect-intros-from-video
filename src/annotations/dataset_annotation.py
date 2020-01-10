@@ -1,12 +1,10 @@
-
+""" """
 import sys
 import json 
 import os 
 import re
 
-import db.annotation_repo as ann_repo
-from db.annotation_repo import Annotation
-
+import db.video_repo as video_repo
 import utils.ui as ui 
 import utils.time_handler as time_handler 
 
@@ -21,15 +19,31 @@ def manual_annotation(path, url, tag, start, end):
     if "?start=auto" in url: 
         url = url.split("?start=auto")[0]
 
-    result = ann_repo.find_by_tag_url(url, tag)
-    if len(result) > 0:
-        value = result[0]
-        print("Warning: %s was saved previously with %s - %s." % (value['url'], value['start'], value['end']))
-        print("Do you want to override it? y/n")
-        if not ui.force_query_yes_or_no():
-            return len(ann_repo.find_by_tag(tag))
+    start = time_handler.to_seconds(start)
+    end = time_handler.to_seconds(end)
 
-    ann_repo.insert(Annotation(url, tag, start, end))
-    print("%s saved for %s as (%s - %s)" % (tag, url, start, end))
-    return len(ann_repo.find_by_tag(tag))
+    video = video_repo.find_by_url(url)
+    if video is None:
+        return -1
+
+    if tag == "intro":    
+        count = len(video_repo.find_all_with_intro_annotation())
+        if video_repo.INTRO_ANNOTATION_KEY in video: 
+            intro = video[video_repo.INTRO_ANNOTATION_KEY]
+            print("Warning: %s was saved previously with %s - %s." % (video['url'], intro['start'], intro['end']))
+            print("Do you want to override it with %s %s? y/n" % (start, end))
+            if not ui.force_query_yes_or_no():
+                return count
+            else: 
+                video_repo.set_intro_annotation(url, start, end)
+                return count 
+        
+        video_repo.set_intro_annotation(url, start, end)
+        return count + 1
+    else:
+        print("tag %s is not managed" % tag)
+        return -1
+    
+
+    
    

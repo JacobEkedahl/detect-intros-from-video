@@ -1,1 +1,7 @@
-tkinter
+numpy
+imageio-ffmpeg
+opencv-python                   
+moviepy
+imutils
+imageio-ffmpeg
+pygame

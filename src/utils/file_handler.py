@@ -1,5 +1,7 @@
+import datetime as dt
 import json
 import os
+import time
 from os import listdir
 from os.path import isfile, join
 from pathlib import Path
@@ -10,6 +12,44 @@ TEMPFOLDERNAME = "temp"
 VIDEOFOLDERNAME = "videos"
 URLSTEXTFILENAME = "video-serier.txt"
 
+def save_to_video_file(video_file, key, element):
+    data = {}
+    json_path = video_file.replace('.mp4', '') + '.json'
+    if os.path.exists(json_path):
+        with open(json_path) as json_file:
+            data = json.load(json_file)
+    data[key] = element           
+    with open(json_path, 'w') as outfile:
+        json.dump(data, outfile, indent=4, sort_keys=False)
+
+def load_from_video_file(video_file):
+    data = {}
+    path = get_seg_file_from_video(video_file)
+    if os.path.exists(path):
+        with open(get_seg_file_from_video(video_file)) as json_file:
+            data = json.load(json_file)
+    return data                   
+
+def file_is_in_use(file):
+    if os.path.exists(file):
+        try:
+            os.rename(file, file)
+            return False 
+        except OSError:
+            return True 
+
+def get_new_files(startTime, path):
+    newFiles = []
+    for root, dirs, files in os.walk(path):  
+        for file in files:
+            path = os.path.join(root, file)
+            st = os.stat(path)    
+            mtime = dt.datetime.fromtimestamp(st.st_mtime)
+            if mtime > startTime:
+                out = os.path.join(root, file)
+                newFiles.append(os.path.abspath(out))
+    return newFiles
+
 def create_folderstructure_if_not_exists():
     if not os.path.exists(get_full_path_videos()):
         os.makedirs(get_full_path_videos())
@@ -18,8 +58,9 @@ def get_video_file_from_seg(seg_file):
     return str(seg_file).replace('.json', '.mp4')
 
 def get_neighboring_videos(video_file):
-    parent_dir = os.path.dirname(video_file)
-    other_videos = get_all_files_by_type(parent_dir, 'mp4')
+    parent_dir = os.path.dirname(get_seg_file_from_video(video_file))
+    other_videos = get_all_files_by_type(parent_dir, 'json')
+    other_videos = list(map(lambda other: get_video_file_from_seg(other), other_videos))
     this_video_index = other_videos.index(video_file)
     other_videos.remove(str(video_file))
     season = get_season_from_video_file(video_file)

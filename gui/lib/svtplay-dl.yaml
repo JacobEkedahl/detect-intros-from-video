@@ -1,0 +1,13 @@
+default:
+    path: temp/videos
+
+service:
+    svtplay:
+        force: true
+        path: gui/temp
+        subtitle: false
+        merge_subtitle: false
+        verbose: true
+        quality: 900
+        flexibleq: 500
+        filename: "current.{ext}"
