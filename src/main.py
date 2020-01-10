@@ -114,8 +114,6 @@ if __name__ == "__main__":
     elif (s.argv[1] == "--dataset"):
         cmd_dataset.execute(s.argv)
         exit()
-<<<<<<< HEAD
-=======
 
     elif (s.argv[1] == "--black"):
         cmd_black.execute(s.argv)
@@ -125,7 +123,6 @@ if __name__ == "__main__":
         annotate_subtitles.execute(s.argv)
         exit()
 
->>>>>>> febc54e6842e57983bd1082d067161f6dfa9cc82
     else:
 
         print("no valid arguments found: " + str(s.argv))
