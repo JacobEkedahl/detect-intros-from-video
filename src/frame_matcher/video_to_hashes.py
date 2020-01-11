@@ -3,11 +3,13 @@ import os
 import cv2
 import imagehash
 from PIL import Image
+import time 
 
 import utils.constants as c
 import utils.file_handler as file_handler
 import utils.object_handler as handler
 
+PROCESS_TIME_OUT_SEC = 600 # 10 minutes
 
 def save_hashes(video_filename):
     video_filename = str(video_filename)
@@ -19,19 +21,27 @@ def save_hashes(video_filename):
     else:
         print("hashfile already exists")
 
+
+
 #Will override all files already existing in this folder
 def video_to_hashes(video_filename, hashes):
-    vidcap = cv2.VideoCapture(video_filename)
-    sec = 0
-    frameRate = c.SEC_PER_FRAME #//it will capture image in each 0.5 second
-    count=1
-    success = get_hash(vidcap, sec, count, video_filename, hashes)
-    while success:
-        count = count + 1
-        sec = sec + frameRate
-        sec = round(sec, 2)
+    start = time.time()
+    try: 
+        vidcap = cv2.VideoCapture(video_filename)
+        sec = 0
+        frameRate = c.SEC_PER_FRAME #//it will capture image in each 0.5 second
+        count=1
         success = get_hash(vidcap, sec, count, video_filename, hashes)
-    vidcap.release()
+        while success:
+            count = count + 1
+            sec = sec + frameRate
+            sec = round(sec, 2)
+            success = get_hash(vidcap, sec, count, video_filename, hashes)
+            elapsed_time = time.time() - start
+            if elapsed_time >= PROCESS_TIME_OUT_SEC: # in case it stalled
+                raise TimeoutError("Process has timed out after: %d seconds" % elapsed_time)  
+    finally: 
+        vidcap.release()
 
 
 def get_hash(vidcap, sec, count, video_filename, hashes):
