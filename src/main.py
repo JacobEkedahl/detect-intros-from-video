@@ -31,15 +31,15 @@ import db.show_repo as show_repo
 
 if __name__ == "__main__":
 
-    print("Hello")
-    exit()
+    logging.basicConfig(filename='log.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
+    logging.getLogger().setLevel(logging.DEBUG)
 
-    
     file_handler.create_folderstructure_if_not_exists()
 
     if (len(s.argv) - 1 < 1):
         print("need more arguments! (--dlv --file nameOfTxtFile numberOfEpisodes)")
         exit()
+        
     elif (s.argv[1] == "--clean"):
         if s.argv[2] == "--series":
             cleaner.remove_annotation_from_series(s.argv[3], s.argv[4])
@@ -137,10 +137,18 @@ if __name__ == "__main__":
 
     elif(s.argv[1] == "--work"): 
         preprocessing.start_schedule()
-        exit()
+        exit(0)
 
+    elif(s.argv[1] == "--predict"):
+        url = s.argv[2]
+        prediction = predicting.get_prediction_by_url(url)
+        # STDOUT READ BY API #
+        print("_PREDICTION_")
+        print(prediction)
+        exit(0)
     elif(s.argv[1] == "--rebuild"): 
         rebuild.start()
-        exit()
+        exit(0)
+
     else:
         print("no valid arguments found: " + str(s.argv))

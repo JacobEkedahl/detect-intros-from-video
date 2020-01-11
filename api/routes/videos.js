@@ -2,13 +2,27 @@ var express = require('express');
 var router = express.Router();
 const VideosDao = require("../db/video_dao");
 const constants = require("../db/constants");
+const PyWrapper = require("../python/exec_python")
 
-
-const DEFAULT_PAGE = 0
 const DEFEAULT_LIMIT = 200
 
+//const mutex = new Mutex();
+//var id = 0
+
+
+class  LongJob {
+  constructor(id) {
+    this.id = id, 
+
+    this.result = null
+    this.started = new Date();
+    this.ended = null 
+
+  }
+}
+
 /**
- * Queries video repository by arguments. Maximum number of entities fetched is 200 per page.
+ * Queries video repository by query arguments. Pages the query result and limits the fetched result to an amount specified by @DEFAULT_LIMIT 
  */
 router.get('/', function(req, res, next) {
 
@@ -41,12 +55,13 @@ router.get('/', function(req, res, next) {
       $exists:  req.query.annotation.toLowerCase() === 'true', $ne: null } 
     }); // intro annotation exists 
 
-  
-  var page = DEFAULT_PAGE
+  // Page operator    
+  var page = 0
   if (req.query.page !== undefined) 
     page = Number(req.query.page) - 1 
     if (page < 0) page = 0 
 
+  // Limit operator 
   var limit = DEFEAULT_LIMIT
   if (req.query.limit !== undefined) 
     limit = Number(req.query.limit)
@@ -67,8 +82,8 @@ router.get('/', function(req, res, next) {
  * Annotates a intro sequence for a video by url
  */
 router.post('/set/intro', function(req, res, next) {
-  
-  if (req.query.url == undefined) {
+  url = req.query.url 
+  if (url == undefined) {
     sendResponseObject(res, 400, "Need to specify video url in post request.");
     return 
   }
@@ -87,54 +102,13 @@ router.post('/set/intro', function(req, res, next) {
     return 
   }
   (async () => {  
-    var response = await VideosDao.setIntro(req.query.url, start, end);
+    var response = await VideosDao.setIntro(url, start, end);
     if (response.result.n > 0)
       sendResponseObject(res, 200, "success");
     else 
       sendResponseObject(res, 404, "Failed to update");
   })();
 });
-
-
-const {PythonShell} = require('python-shell')
-
-let options = {
-  mode: 'text',
-  encoding: 'utf8',
-//  pythonPath: 'path/to/python',
-  pythonOptions: ['-u'], // get print results in real-time
-  scriptPath: './routes/',
-  args: ['Hello World!']
-};
-
-var shell = new PythonShell('my_script.py', options);
-
-shell.on('message', function (message) {
-  console.log("message ", message)
-});
-
-
-
-
-/*
-PythonShell.run('my_script.py', options, function (err, results) {
-  if (err) {
-    console.log(err)
-    throw err;
-  } 
-  if (results) {
-    console.log(results)
-  }
-  console.log('finished');
-});
-*/
-
-router.post('/get/intro', function(req, res, next) {
-  
-  sendResponseObject(res, 200, req.query.id);
- 
-});
-
 
 function sendResponseObject(res, statusCode, object) {
   res.writeHead(statusCode, {'Content-Type': 'application/json'});

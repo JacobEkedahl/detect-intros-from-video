@@ -191,7 +191,7 @@ def __do_timed__work():
 
 def start_schedule():
 
-    logging.basicConfig(filename='log.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
+    logging.basicConfig(filename='preprocess.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
     logging.getLogger().setLevel(logging.DEBUG)
 
     start_time, end_time, now = __get_start_end_time_now()
