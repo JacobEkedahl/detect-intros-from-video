@@ -110,7 +110,9 @@ def insert(video):
         SEASON_KEY: video.season, 
         EPISODE_KEY: video.episode, 
         URL_KEY: video.url, 
-        DOWNLOADED_KEY: video.downloaded
+        DOWNLOADED_KEY: video.downloaded,
+        INTRO_ANNOTATION_KEY: False,
+        INTRO_PREDICTION_KEY: False 
     }).inserted_id
 
 def find_all():
@@ -128,18 +130,13 @@ def find_by_urls(urls):
 def find_by_file(filename):
     return videoCollection.find_one({FILE_KEY: filename})
 
-def find_by_show(show):
-    return list(videoCollection.find({SHOW_KEY: show}))
-
-def find_by_show_id(show_id):
-    return list(videoCollection.find({SHOW_ID_KEY: show_id}))
-
 """ Example: queryArray = [ {SHOW_ID_KEY: show_id}, {SEASON_KEY: season} ] """
 def find_by_many(queryArray):
     return list( videoCollection.find({ "$and": queryArray }))
 
-def find_by_show_id_and_season(show_id, season):
-    return find_by_many([{SHOW_ID_KEY: show_id}, {SEASON_KEY: season}])
+
+def find_by_show(show):
+    return list(videoCollection.find({SHOW_KEY: show}))
     
 def find_by_show_and_season(show, season):
     return find_by_many([{SHOW_KEY: show}, {SEASON_KEY: season}])

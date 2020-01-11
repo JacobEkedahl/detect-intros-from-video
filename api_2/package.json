@@ -1,0 +1,23 @@
+{
+  "name": "intro-detector-api",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "start": "node ./bin/www",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Tiago Redaelli, Jacob Ekedahl",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "http-errors": "^1.7.3",
+    "mongodb": "^3.3.3",
+    "morgan": "~1.9.1",
+    "node-fetch": "^2.6.0",
+    "pug": "^2.0.4"
+  }
+}
