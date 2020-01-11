@@ -1,8 +1,10 @@
 const MongoClient = require('mongodb').MongoClient;
 
 dbname = process.env.db_name
-url = process.env.db_url
+URL = process.env.db_url
 const collectionKey = 'videos';
+const constants = require("./constants");
+
 
 module.exports = class VideosDao {
 
@@ -14,7 +16,7 @@ module.exports = class VideosDao {
       */
     static findByMultipleQueries(queryArray, page, limit) {
         return new Promise(function (resolve, reject) {
-            MongoClient.connect(url, function(err, db) {
+            MongoClient.connect(URL, function(err, db) {
                 if (err) 
                     reject(err);
                 else {
@@ -38,20 +40,22 @@ module.exports = class VideosDao {
      * @param {*} start 
      * @param {*} end 
      */
-    static setIntro(url, start, end) {
-        query = {url: url}
-        update = { $set: { start: start, end: end } }
+    static setIntro(query_url, start, end) {
         return new Promise(function (resolve, reject) {
-            MongoClient.connect(url, function(err, db) {
+            MongoClient.connect(URL, function(err, db) {
                 if (err) 
                     reject(err);
                 else {
-                    dbo.collection(collectionKey).updateOne(query, update, function(err, res) {
-                        if (err) 
-                            reject(err)
-                        resolve(res)
-                        db.close();
-                    });
+                    db.db(dbname).collection(collectionKey).updateOne(
+                        {[constants.URL]: query_url},
+                        { "$set": { [constants.INTRO_ANNOTATION]: { "start": start, "end": end } } }, 
+                        function(err, res) {
+                            if (err) 
+                                reject(err)
+                            resolve(res)
+                            db.close();
+                        }
+                    );
                 }
             });
         });

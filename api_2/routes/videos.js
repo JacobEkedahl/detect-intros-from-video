@@ -63,21 +63,76 @@ router.get('/', function(req, res, next) {
 });
 
 
+/**
+ * Annotates a intro sequence for a video by url
+ */
 router.post('/set/intro', function(req, res, next) {
   
-  if (req.query.url !== undefined) {
-    sendResponseObject(res, 200, req.query.id);
+  if (req.query.url == undefined) {
+    sendResponseObject(res, 400, "Need to specify video url in post request.");
+    return 
   }
-  sendResponseObject(res, 400, "Need to specify video url in post request.");
+  if ((req.body.start == undefined) || (req.body.end == undefined)) {
+    sendResponseObject(res, 400, "Request body must contain start and end time denoted in seconds.");
+    return 
+  }
+  start = req.body.start 
+  end = req.body.end 
+  if (isNaN(start) || isNaN(end)) {
+    sendResponseObject(res, 400, "Request body must contain start and end time denoted in seconds.");
+    return 
+  }
+  if (start > end) {
+    sendResponseObject(res, 400, "Start may not exceed end.");
+    return 
+  }
+  (async () => {  
+    var response = await VideosDao.setIntro(req.query.url, start, end);
+    if (response.result.n > 0)
+      sendResponseObject(res, 200, "success");
+    else 
+      sendResponseObject(res, 404, "Failed to update");
+  })();
 });
 
 
+const {PythonShell} = require('python-shell')
+
+let options = {
+  mode: 'text',
+  encoding: 'utf8',
+//  pythonPath: 'path/to/python',
+  pythonOptions: ['-u'], // get print results in real-time
+  scriptPath: './routes/',
+  args: ['Hello World!']
+};
+
+var shell = new PythonShell('my_script.py', options);
+
+shell.on('message', function (message) {
+  console.log("message ", message)
+});
+
+
+
+
+/*
+PythonShell.run('my_script.py', options, function (err, results) {
+  if (err) {
+    console.log(err)
+    throw err;
+  } 
+  if (results) {
+    console.log(results)
+  }
+  console.log('finished');
+});
+*/
+
 router.post('/get/intro', function(req, res, next) {
   
-  if (req.query.url !== undefined) {
-    sendResponseObject(res, 200, req.query.id);
-  }
-  sendResponseObject(res, 404, "Need to specify video url in post request.");
+  sendResponseObject(res, 200, req.query.id);
+ 
 });
 
 

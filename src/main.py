@@ -31,6 +31,10 @@ import db.show_repo as show_repo
 
 if __name__ == "__main__":
 
+    print("Hello")
+    exit()
+
+    
     file_handler.create_folderstructure_if_not_exists()
 
     if (len(s.argv) - 1 < 1):

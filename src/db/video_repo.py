@@ -111,8 +111,8 @@ def insert(video):
         EPISODE_KEY: video.episode, 
         URL_KEY: video.url, 
         DOWNLOADED_KEY: video.downloaded,
-        INTRO_ANNOTATION_KEY: False,
-        INTRO_PREDICTION_KEY: False 
+        INTRO_ANNOTATION_KEY: None,
+        INTRO_PREDICTION_KEY: None 
     }).inserted_id
 
 def find_all():

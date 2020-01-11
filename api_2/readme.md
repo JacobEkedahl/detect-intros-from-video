@@ -11,9 +11,9 @@
         $ port=8080 db_name="svt" db_url="mongodb://host:port/" npm start 
 
 
-# Resource: Videos  
+# API
 
-## Query Video Repository 
+## 1. Query Video Repository 
 
 #### HTTP Request
 
@@ -42,7 +42,10 @@ Example: ```/videos?show=vår tid är nu&season=1&prediction=true```
             "end": 222.0,
             "start": 209.5
         },
-        "introPrediction": null,
+        "introPrediction":{
+            "end": 220.0,
+            "start": 211.0
+        },
         "preprocessed": true,
         "season": 1,
         "episode": 2,
@@ -54,9 +57,22 @@ Example: ```/videos?show=vår tid är nu&season=1&prediction=true```
 
 ---
 
-## Set Intro 
+## 2. Set Intro 
 
 #### HTTP Request
+    POST: "/videos/set/intro"
 
-    POST: "/videos/set/intro?url=<string>"
+Example: ```/videos/set/intro?url=https://www.svtplay.se/video/24206422/var-tid-ar-nu/var-tid-ar-nu-sasong-3-vip```
+
+#### Query Parameters
+    &url=<string>  
+#### Content
     BODY: { "start": <float>, "end": <float> }
+
+---
+## 3. Get Intro Prediction 
+
+
+
+---
+## 4. Rebuild Model 
