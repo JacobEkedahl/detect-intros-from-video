@@ -5,3 +5,4 @@ moviepy
 imutils
 imageio-ffmpeg
 pygame
+requests

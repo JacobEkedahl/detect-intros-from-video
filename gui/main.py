@@ -1,7 +1,9 @@
 import datetime
+import json
 import threading
 import time
 from tkinter import *
+from tkinter import messagebox
 from tkinter.ttk import *
 
 import cv2
@@ -12,6 +14,7 @@ import extract_audio
 import file_handler
 import imutils
 import pygame
+import requests
 import svtplaywrapper
 
 START_TIME = 0
@@ -21,6 +24,10 @@ MARGIN_TOP = 30
 MARGIN_SLIDER_SIDE = 50
 WIDTH_MARKER = 5 # only possible value atm
 PREDICTION_MARKER_WIDTH = 1
+BASEURL = "http://127.0.0.1:5000"
+PREDICTIONURL = BASEURL + "/videos/get/prediction/intro"
+ALLVIDEOSURL = BASEURL + '/videos/get/all'
+SETINTROURL = BASEURL + "/videos/set/annotation/intro"
 
 #"gui/temp/al-pitcher-pa-paus.s01e01.avsnitt-1-converted.mp4"
 class App:
@@ -157,9 +164,15 @@ class App:
         self.updatePlayBtns()
 
     def confirm_into(self):
-        # start a new thread, load, then remove loading
-        print("sent!")
-    
+        params = {"url": self.url, "start": self.start, "end": self.end}
+        headers = {'Content-type': 'application/json'}
+        r = requests.post(SETINTROURL, data=json.dumps(params), headers=headers)
+        data = r.json()
+        if data["success"]:
+            messagebox.showinfo("Intro Annotation Completed", f'Intro: {self.start} - {self.end} has been set for {self.url}')
+        else:
+            messagebox.showinfo("Intro Annotation Failed", f'Intro annotation failed')        
+
     def init_slider(self):
         self.w = Canvas(self.videoFrame, width=WIDTH_VIDEO + MARGIN_SLIDER_SIDE * 2, height=55)
         self.move_start = False
@@ -177,7 +190,7 @@ class App:
         self.end_marker_pred = self.w.create_rectangle(self.predicted_end + 50, MARGIN_TOP - 10, self.predicted_end + PREDICTION_MARKER_WIDTH + MARGIN_SLIDER_SIDE, MARGIN_TOP + 10, fill="blue")
         self.start_lbl_pred = self.w.create_text(self.predicted_start + MARGIN_SLIDER_SIDE,10,fill="blue",font="Times 8",
                     text=self.predicted_start)
-        self.end_lbl_pred = self.w.create_text(self.predicted_end + MARGIN_SLIDER_SIDE,10,fill="blue",font="Times 8",
+        self.end_lbl_pred = self.w.create_text(self.predicted_end + MARGIN_SLIDER_SIDE,50,fill="blue",font="Times 8",
             text=self.predicted_end)
 
     def add_end_marker(self):
@@ -192,6 +205,7 @@ class App:
         self.end_lbl = self.w.create_window(self.end + MARGIN_SLIDER_SIDE + 25,MARGIN_TOP,window=self.end_entry)
 
     def global_change_end(self, new_end):
+        new_end = round(new_end, 2)
         if new_end >= 5 and new_end <= 480:
             if new_end - 5 < self.start:
                 self.start = new_end - 5
@@ -205,6 +219,7 @@ class App:
         self.global_change_end(new_end)
 
     def global_change_start(self, new_start):
+        new_start = round(new_start, 2)
         if new_start >= 0 and new_start <= 475:
             if new_start + 5 > self.end:
                 self.end = new_start + 5
@@ -309,22 +324,44 @@ class App:
             print("not valid")
             return
 
+        self.url = url
         self.clear_video_frame()
         self.intro_fetched_completed = False
         self.download_completed = False
         self.download(url)
-        self.load_slider()
+        self.load_slider(url)
 
-    def load_slider(self):
+    def fetch_intro(self, svtplay_url):
+        params = {"url":svtplay_url} 
+        headers = {'Content-type': 'application/json'}
+        r = requests.post(PREDICTIONURL, data=json.dumps(params), headers=headers)
+        data = r.json()
+        try:
+            typeOfResponse = data["type"]
+            intro = data["intro"]
+            if typeOfResponse == "introPrediction":
+                print("introprediction")
+                self.start = intro["start"]
+                self.end = intro["end"]
+                self.predicted_start = intro["start"]
+                self.predicted_end = intro["end"]
+            else:
+                print("annotation")
+                self.start = intro["start"]
+                self.end = intro["end"]
+                self.predicted_start = intro["start"]
+                self.predicted_end = intro["end"]
+        except:
+            self.start = 0
+            self.end = 5
+            self.predicted_start = 0
+            self.predicted_end = 0
+
+    def load_slider(self, url):
         def get_intro_and_pred():   
             self.init_loading_intro()
             self.check_load_intro_thread() 
-            time.sleep(4)
-            self.start = 10
-            self.end = 44.5
-            self.predicted_start = 9.5
-            self.predicted_end = 44
-            #get intro
+            self.fetch_intro(url)
 
         global load_intro_thread
         load_intro_thread = threading.Thread(target=get_intro_and_pred)
