@@ -1,4 +1,5 @@
 import json
+import os
 import random
 import statistics
 import sys as s
@@ -13,9 +14,34 @@ from utils import constants, file_handler
 import seaborn; seaborn.set_style('whitegrid')
 seed = constants.START_SEED
 
-def get_prediction(video_file):
+DATAFOLDERNAME = "model"
+HMMMODEL = "hmm.json"
+
+
+def get_saved_model():
+    if not os.path.exists(get_full_path_model()):
+        if not os.path.exists(get_full_path_data()):
+            os.makedirs(get_full_path_data())
+        generate_model()
+    with open(get_full_path_model()) as json_file:
+        data = json.load(json_file)
+        return HiddenMarkovModel.from_json(data)
+
+def generate_model():
     obs, labels = get_dataset_for_hmm()
     model = get_model(obs, labels)
+    model_file = model.to_json()
+    with open(get_full_path_model(), 'w') as outfile:
+        json.dump(model_file, outfile, indent=4, sort_keys=False)
+    
+def get_full_path_data():
+    return os.path.join(str(os.getcwd()), DATAFOLDERNAME)
+    
+def get_full_path_model():
+    return os.path.join(str(os.getcwd()), DATAFOLDERNAME, HMMMODEL)
+
+def get_prediction(video_file):
+    model = get_saved_model()
     seg_file = file_handler.get_seg_file_from_video(video_file)
     with open(seg_file) as json_file:
         data = json.load(json_file)

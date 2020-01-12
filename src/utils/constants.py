@@ -36,7 +36,7 @@ BLACK_DETECTOR_MIN_DUR = 0.1    # minimum sequence duration
 
 # Processing  
 TEMP_FOLDER_PATH = "temp"
-VIDEO_FOLDER_PATH = "temp/videos"
+VIDEO_FOLDER_PATH = "temp\\videos"
 VIDEO_GENRES = ["serier"]
 VIDEO_START_LEN = 480 
 DELETE_VIDEO_AFTER_EXTRACTION = False # Must first perform video comparison before video files are removed...  
@@ -47,3 +47,5 @@ SAVE_TO_DB = True
 
 SCHEDULED_PREPROCESSING_START = "01:00"
 SCHEDULED_PREPROCESSING_END = "13:00"
+
+TIMEOUT_DOWNLOAD = 900 #seconds

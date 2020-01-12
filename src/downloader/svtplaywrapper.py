@@ -1,20 +1,25 @@
-import threading
-import os
 import glob
+import logging
+import os
+import shutil
+import signal
 import subprocess
 import sys
-import shutil
-import logging
-import time 
+import threading
+import time
+import uuid
 from pathlib import Path
-import imageio_ffmpeg as ffmpeg
-from moviepy.editor import VideoFileClip
 
-from utils import file_handler, constants
+import imageio_ffmpeg as ffmpeg
+
+import psutil
+from moviepy.editor import VideoFileClip
+from utils import constants, file_handler
 
 TEMP_FOLDER_PATH = constants.TEMP_FOLDER_PATH
 VIDEO_FOLDER_PATH = constants.VIDEO_FOLDER_PATH
 LENGTH_IN_SECONDS = constants.VIDEO_START_LEN
+TIMEOUT = constants.TIMEOUT_DOWNLOAD
 CAPTURE_TIME_IN_MIN = str(int(LENGTH_IN_SECONDS/60))
 TEMP_DL_FOLDER = "dl_temp"
 MAX_ATTEMPTS_ON_FAILURE = 3
@@ -43,7 +48,7 @@ class FileInfo:
 def __merge_video_audio(f_info):
     output = f_info.fileName + "-converted.mp4"
     cmd = [ffmpeg._utils.get_ffmpeg_exe(), "-i", f_info.audioName, "-i", f_info.videoName, "-c", "copy", "-t", "00:08:00.0", "-y", output]
-    subprocess.call(cmd, shell=True)
+    subprocess.call(cmd)
     os.remove(f_info.audioName)
     os.remove(f_info.videoName)
     return output 
@@ -74,15 +79,26 @@ def __move_file_to_dest(source, target):
     except FileExistsError as e: 
         logging.warning(e)
 
+def popen_timeout(command, timeout):
+    p = subprocess.Popen(command, shell=False)
+    for t in range(timeout):
+        time.sleep(1)
+        if p.poll() is not None:
+            return p.communicate()
+    os.kill(p.pid, signal.CTRL_C_EVENT)
+    return False
+
 
 def download_files(url):
-    id = threading.get_ident()
-    dirname = "%s/%s%s" % (TEMP_FOLDER_PATH, TEMP_DL_FOLDER, id)
+    id = str(uuid.uuid4())
+    dirname = os.path.join(TEMP_FOLDER_PATH, TEMP_DL_FOLDER + id)
     os.mkdir(dirname)
     cmd = ["sh", "lib/runSvtPlay.sh", "--config", "lib/svtplay-dl.yaml", url, "--capture_time", CAPTURE_TIME_IN_MIN, "--output", dirname]
     try:
-        p = subprocess.Popen(cmd, shell=True)
-        p.wait()
+        p = popen_timeout(cmd, TIMEOUT)
+        if p == False:
+            raise Exception("Timeout for download reached")
+
         for f_info in __get_all_unmerged_files(dirname):
             __merge_video_audio(f_info)
 
@@ -146,5 +162,3 @@ def download_video(url):
     except Exception as e:
         logging.exception(e)
         return None 
-
- 

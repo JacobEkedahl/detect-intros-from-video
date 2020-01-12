@@ -8,21 +8,20 @@
 
     
 """
-import logging 
-import time 
-from datetime import datetime, date
-import schedule 
-import multiprocessing
-import logging
-import os
 import json
+import logging
+import multiprocessing
+import os
+import time
+from datetime import date, datetime
 
-from downloader import scrapesvt
-from db import dataset_manager, video_repo
-from utils import constants, time_handler
-from frame_matcher import video_matcher
-import preprocessing
 import hmm
+import preprocessing
+import schedule
+from db import dataset_manager, video_repo
+from downloader import scrapesvt
+from frame_matcher import video_matcher
+from utils import constants, time_handler
 
 GENRES = constants.VIDEO_GENRES
 SHOW = video_repo.SHOW_KEY
@@ -52,6 +51,10 @@ def __export_dataset():
     dataset_manager.export_dataset(DATASET_PATH)
     logging.info("Dataset exported, time taken: %s" % (datetime.now()  - start))
 
+def __rebuild_model():
+    start = datetime.now()
+    hmm.generate_model()
+    logging.info("Hidden markov modell trained and saved, time taken: %s" % (datetime.now()  - start))
 
 def __compare_video(video):
     start = datetime.now()
@@ -126,18 +129,13 @@ def start():
                         logging.exception(e)
                         count_failure = count_failure + 1 
 
-            for video in dictVideos[show][season]:
-                try: 
-                    __compare_video(video)
-                    predictions = __predict_video(video)
-                    for p in predictions: 
-                        video_repo.set_intro_prediction(video[URL], p[START], p[END])
+        for video in dictVideos[show][season]:
+            try:
+                __compare_video(video)
+            except Exception as e: 
+                logging.exception(e)
 
-                    logging.info("%s\nPrediction: %s\nAnnotation: %s\n" % (
-                        video[URL], 
-                        __make_predictions_human_readable(predictions),
-                        __make_time_interval_human_readable(video[ANN_INTRO]))
-                    )   
-                except Exception as e: 
-                    logging.exception(e)
-
+    try:
+        __rebuild_model()
+    except Exception as e:
+        logging.exception(e)
