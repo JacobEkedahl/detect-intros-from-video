@@ -6,17 +6,29 @@ const constants = require("../db/constants");
 const PyWrapper = require("../python/exec_python")
 const DbUtils = require("../db/utils")
 
+
+const PREDICTION_LIMIT = 1;
+
 var rebuild_semaphore = require('semaphore')(1);
-var rebuild_process = null
-var REBUILD_PID = "rebuild"
+var batchwork_id_semaphore = require('semaphore')(1);
+var predict_semaphore = require('semaphore')(PREDICTION_LIMIT);
+var rebuild_id; 
 
 
-const DEFEAULT_LIMIT = 200
+var batchworkIndex = 0;
+var batchworks = {};
 
-/*  
-    Timestamp for when the next delete all query will take place
- */
-const LAST_REFRESHED = new Date()
+function getId() {
+    return new Promise(function (resolve, reject) {
+        batchwork_id_semaphore.take(function() {
+            batchworkIndex = (batchworkIndex + 1) % 10000000;
+            if (batchworkIndex == 0) 
+                batchworkIndex++;
+            batchwork_id_semaphore.leave();
+            resolve(batchworkIndex);
+        });
+    });
+}
 
 /*
     Removes certain elements from the batchwork entity.
@@ -35,53 +47,22 @@ function prettifyBatchworks(batchworkList) {
     return batchworkList;
 }
 
-/**
- * Queries service process repository by query arguments. Pages the query result and limits the fetched result to an amount specified by @DEFAULT_LIMIT 
- */
+
 router.get('/', function(req, res, next) {
 
-    var queries = [];
-    if (req.query.id !== undefined) 
-
-        /*
-        * Handle rebuild process queries
-        */
-        if (req.query.id == REBUILD_PID) {
-            if (rebuild_process == null) {
-                sendResponseObject(res, 404, [{}]); 
-            } else {
-                rebuild_process.getExecutionTime();
-                sendResponseObject(res, 200, prettifyBatchworks([rebuild_process])); 
-            }
-            return 
+    var id = req.query.id;
+    if (id !== undefined) {
+        if (id in batchworks) {
+            var batchwork = batchworks[id];
+            batchwork.getExecutionTime();
+            var clone = JSON.parse(JSON.stringify(batchwork));
+            sendResponseObject(res, 200, prettifyBatchworks([clone]));
+        } else {
+            sendResponseObject(res, 404, [{}]); 
         }
-        queries.push({[constants.ID]: DbUtils.castToId(req.query.id) });
-
-    
-    // Additional Query argumetns could be added here...
-
-    // Page operator    
-    var page = 0
-    if (req.query.page !== undefined) 
-      page = Number(req.query.page) - 1;
-      if (page < 0) page = 0;
-  
-    // Limit operator 
-    var limit = DEFEAULT_LIMIT;
-    if (req.query.limit !== undefined) 
-      limit = Number(req.query.limit)
-      if (limit > DEFEAULT_LIMIT)
-        limit = DEFEAULT_LIMIT;
-  
-    if (queries.length == 0) {
-        sendResponseObject(res, 400, "No valid query arguments found.");
-        return 
+    } else {
+        sendResponseObject(res, 400, "Need to specify query id.");
     }
-    
-    (async () => {  
-      var batchworks = await BatchWorksDao.findByMultipleQueries(queries, page, limit);
-      sendResponseObject(res, 200, prettifyBatchworks(batchworks));
-    })();
   });
 
 router.get('/request/predict-intro', function(req, res, next) {
@@ -91,56 +72,59 @@ router.get('/request/predict-intro', function(req, res, next) {
       sendResponseObject(res, 400, "Need to specify video url in post request.");
       return 
     }
-    (async () => {  
-        var batchwork = new BatchWork("predict-intro", req.connection.remoteAddress, [url]);
+    predict_semaphore.take(function() {
         try {
-            result = await BatchWorksDao.insert(batchwork);
-            batchwork._id = result.insertedId 
-            var clone = JSON.parse(JSON.stringify(batchwork));
-            sendResponseObject(res, 200, prettifyBatchwork(clone));
-            batchwork.start()
-        } catch(err) {
-            console.log(err)
-            sendResponseObject(res, 500, err);
-            return;
+            (async () => {  
+            var batchwork = new BatchWork("predict-intro", req.connection.remoteAddress, [url]);
+                batchwork._id = await getId();
+                batchwork.start();
+                batchworks[batchwork._id] = batchwork;
+                var clone = JSON.parse(JSON.stringify(batchwork));
+                sendResponseObject(res, 200, prettifyBatchwork(clone));
+
+                try {
+                    prediction = await PyWrapper.getIntroPredictionByUrl(url);
+                    batchwork.finish({ "prediction": prediction });
+                } catch(err) {
+                    console.log(err);
+                    batchwork.halt();
+                }
+            })();
+        } finally {
+            predict_semaphore.leave();
         }
-        try {
-            prediction = await PyWrapper.getIntroPredictionByUrl(url);
-            batchwork.finish({ "prediction": prediction });
-            BatchWorksDao.replace(batchwork);
-        } catch(err) {
-            console.log(err);
-            batchwork.halt();
-            BatchWorksDao.replace(batchwork);
-        }
-    })();
+    });
 });
 
 router.get('/request/rebuild', function(req, res, next) {
     if (rebuild_semaphore.available()) {
         rebuild_semaphore.take(function() {
             (async () => {  
+                var batchwork = new BatchWork("rebuild", req.connection.remoteAddress, [""]);
+                var id =  await getId();
+                batchwork.start();
+                batchwork._id = id;
+                rebuild_id = id; 
+                batchworks[id] = batchwork
+                sendResponseObject(res, 200, prettifyBatchwork(JSON.parse(JSON.stringify(batchwork))));
+
                 try {
-                    rebuild_process = new BatchWork("rebuild", req.connection.remoteAddress, [""]);
-                    rebuild_process.start();
-                    rebuild_process._id = REBUILD_PID;
-                    sendResponseObject(res, 200, prettifyBatchwork(rebuild_process));
                     await PyWrapper.rebuild();
-                    rebuild_process.finish();
-                    rebuild_process.result = "success";
+                    batchwork.finish();
+                    batchwork.result = "success";
                 } catch (err) {
-                    console.log(err);
-                    rebuild_process.halt();
-                    rebuild_process.result = err;
+                    batchwork.halt();
+                    batchwork.result = err;
                 } finally {
                     rebuild_semaphore.leave();
                 }
             })();
         });
+
     } else {
-        console.log("already rebuilding: sent old request");
-        rebuild_process.getExecutionTime();
-        sendResponseObject(res, 200, prettifyBatchwork(rebuild_process));
+        var batchwork = batchworks[rebuild_id];
+        batchwork.getExecutionTime();
+        sendResponseObject(res, 200, prettifyBatchwork(JSON.parse(JSON.stringify(batchwork))));
     }
 });
 

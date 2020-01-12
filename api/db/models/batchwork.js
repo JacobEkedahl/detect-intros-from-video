@@ -15,6 +15,8 @@ module.exports = class BatchWork {
 
     halt() {
         this.status = "halted"
+        this.ended = new Date();
+        this.executionTime = this.getExecutionTime()
     }
 
     start() {
