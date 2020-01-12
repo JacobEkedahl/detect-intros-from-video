@@ -1,25 +1,10 @@
 var express = require('express');
 var router = express.Router();
-const VideosDao = require("../db/video_dao");
+const VideosDao = require("../db/videos_dao");
 const constants = require("../db/constants");
 const PyWrapper = require("../python/exec_python")
 
 const DEFEAULT_LIMIT = 200
-
-//const mutex = new Mutex();
-//var id = 0
-
-
-class  LongJob {
-  constructor(id) {
-    this.id = id, 
-
-    this.result = null
-    this.started = new Date();
-    this.ended = null 
-
-  }
-}
 
 /**
  * Queries video repository by query arguments. Pages the query result and limits the fetched result to an amount specified by @DEFAULT_LIMIT 
@@ -38,10 +23,10 @@ router.get('/', function(req, res, next) {
 
   if (req.query.season !== undefined) 
     queries.push({[constants.SEASON]: Number(req.query.season)});
-  
+
   if (req.query.episode !== undefined) 
     queries.push({[constants.EPISODE]: Number(req.query.episode)});
-  
+
   if (req.query.title !== undefined) 
     queries.push({[constants.TITLE]: req.query.title });
 
@@ -70,7 +55,7 @@ router.get('/', function(req, res, next) {
 
   if (queries.length == 0) 
     queries.push({}); // query all 
-  
+
   (async () => {  
     var videos = await VideosDao.findByMultipleQueries(queries, page, limit);
     sendResponseObject(res, 200, videos);

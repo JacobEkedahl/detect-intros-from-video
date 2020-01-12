@@ -1,6 +1,6 @@
 const MongoClient = require('mongodb').MongoClient;
 
-dbname = process.env.db_name
+DBNAME = process.env.db_name
 URL = process.env.db_url
 const collectionKey = 'videos';
 const constants = require("./constants");
@@ -20,7 +20,7 @@ module.exports = class VideosDao {
                 if (err) 
                     reject(err);
                 else {
-                    db.db(dbname).collection(collectionKey).find({
+                    db.db(DBNAME).collection(collectionKey).find({
                         "$and": queryArray 
                     }).skip(page*limit).limit(limit).toArray(function (err, res) {
                         if (err) {
@@ -30,6 +30,7 @@ module.exports = class VideosDao {
                         resolve(res);
                     });
                 }
+                if (db !== null) db.close();
             });
         });
     }
@@ -46,7 +47,7 @@ module.exports = class VideosDao {
                 if (err) 
                     reject(err);
                 else {
-                    db.db(dbname).collection(collectionKey).updateOne(
+                    db.db(DBNAME).collection(collectionKey).updateOne(
                         {[constants.URL]: query_url},
                         { "$set": { [constants.INTRO_ANNOTATION]: { "start": start, "end": end } } }, 
                         function(err, res) {
@@ -57,10 +58,10 @@ module.exports = class VideosDao {
                         }
                     );
                 }
+                if (db !== null) db.close();
             });
         });
     }
-
 
 }
     

@@ -7,6 +7,7 @@ const SHOW_ID = 'showId'
 const SEASON = 's'
 const EPISODE = 'e'
 const TITLE = 'title'
+const ID = '_id'
 
 module.exports = {
     INTRO_ANNOTATION: INTRO_ANNOTATION,
@@ -16,6 +17,7 @@ module.exports = {
     SHOW_ID: SHOW_ID,
     SEASON: SEASON,
     EPISODE: EPISODE,
-    TITLE: TITLE
+    TITLE: TITLE,
+    ID: ID
 };
 
