@@ -7,7 +7,7 @@ const PyWrapper = require("../python/exec_python")
 const DbUtils = require("../db/utils")
 
 var rebuild_semaphore = require('semaphore')(1);
-var rebuild_process = {} 
+var rebuild_process = null
 var REBUILD_PID = "rebuild"
 
 
@@ -129,6 +129,7 @@ router.get('/request/rebuild', function(req, res, next) {
                     rebuild_process.finish();
                     rebuild_process.result = "success";
                 } catch (err) {
+                    console.log(err);
                     rebuild_process.halt();
                     rebuild_process.result = err;
                 } finally {
