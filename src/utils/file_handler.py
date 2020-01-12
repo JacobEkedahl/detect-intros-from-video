@@ -61,6 +61,8 @@ def get_neighboring_videos(video_file):
     parent_dir = os.path.dirname(get_seg_file_from_video(video_file))
     other_videos = get_all_files_by_type(parent_dir, 'json')
     other_videos = list(map(lambda other: get_video_file_from_seg(other), other_videos))
+    if len(other_videos) <= 1:
+        return [] # There are no other videos
     this_video_index = other_videos.index(video_file)
     other_videos.remove(str(video_file))
     season = get_season_from_video_file(video_file)
