@@ -30,9 +30,9 @@ import db.show_repo as show_repo
 
 if __name__ == "__main__":
 
-    logging.basicConfig(filename='log.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
-    logging.getLogger().setLevel(logging.DEBUG)
-
+    # Notice: 
+    # Because logging is separated into 3 files: prediction.py, rebuild.py and preprocessing.py no log configurations can be in main for those commands. 
+    # 
     file_handler.create_folderstructure_if_not_exists()
 
     if (len(s.argv) - 1 < 1):

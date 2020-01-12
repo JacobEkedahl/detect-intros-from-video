@@ -81,6 +81,12 @@ def __predict_video(video):
 
 
 def get_video_prediction(targetVideo):
+
+    # Only loggs the latest prediction 
+    logging.basicConfig(filename='prediction.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')  
+    logging.getLogger().setLevel(logging.DEBUG)
+
+
     count_success = 0
     count_failure = 0
     for video in __find_adjacent_videos(targetVideo):
