@@ -158,10 +158,7 @@ This will retrain the model based on all existing annotated videos previously st
         "args": [
             ""
         ],
-        "ip": "::1",
         "requested": "2020-01-12T19:20:34.986Z",
-        "started": "2020-01-12T19:20:34.987Z",
-        "ended": null,
         "result": null,
         "status": "working",
         "startDelay": 0.001,

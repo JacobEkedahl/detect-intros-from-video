@@ -18,6 +18,9 @@ const DEFEAULT_LIMIT = 200
  */
 const LAST_REFRESHED = new Date()
 
+/*
+    Removes certain elements from the batchwork entity.
+*/
 function prettifyBatchwork(batchwork) {
     delete batchwork["requested"];
     delete batchwork["ip"];
@@ -121,7 +124,7 @@ router.get('/request/rebuild', function(req, res, next) {
                     rebuild_process = new BatchWork("rebuild", req.connection.remoteAddress, [""]);
                     rebuild_process.start();
                     rebuild_process._id = REBUILD_PID;
-                    sendResponseObject(res, 200, rebuild_process);
+                    sendResponseObject(res, 200, prettifyBatchwork(rebuild_process));
                     await PyWrapper.rebuild();
                     rebuild_process.finish();
                     rebuild_process.result = "success";
@@ -136,7 +139,7 @@ router.get('/request/rebuild', function(req, res, next) {
     } else {
         console.log("already rebuilding: sent old request");
         rebuild_process.getExecutionTime();
-        sendResponseObject(res, 200, rebuild_process);
+        sendResponseObject(res, 200, prettifyBatchwork(rebuild_process));
     }
 });
 
