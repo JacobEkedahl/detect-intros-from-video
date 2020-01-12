@@ -41,14 +41,14 @@ module.exports = class VideosDao {
      * @param {*} start 
      * @param {*} end 
      */
-    static setIntro(query_url, start, end) {
+    static setIntros(queryArray, start, end) {
         return new Promise(function (resolve, reject) {
             MongoClient.connect(URL, function(err, db) {
                 if (err) 
                     reject(err);
                 else {
-                    db.db(DBNAME).collection(collectionKey).updateOne(
-                        {[constants.URL]: query_url},
+                    db.db(DBNAME).collection(collectionKey).updateMany(
+                        { "$and": queryArray },
                         { "$set": { [constants.INTRO_ANNOTATION]: { "start": start, "end": end } } }, 
                         function(err, res) {
                             if (err) 

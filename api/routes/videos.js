@@ -67,11 +67,6 @@ router.get('/', function(req, res, next) {
  * Annotates a intro sequence for a video by url
  */
 router.post('/set/intro', function(req, res, next) {
-  url = req.query.url 
-  if (url == undefined) {
-    sendResponseObject(res, 400, "Need to specify video url in post request.");
-    return 
-  }
   if ((req.body.start == undefined) || (req.body.end == undefined)) {
     sendResponseObject(res, 400, "Request body must contain start and end time denoted in seconds.");
     return 
@@ -86,12 +81,38 @@ router.post('/set/intro', function(req, res, next) {
     sendResponseObject(res, 400, "Start may not exceed end.");
     return 
   }
+  
+  var queries = [];
+  if (req.query.url !== undefined) {
+    queries.push({[constants.URL]: req.query.url});    
+  }
+  else if (req.query.show !== undefined) {
+    queries.push({[constants.SHOW]: req.query.show});   
+  }
+  else if (req.query.show_id !== undefined) {
+    queries.push({[constants.SHOW_ID]: req.query.show_id});    
+  }
+  else {
+    sendResponseObject(res, 400, "Update queries must contain one of the following arguments: url=, show= or show_id=. ");
+    return;
+  }
+  // Extra arguments 
+  if (req.query.season !== undefined) 
+    queries.push({[constants.SEASON]: Number(req.query.season)});
+
+  if (req.query.episode !== undefined) 
+    queries.push({[constants.EPISODE]: Number(req.query.episode)});
+
+  if (req.query.title !== undefined) 
+    queries.push({[constants.TITLE]: req.query.title });
+
   (async () => {  
-    var response = await VideosDao.setIntro(url, start, end);
+    console.log(queries)
+    var response = await VideosDao.setIntros(queries, start, end);
     if (response.result.n > 0)
-      sendResponseObject(res, 200, "success");
+      sendResponseObject(res, 200, { "success": response.result });
     else 
-      sendResponseObject(res, 404, "Failed to update");
+      sendResponseObject(res, 404, { "failure": null });
   })();
 });
 

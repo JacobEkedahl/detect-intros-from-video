@@ -61,7 +61,7 @@ Example: ```/videos?show=vår tid är nu&season=1&prediction=true```
 
 ## 2. Set Intro 
 
-Allows for mannual annotation of intro sequences of videos matching the query arguments. Be careful to not override previously done work. 
+Allows for mannual annotation of intro sequences of videos matching the query arguments. Be careful to not override previously done work. The query argument must contain at least the video url or the show name or show id. 
 
 #### HTTP Request
     POST: "/videos/set/intro"
@@ -69,7 +69,12 @@ Allows for mannual annotation of intro sequences of videos matching the query ar
 Example: ```/videos/set/intro?url=https://www.svtplay.se/video/24206422/var-tid-ar-nu/var-tid-ar-nu-sasong-3-vip```
 
 #### Query Parameters
-    &url=<string>  
+    &url=<string>   
+    &show=<string>
+    &show_id=<string>
+    &title=<string>
+    &season=<int>
+    &episode=<int>
 #### Content
     BODY: { "start": <float>, "end": <float> }
 
