@@ -13,8 +13,6 @@ var rebuild_semaphore = require('semaphore')(1);
 var batchwork_id_semaphore = require('semaphore')(1);
 var predict_semaphore = require('semaphore')(PREDICTION_LIMIT);
 var rebuild_id; 
-
-
 var batchworkIndex = 0;
 var batchworks = {};
 
@@ -46,7 +44,6 @@ function prettifyBatchworks(batchworkList) {
     }
     return batchworkList;
 }
-
 
 router.get('/', function(req, res, next) {
 
