@@ -143,3 +143,27 @@ Example: ```/services?id=5e1a8c9b9e7286458c704010```
 
 ---
 
+## 5. Rebuild Dataset 
+
+This will retrain the model based on all existing annotated videos previously stored. Notice that this is a very long process and may take a few hours to complete. 
+
+#### HTTP Request
+    GET: "/services/request/rebuild"
+    
+#### HTTP Response 
+
+    {
+        "_id": "rebuild",
+        "process": "rebuild",
+        "args": [
+            ""
+        ],
+        "ip": "::1",
+        "requested": "2020-01-12T19:20:34.986Z",
+        "started": "2020-01-12T19:20:34.987Z",
+        "ended": null,
+        "result": null,
+        "status": "working",
+        "startDelay": 0.001,
+        "executionTime": 12.185
+    }

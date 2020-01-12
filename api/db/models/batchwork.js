@@ -27,7 +27,15 @@ module.exports = class BatchWork {
         this.result = result
         this.status = "finished"
         this.ended = new Date();
-        this.executionTime = (this.ended.getTime() - this.started.getTime())/1000
+        this.executionTime = getExecutionTime()
+    }
+
+    getExecutionTime() {
+        var ended = this.ended;
+        if (ended == null) 
+            ended = new Date();
+        this.executionTime = (ended.getTime() - this.started.getTime())/1000
+        return this.executionTime 
     }
 
 }

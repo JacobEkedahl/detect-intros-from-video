@@ -64,7 +64,11 @@ router.get('/', function(req, res, next) {
 
 
 /**
- * Annotates a intro sequence for a video by url
+ * Annotates intro sequences of videos. Taking either a url or a show/show_id as primary query arguments.
+ * Body: {
+ *  "start": <float>,
+ *  "end": <float
+ * }
  */
 router.post('/set/intro', function(req, res, next) {
   if ((req.body.start == undefined) || (req.body.end == undefined)) {
@@ -107,7 +111,6 @@ router.post('/set/intro', function(req, res, next) {
     queries.push({[constants.TITLE]: req.query.title });
 
   (async () => {  
-    console.log(queries)
     var response = await VideosDao.setIntros(queries, start, end);
     if (response.result.n > 0)
       sendResponseObject(res, 200, { "success": response.result });

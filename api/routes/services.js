@@ -6,6 +6,11 @@ const constants = require("../db/constants");
 const PyWrapper = require("../python/exec_python")
 const DbUtils = require("../db/utils")
 
+var rebuild_semaphore = require('semaphore')(1);
+var rebuild_process = {} 
+var REBUILD_PID = "rebuild"
+
+
 const DEFEAULT_LIMIT = 200
 
 /*  
@@ -28,13 +33,27 @@ function prettifyBatchworks(batchworkList) {
 }
 
 /**
- * Queries video repository by query arguments. Pages the query result and limits the fetched result to an amount specified by @DEFAULT_LIMIT 
+ * Queries service process repository by query arguments. Pages the query result and limits the fetched result to an amount specified by @DEFAULT_LIMIT 
  */
 router.get('/', function(req, res, next) {
 
     var queries = [];
     if (req.query.id !== undefined) 
+
+        /*
+        * Handle rebuild process queries
+        */
+        if (req.query.id == REBUILD_PID) {
+            if (rebuild_process == null) {
+                sendResponseObject(res, 404, [{}]); 
+            } else {
+                rebuild_process.getExecutionTime();
+                sendResponseObject(res, 200, prettifyBatchworks([rebuild_process])); 
+            }
+            return 
+        }
         queries.push({[constants.ID]: DbUtils.castToId(req.query.id) });
+
     
     // Additional Query argumetns could be added here...
 
@@ -93,7 +112,34 @@ router.get('/request/predict-intro', function(req, res, next) {
         }
     })();
 });
-  
+
+router.get('/request/rebuild', function(req, res, next) {
+    if (rebuild_semaphore.available()) {
+        rebuild_semaphore.take(function() {
+            (async () => {  
+                try {
+                    rebuild_process = new BatchWork("rebuild", req.connection.remoteAddress, [""]);
+                    rebuild_process.start();
+                    rebuild_process._id = REBUILD_PID;
+                    sendResponseObject(res, 200, rebuild_process);
+                    await PyWrapper.rebuild();
+                    rebuild_process.finish();
+                    rebuild_process.result = "success";
+                } catch (err) {
+                    rebuild_process.halt();
+                    rebuild_process.result = err;
+                } finally {
+                    rebuild_semaphore.leave();
+                }
+            })();
+        });
+    } else {
+        console.log("already rebuilding: sent old request");
+        rebuild_process.getExecutionTime();
+        sendResponseObject(res, 200, rebuild_process);
+    }
+});
+
 router.get('/kill', function(req, res, next) {
     // Only capable of killing processes which has not yet started...
     return "Not yet implemented"
