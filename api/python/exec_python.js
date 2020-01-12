@@ -1,6 +1,6 @@
 const {PythonShell} = require('python-shell')
 
-module.exports = class PyPrediction {
+module.exports = class PyWrapper {
 
     /**
      * Performs an intro prediction on the specified url 

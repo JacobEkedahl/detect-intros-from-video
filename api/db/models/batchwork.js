@@ -11,19 +11,15 @@ module.exports = class BatchWork {
         this.ended = null
         this.result = null;
         this.status = "pending"; 
-        this.executionTime = 0 
-        this.startDelay = 0
     }
 
     halt() {
         this.status = "halted"
-        this.duration = (this.ended.getTime() - this.started.getTime())/1000
     }
 
     start() {
         this.status = "working"
         this.started = new Date();
-        this.duration = 0;
         this.startDelay = (this.started.getTime() - this.requested.getTime())/1000
     }
 
@@ -31,7 +27,7 @@ module.exports = class BatchWork {
         this.result = result
         this.status = "finished"
         this.ended = new Date();
-        this.duration = (this.ended.getTime() - this.started.getTime())/1000
+        this.executionTime = (this.ended.getTime() - this.started.getTime())/1000
     }
 
 }

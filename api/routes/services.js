@@ -88,7 +88,8 @@ router.get('/request/predict-intro', function(req, res, next) {
             BatchWorksDao.replace(batchwork);
         } catch(err) {
             console.log(err);
-            batchwork.start();
+            batchwork.halt();
+            BatchWorksDao.replace(batchwork);
         }
     })();
 });
