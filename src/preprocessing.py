@@ -41,8 +41,10 @@ def __extract_frame_hashes(video):
 
 
 def __annotate_intro(video, segments):
-    start = datetime.now()
     intro = video[video_repo.INTRO_ANNOTATION_KEY]
+    if intro is None:
+        return  
+    start = datetime.now()
     annotate_intro.apply_annotated_intro_on_segments(segments, intro)
     logging.info("intro annotation complete (%s), time taken: %s" % (intro, datetime.now()  - start))
 
@@ -57,10 +59,8 @@ def __annotate_detected_scene(video, segments):
 def __annotate_detected_blackness(video, segments):
     start = datetime.now()
     blackSequences, blackFrames = blackdetector.detect_blackness(video[PATH])
-    annotate_black.annotate_black_frames(segments, blackdetector.FRAME_KEY, blackFrames)
     annotate_black.annotate_black_sequences(segments, blackdetector.SEQUENCE_KEY, blackSequences)
-    annotate_black.combine_annotation_into(segments, "black", blackdetector.SEQUENCE_KEY, blackSequences, blackdetector.FRAME_KEY, blackFrames, False)
-    logging.info("blackdetection complete, %d black frames, %d black sequence, time taken: %s" % (len(blackFrames), len(blackSequences), datetime.now()  - start))
+    logging.info("blackdetection complete, %d black sequence, time taken: %s" % (len(blackSequences), datetime.now()  - start))
 
 
 def __download_video(video):
