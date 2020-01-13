@@ -75,39 +75,52 @@ def index():
     return "Videos" # TODO: Add resource description 
 
 
-@app.route('/videos', methods=['GET'])
-def query_videos():
-    
-    queries = []
-    if "url" in request.args: 
-        queries.append({video_repo.URL_KEY: request.args["url"]})
-    if "show_id" in request.args: 
-        queries.append({video_repo.SHOW_ID_KEY: request.args["show_id"]})
-    if "show" in request.args: 
-        queries.append({video_repo.SHOW_KEY: request.args["show"]})
-    if "season" in request.args: 
-        queries.append({video_repo.SEASON_KEY: int(request.args["season"])})
-    if "episode" in request.args: 
-        queries.append({video_repo.EPISODE_KEY: int(request.args["episode"])})
-    if "title" in request.args: 
-        queries.append({video_repo.TITLE_KEY: int(request.args["title"])})
-
-    # Operators 
-    if "page" in request.args:
-        page = request.args["page"]
-    
-    if "limit" in request.args: 
-        limit = request.args["limit"]
-
-
+@app.route('/videos/get/url', methods=['GET', 'POST'])
+def get_video():
     try: 
-        videos = video_repo.find_by_many(queries)
+        data = request.json
+        if "url" in data: 
+            try: 
+                video = video_repo.find_by_url(data["url"])
+                if video is not None: 
+                    __format_video(video)
+                    return video
+                return __response(NOT_FOUND, {"success": False, "message": NO_MATCHING_URL})
+            except Exception as e:
+                logging.exception(e)
+                return __response(INTERNAL_SERVER_ERROR, {"success": False, "message": QUERY_REQUEST_FAILURE_MSG})
+        return __response(BAD_REQUEST, {"success": False, "message": NO_URL_FOUND_MSG})
+    except Exception as e: 
+        return __response(BAD_REQUEST, {"success": False, "message": str(e)})
+
+
+@app.route('/videos/get/all', methods=['GET', 'POST'])
+def get_all_videos():
+    try: 
+        return __format_videos(video_repo.find_all())
+    except Exception as e:
+        logging.exception(e) 
+        __response(BAD_REQUEST, {"success": False, "message": NO_URL_FOUND_MSG})
+
+
+@app.route('/videos/get/<string:show_id>', methods=['GET', 'POST'])
+def find_by_show_id(show_id):
+    try: 
+        videos = video_repo.find_by_show_id(show_id)
+        return __format_videos(videos)
+    except Exception as e:
+        logging.exception(e) 
+        return __response(INTERNAL_SERVER_ERROR, {"success": False, "message": QUERY_REQUEST_FAILURE_MSG})
+
+
+@app.route('/videos/get/<string:show_id>/<int:season>', methods=['GET', 'POST'])
+def find_by_show_id_season(show_id, season):
+    try: 
+        videos = video_repo.find_by_show_id_and_season(show_id, season)
         return __format_videos(videos)
     except Exception as e: 
         logging.exception(e)
         return __response(INTERNAL_SERVER_ERROR, {"success": False, "message": QUERY_REQUEST_FAILURE_MSG})
-
-
 
 
 @app.route('/videos/set/annotation/intro', methods=["POST"])
@@ -169,8 +182,9 @@ def do_build():
 
 
 def start():
+      
     logging.basicConfig(filename='api.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
     logging.getLogger().setLevel(logging.DEBUG)
-    app.run(debug=DEBUG_ON, threaded=True)
 
+    app.run(debug=DEBUG_ON, threaded=True)
     
