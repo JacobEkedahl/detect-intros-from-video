@@ -1,13 +1,15 @@
 var express = require('express');
 var router = express.Router();
-const BatchWorksDao = require("../db/batchworks_dao");
 const BatchWork = require("../db/models/batchwork")
 const constants = require("../db/constants");
 const PyWrapper = require("../python/exec_python")
 const DbUtils = require("../db/utils")
 
 
-const PREDICTION_LIMIT = 1;
+const PREDICTION_LIMIT = 1;                     // Maximum number of parallell predictions
+const HOURS_BETWEEN_PURGES = 1;                 // How often to loop through all entries and purge old ones 
+const MINUTES_THAT_WORK_REMAIN_AFTER_END = 10;
+
 
 var rebuild_semaphore = require('semaphore')(1);
 var batchwork_id_semaphore = require('semaphore')(1);
@@ -15,8 +17,10 @@ var predict_semaphore = require('semaphore')(PREDICTION_LIMIT);
 var rebuild_id; 
 var batchworkIndex = 0;
 var batchworks = {};
+var lastUpdatedTime = (new Date(2020, 0, 1)).getTime(); 
 
 function getId() {
+    purgeOldEntries();
     return new Promise(function (resolve, reject) {
         batchwork_id_semaphore.take(function() {
             batchworkIndex = (batchworkIndex + 1) % 10000000;
@@ -28,21 +32,41 @@ function getId() {
     });
 }
 
+function purgeOldEntries() {
+    var timeNow = (new Date()).getTime();
+    var hoursSinceLastPurge = (timeNow- lastUpdatedTime)/(1000*3600);
+    if (hoursSinceLastPurge < HOURS_BETWEEN_PURGES)
+        return;
+    var len = Object.keys(batchworks).length 
+    for (var id in batchworks) {
+        batchwork = batchworks[id];
+        if (batchwork.hasEnded()) {
+            if ((timeNow - batchwork.ended.getTime())/(1000) > MINUTES_THAT_WORK_REMAIN_AFTER_END) {
+                delete batchworks[id];
+            }
+        }
+    }
+    console.log("Purged: " + (len - Object.keys(batchworks).length) + " entities.");
+    lastUpdatedTime = (new Date()).getTime();
+}
+
 /*
-    Removes certain elements from the batchwork entity.
+    Clones and removes certain attributes before sending back to the client
 */
 function prettifyBatchwork(batchwork) {
-    delete batchwork["requested"];
-    delete batchwork["ip"];
-    delete batchwork["ended"];
-    return batchwork
+    var clone = JSON.parse(JSON.stringify(batchwork));
+    delete clone["requested"];
+    delete clone["ip"];
+    delete clone["ended"];
+    return clone
 }
 
 function prettifyBatchworks(batchworkList) {
+    var resultList = []
     for (var i = 0; i < batchworkList.length; i++) {
-        prettifyBatchwork(batchworkList[i]);
+        resultList.push(prettifyBatchwork(batchworkList[i]));
     }
-    return batchworkList;
+    return resultList
 }
 
 router.get('/', function(req, res, next) {
@@ -52,8 +76,8 @@ router.get('/', function(req, res, next) {
         if (id in batchworks) {
             var batchwork = batchworks[id];
             batchwork.getExecutionTime();
-            var clone = JSON.parse(JSON.stringify(batchwork));
-            sendResponseObject(res, 200, prettifyBatchworks([clone]));
+            batchwork.getStartingDelay();
+            sendResponseObject(res, 200, prettifyBatchworks([batchwork]));
         } else {
             sendResponseObject(res, 404, [{}]); 
         }
@@ -69,21 +93,23 @@ router.get('/request/predict-intro', function(req, res, next) {
       sendResponseObject(res, 400, "Need to specify video url in post request.");
       return 
     }
+    var batchwork = new BatchWork("predict-intro", req.connection.remoteAddress, [url]);
+    (async () => {  
+        batchwork._id = await getId();
+        batchworks[batchwork._id] = batchwork;
+        sendResponseObject(res, 200, prettifyBatchwork(batchwork));
+    })();
     predict_semaphore.take(function() {
         try {
             (async () => {  
-            var batchwork = new BatchWork("predict-intro", req.connection.remoteAddress, [url]);
-                batchwork._id = await getId();
-                batchwork.start();
-                batchworks[batchwork._id] = batchwork;
-                var clone = JSON.parse(JSON.stringify(batchwork));
-                sendResponseObject(res, 200, prettifyBatchwork(clone));
-
+                console.log("started");
                 try {
+                    batchwork.start();
                     prediction = await PyWrapper.getIntroPredictionByUrl(url);
                     batchwork.finish({ "prediction": prediction });
                 } catch(err) {
                     console.log(err);
+                    batchwork.result = err;
                     batchwork.halt();
                 }
             })();
@@ -103,8 +129,7 @@ router.get('/request/rebuild', function(req, res, next) {
                 batchwork._id = id;
                 rebuild_id = id; 
                 batchworks[id] = batchwork
-                sendResponseObject(res, 200, prettifyBatchwork(JSON.parse(JSON.stringify(batchwork))));
-
+                sendResponseObject(res, 200, prettifyBatchwork(batchwork));
                 try {
                     await PyWrapper.rebuild();
                     batchwork.finish();
@@ -121,12 +146,12 @@ router.get('/request/rebuild', function(req, res, next) {
     } else {
         var batchwork = batchworks[rebuild_id];
         batchwork.getExecutionTime();
-        sendResponseObject(res, 200, prettifyBatchwork(JSON.parse(JSON.stringify(batchwork))));
+        batchwork.getStartingDelay();
+        sendResponseObject(res, 200, prettifyBatchwork(batchwork));
     }
 });
 
 router.get('/kill', function(req, res, next) {
-    // Only capable of killing processes which has not yet started...
     return "Not yet implemented"
 });
 
