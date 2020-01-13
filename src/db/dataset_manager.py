@@ -16,8 +16,6 @@ def export_dataset(path):
                 "url": video['url']
             }
             output["intro"].append(entity)
-        else: 
-            logging.error("Intro was none: %s" % intro)
     with open(path, 'w') as outfile:
         json.dump(output, outfile, indent=4, sort_keys=True)
 

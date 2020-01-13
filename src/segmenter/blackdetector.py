@@ -76,4 +76,3 @@ def detect_blackness(video_file):
     print("Blackdetection of %s completed (%d sequences, %d frames) " % (video_file, len(blackSequences), len(blackFrames)))
     
     return blackSequences, blackFrames
-   
