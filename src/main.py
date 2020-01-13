@@ -1,33 +1,27 @@
-import logging 
+import logging
 import os
 import pprint
 import sys as s
+from commands import cmd_black, cmd_dataset, cmd_segment
 
-from commands import cmd_segment, cmd_dataset, cmd_black
-
+import db.show_repo as show_repo
+import db.video_repo as video_repo
+import downloader.scrapesvt as scrapesvt
+import pipeline
+import predicting
 import preprocessing
 import rebuild
-import predicting
-
-import pipeline
-import downloader.scrapesvt as scrapesvt
-from downloader import svtplaywrapper
-
-
 import utils.file_handler as file_handler
 from annotations import (annotation_summary, dataset_annotation,
                          scene_annotation)
+from api import app
+from downloader import svtplaywrapper
 from frame_matcher import frame_comparer as comparer
 from frame_matcher import video_matcher as v_matcher
 from frame_matcher import video_to_hashes as vf
 from segmenter import scenedetector
 from stats import prob_calculator
 from utils import cleaner, extractor
-
-from api import app
-
-import db.video_repo as video_repo 
-import db.show_repo as show_repo
 
 if __name__ == "__main__":
 
@@ -100,20 +94,7 @@ if __name__ == "__main__":
                 print("similarity result: " + str(result))
  
     elif (s.argv[1] == "--dlv"):
-        noOfArgs = len(s.argv) - 1
-        if (noOfArgs < 2):
-            print("need more arguments!")
-            exit()
-        if (s.argv[2] == "--file"):
-            name_textfile = s.argv[3]
-            number_of_episodes = s.argv[5]
-            svtplaywrapper.start(name_textfile, number_of_episodes)
-        elif (s.argv[2] == "--url"):
-            url_path = s.argv[3]
-            svtplaywrapper.download_video(url_path)
-            
-        print("finnished downloading!")
-        exit()
+        svtplaywrapper.download_video("https://www.svtplay.se/video/24993622/leif-och-billy/leif-och-billy-sasong-4-avsnitt-6")
 
     elif (s.argv[1] == "--seg"):
         cmd_segment.execute(s.argv)

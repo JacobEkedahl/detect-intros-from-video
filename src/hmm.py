@@ -1,4 +1,5 @@
 import json
+import os
 import random
 import statistics
 import sys as s
@@ -13,9 +14,34 @@ from utils import constants, file_handler
 import seaborn; seaborn.set_style('whitegrid')
 seed = constants.START_SEED
 
-def get_prediction(video_file):
+DATAFOLDERNAME = "model"
+HMMMODEL = "hmm.json"
+
+
+def get_saved_model():
+    if not os.path.exists(get_full_path_model()):
+        if not os.path.exists(get_full_path_data()):
+            os.makedirs(get_full_path_data())
+        generate_model()
+    with open(get_full_path_model()) as json_file:
+        data = json.load(json_file)
+        return HiddenMarkovModel.from_json(data)
+
+def generate_model():
     obs, labels = get_dataset_for_hmm()
     model = get_model(obs, labels)
+    model_file = model.to_json()
+    with open(get_full_path_model(), 'w') as outfile:
+        json.dump(model_file, outfile, indent=4, sort_keys=False)
+    
+def get_full_path_data():
+    return os.path.join(str(os.getcwd()), DATAFOLDERNAME)
+    
+def get_full_path_model():
+    return os.path.join(str(os.getcwd()), DATAFOLDERNAME, HMMMODEL)
+
+def get_prediction(video_file):
+    model = get_saved_model()
     seg_file = file_handler.get_seg_file_from_video(video_file)
     with open(seg_file) as json_file:
         data = json.load(json_file)
@@ -38,7 +64,7 @@ def get_prediction(video_file):
                 entry.append(None)
             current_scenes.append(numpy.array(entry))
     hmm_predictions = model.predict(current_scenes)
-    seq_pred = find_sequences(hmm_predictions)
+    seq_pred = find_sequences_result(hmm_predictions)
     seq_pred = clean_sequences(seq_pred)
     most_likely_sequence = prob_calculator.get_sequence_with_closest_size(seq_pred, video_file)
     print(most_likely_sequence)
@@ -50,6 +76,7 @@ def get_model(obs, labels):
                                             n_components=2,
                                             X=obs,
                                             labels=labels,
+                                            state_names=["intro", "non"],
                                             algorithm='labeled')
 
 
@@ -103,10 +130,10 @@ def get_dataset_for_hmm():
                         entry.append(None)
 
                     current_scenes.append(numpy.array(entry))
-                    if scene['intro']:
-                        labels.append(1) 
+                    if not scene['intro']:
+                        labels.append("non") 
                     else:
-                        labels.append(0)
+                        labels.append("intro")
             if len(current_scenes) != 0:
                 result.append(numpy.array(current_scenes))
                 data_labels.append(labels)
@@ -136,7 +163,7 @@ def startHMM():
     trainX, trainY = obs[:len_of_training], labels[:len_of_training]
     testX, testY = obs[-len_of_test:], labels[-len_of_test:]
     model = get_model(trainX, trainY)
-
+    
     matched_seq = []
     for i in testX:
         temp = []
@@ -157,7 +184,7 @@ def startHMM():
         seq_real = find_sequences(result)
         try:
             one_res = seq_real[0]
-            seq_pred = find_sequences(hmm_predictions)
+            seq_pred = find_sequences_result(hmm_predictions)
             seq_pred = clean_sequences(seq_pred)
             closest_pred = {}
             dist = 1000000
@@ -203,12 +230,13 @@ def evaluate_result(start_err, end_err):
     print("median start err: " + str(med_start) + ", median end err: " + str(med_end))
     print("std start err: " + str(std_start) + ", std end err: " + str(std_end))
 
-def find_sequences(list_of_ones_and_zeroes):
+
+def find_sequences_result(list_of_ones_and_zeroes):
     found_one = False
     curr_seq = {}
     result = []
     for i in range(len(list_of_ones_and_zeroes)):
-        entry = int(list_of_ones_and_zeroes[i])
+        entry = list_of_ones_and_zeroes[i] == 0
         if entry == 1 and found_one == False:
             curr_seq["start"] = i / 10
             found_one = True
@@ -219,6 +247,30 @@ def find_sequences(list_of_ones_and_zeroes):
             curr_seq = {}
     if "end" in curr_seq:
         result.append(curr_seq)
+    if len(result) == 0:
+        print("no result in results")
+        print(list_of_ones_and_zeroes)
+    return result
+
+def find_sequences(list_of_ones_and_zeroes):
+    found_one = False
+    curr_seq = {}
+    result = []
+    for i in range(len(list_of_ones_and_zeroes)):
+        curr = list_of_ones_and_zeroes[i]
+        entry = 1 if curr == "intro" else 0
+        if entry == 1 and found_one == False:
+            curr_seq["start"] = i / 10
+            found_one = True
+        elif entry == 0 and found_one == True:
+            curr_seq["end"] = i/ 10
+            found_one = False
+            result.append(curr_seq)
+            curr_seq = {}
+    if "end" in curr_seq:
+        result.append(curr_seq)
+    if len(result) == 0:
+        print("no result in seq")
     return result
 
 def clean_sequences(sequences):

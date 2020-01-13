@@ -167,7 +167,6 @@ def __do_timed__work():
     count_success = 0
     count_failure = 0
 
-
     while datetime.now() < end_time: 
         videos = video_repo.find_all_not_preprocessed()
         if len(videos) == 0:

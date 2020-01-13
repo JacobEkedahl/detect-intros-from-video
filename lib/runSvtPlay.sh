@@ -1,3 +1,2 @@
 #!/bin/bash
-exec svtplay-dl "$@"
-return
+exec -a svtplayshell svtplay-dl "$@"

@@ -149,6 +149,7 @@ def set_annotation():
 
 @app.route('/videos/get/prediction/intro', methods=['GET', 'POST'])
 def get_video_prediction():
+    print("hello???")
     try: 
         data = request.json
         if "url" in data: 

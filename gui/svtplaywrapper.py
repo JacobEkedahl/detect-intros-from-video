@@ -28,7 +28,7 @@ def try_to_download(command):
     attemps = 0
     while attemps < 3:
         try:
-            output = subprocess.check_call(command, shell=True) 
+            output = subprocess.check_call(command) 
             return True
         except:
             print("error while downloading and calling subprocess, retrying.. #" + str(attemps))
