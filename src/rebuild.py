@@ -83,7 +83,8 @@ def __predict_video(video):
 
 def start():
 
-    logging.basicConfig(filename='log.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
+    # logging.basicConfig(filename='rebuild.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
+    logging.basicConfig(filename='rebuild.log', format='%(name)s - %(levelname)s - %(message)s')
     logging.getLogger().setLevel(logging.DEBUG)
 
     if not os.path.exists(DATASET_PATH):

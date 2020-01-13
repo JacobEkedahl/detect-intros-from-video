@@ -9,11 +9,15 @@ def export_dataset(path):
     output = { "intro": [], "pre-intro": [], "previous": []}
     for video in video_repo.find_all_with_intro_annotation():
         intro = video[video_repo.INTRO_ANNOTATION_KEY]
-        output["intro"].append({
-            "start": time_handler.seconds_to_str(intro['start']),
-            "end": time_handler.seconds_to_str(intro['end']),
-            "url": video['url']
-        })
+        if intro is not None: 
+            entity = {
+                "start": time_handler.seconds_to_str(intro['start']),
+                "end": time_handler.seconds_to_str(intro['end']),
+                "url": video['url']
+            }
+            output["intro"].append(entity)
+        else: 
+            logging.error("Intro was none: %s" % intro)
     with open(path, 'w') as outfile:
         json.dump(output, outfile, indent=4, sort_keys=True)
 
