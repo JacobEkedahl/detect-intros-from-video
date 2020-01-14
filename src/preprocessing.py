@@ -60,7 +60,7 @@ def __annotate_detected_blackness(video, segments):
     start = datetime.now()
     blackSequences, blackFrames = blackdetector.detect_blackness(video[PATH])
     annotate_black.annotate_black_sequences(segments, blackdetector.SEQUENCE_KEY, blackSequences)
-    logging.info("blackdetection complete, %d black sequence, time taken: %s" % (len(blackSequences), datetime.now()  - start))
+    logging.info("blackdetection complete, %d black sequence, %d black frames, time taken: %s" % (len(blackSequences), len(blackFrames), datetime.now()  - start))
 
 
 def __download_video(video):

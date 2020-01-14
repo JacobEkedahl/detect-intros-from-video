@@ -114,9 +114,13 @@ def start():
     # Iterate through all ordered videos 
     count_failure = 0
     count_success = 0
+    video_managed = 0
+    
     for show in dictVideos:
         for season in dictVideos[show]:
             for video in dictVideos[show][season]:
+                video_managed = video_managed + 1
+                logging.info("%.2f%% completed" % (video_managed/len(videos)*100)) 
                 if not (PREPROCESSED in video and video[PREPROCESSED]):
                     try: 
                         result = preprocessing.preprocess_video(video)
@@ -127,7 +131,7 @@ def start():
                             count_success = count_success + 1 
                     except Exception as e:
                         logging.exception(e)
-                        count_failure = count_failure + 1 
+                        count_failure = count_failure + 1
 
         for video in dictVideos[show][season]:
             try:
