@@ -146,7 +146,7 @@ def find_by_show_season_episode(show, season, episode):
     
 def find_by_presence_of_key(key):
     return list(videoCollection.find({key: {
-            "$exists": True 
+            "$ne": None 
         }
     }))
 
