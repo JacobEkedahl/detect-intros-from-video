@@ -24,36 +24,83 @@ import utils.time_handler as time_handler
 import annotations.dataset_annotation as dataset_annotation
 import db.dataset_manager as dataset_manager
 
+SHOW = "show"
+SEASON = "s"
+
+
 def __export_dataset(path):
     dataset_manager.export_dataset(path)
 
 def __import_dataset(path):
     dataset_manager.import_dataset(path)
 
+def __do_present_start_varians():
+    videos = video_repo.find_all_with_intro_annotation()
+    dictVideos = {}
+    for video in videos: 
+        show = video[SHOW]
+        season = video[SEASON]
+        if not show in dictVideos:
+            dictVideos[show] = {}
+        if not season in dictVideos[show]:
+            dictVideos[show][season] = []
+        dictVideos[show][season].append(video)
+
+    # Iterate through all ordered videos 
+    startList = []
+    for show in dictVideos:
+        print("\n%s" % show)
+        for season in dictVideos[show]:
+            startListSeason = []
+            print("\n%02d\n" % season)
+            for video in dictVideos[show][season]:
+                intro = video[video_repo.INTRO_ANNOTATION_KEY]
+                if intro['start'] == intro['end']:
+                    print("%s\t%s" % (video['url'], "none"))
+                    continue 
+                start = intro['start']
+                startList.append(start)
+                startListSeason.append(start)
+                print("%s\t%f" % (video['url'], start))
+
+            if len(startListSeason) > 1:    
+                print("Start avg:     %f" % statistics.mean(startListSeason))
+                print("Start median:   %f" % statistics.median(startListSeason))
+                print("Start stdev:   %f" % statistics.stdev(startListSeason))
+
+
+
 def __do_present_length_varians():
-    annotatedVideos = video_repo.find_all_with_intro_annotation()
-    show = ""
-    season = -1
-    prevShow = ""
-    prevSeason = -1
+    videos = video_repo.find_all_with_intro_annotation()
+    dictVideos = {}
+    for video in videos: 
+        show = video[SHOW]
+        season = video[SEASON]
+        if not show in dictVideos:
+            dictVideos[show] = {}
+        if not season in dictVideos[show]:
+            dictVideos[show][season] = []
+        dictVideos[show][season].append(video)
+
+    # Iterate through all ordered videos 
     lengthList = []
-    for v in annotatedVideos:
-        show = v['show']
-        season = v['s']
-        if show != prevShow:
-            print()
-        
-        if season != prevSeason: 
-            print("\n%s %02d\n" % (show, season))
-            lengthList = []
-
-        intro = v[video_repo.INTRO_ANNOTATION_KEY]
-        length = time_handler.timestamp(intro['end'])/1000 - time_handler.timestamp(intro['start'])/1000
-        lengthList.append(length)
-        print("%s\t%f" % (v['url'], length))
-
-        prevShow = v['show']
-        prevSeason = v['s']
+    for show in dictVideos:
+        print("\n%s" % show)
+        for season in dictVideos[show]:
+            print("%02d\n" % season)
+            lengthSeason = []
+            for video in dictVideos[show][season]:
+                intro = video[video_repo.INTRO_ANNOTATION_KEY]
+                if intro['start'] == intro['end']:
+                    continue 
+                length = intro['end'] - intro['start']
+                lengthList.append(length)
+                lengthSeason.append(length)
+                print("%s\t%f" % (video['url'], length))
+            if len(lengthSeason) > 1:    
+                print("Length avg:     %f" % statistics.mean(lengthSeason))
+                print("Length median:  %f" % statistics.median(lengthSeason))
+                print("Length stdev:   %f" % statistics.stdev(lengthSeason))
 
 
 def __do_manual_annotation(argv):
@@ -99,4 +146,6 @@ def execute(argv):
         __do_present_length_varians()
         return
 
-
+    if args_helper.is_key_present(argv, "-start"):
+        __do_present_start_varians()
+        return

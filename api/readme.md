@@ -1,166 +1,131 @@
-# Setup
+# Resource: Videos  
 
-## To start
+## Get Video by URL
 
-1) Install Dependencies
-
-        $ npm install 
-
-2) Run Server 
-
-        $ port=8080 db_name="svt" db_url="mongodb://host:port/" npm start 
-
-
-# API
-
-## 1. Query Video Repository 
-
-Returns a list of videos and related video information. The maximum amount of videos returned in one query is 200 to scroll between them one can use the page operator. The limit operator restricts how many videos can be returned.
+Returns a json object containing video information. 
 
 #### HTTP Request
 
-    GET: "/videos"
-
-Example: ```/videos?show=vår tid är nu&season=1&prediction=true```
+    GET: "/videos/get/url"
 
 #### Query Parameters
 
-        &url=<string>  
-        &show=<string>
-        &show_id=<string>
-        &title=<string>
-        &season=<int>
-        &episode=<int>
-        &prediction=<bool>
-        &annotation=<bool>      
-        &limit=<int>
-        &page=<int>
+    BODY: { "url": "https://www.svtplay.se/video/24136938/exit/exit-avsnitt-1" }
 
 #### HTTP Response 
 
-    [{
+    {
         "downloaded": true,
+        "episode": 2,
         "introAnnotation": {
             "end": 222.0,
             "start": 209.5
         },
-        "introPrediction":{
-            "end": 220.0,
-            "start": 211.0
-        },
+        "introPrediction": null,
         "preprocessed": true,
         "season": 1,
-        "episode": 2,
         "show": "exit",
         "showId": "exit",
         "title": "Avsnitt 2",
         "url": "https://www.svtplay.se/video/24136954/exit/exit-avsnitt-2"
-    }]
-
----
-
-## 2. Set Intro 
-
-Allows for mannual annotation of intro sequences of videos matching the query arguments. Be careful to not override previously done work. The query argument must contain at least the video url or the show name or show id. 
-
-#### HTTP Request
-    POST: "/videos/set/intro"
-
-Example: ```/videos/set/intro?url=https://www.svtplay.se/video/24206422/var-tid-ar-nu/var-tid-ar-nu-sasong-3-vip```
-
-#### Query Parameters
-    &url=<string>   
-    &show=<string>
-    &show_id=<string>
-    &title=<string>
-    &season=<int>
-    &episode=<int>
-#### Content
-    BODY: { "start": <float>, "end": <float> }
-
----
-## 3. Request Intro Prediction 
-
-Requests the server to perform an intro prediction on videos with matching query arguments. Returns a service process instance with an unique id. The id can be used to periodically query for the result.
-
-#### HTTP Request
-    GET: "/request/predict-intro"
-    
-Example: ```/services/request/predict-intro?url=https://www.svtplay.se/video/23536930/allt-jag-inte-minns/allt-jag-inte-minns-sasong-1-avsnitt-1```
-
-#### Query Parameters
-    &url=<string>  
-
-#### HTTP Response 
-
-    {
-        "_id": "5e1a8d0dd1b9dc1008af6731",
-        "process": "predict-intro",
-        "args": [
-            "https://www.svtplay.se/video/23536930/allt-jag-inte-minns/allt-jag-inte-minns-sasong-1-avsnitt-1"
-        ],
-        "started": null,
-        "result": null,
-        "status": "pending",
-        "executionTime": 0,
-        "startDelay": 0
     }
 
 ---
-## 4. Query Service Processes 
 
-Returns requested service processes matching the query arguments. To extract a successful result simply poll the service-id and wait for the result to not be null. Notice that status has 4 different states: "pending", "working", "finished" and "halted". Halted indicating that the process was unexpectadly interrupted. 
+## Get All Videos 
 
-Calculating where the intro is may take a few seconds or a couple of minutes depending on how much preprocessing has been done on related videos of the same show and season.
+Returns all videos managed by the system. 
 
 #### HTTP Request
-    GET: "/services"
-    
-Example: ```/services?id=5e1a8c9b9e7286458c704010```
 
-#### Query Parameters
-    &id=<string>  
+    GET: "/videos/get/all"
 
-#### HTTP Response 
+#### HTTP Response
 
-    [{
-        "_id": "5e1a8c9b9e7286458c704010",
-        "process": "predict-intro",
-        "args": [
-            "https://www.svtplay.se/video/23536930/allt-jag-inte-minns/allt-jag-inte-minns-sasong-1-avsnitt-1"
-        ],
-        "started": "2020-01-12T03:03:55.694Z",
-        "result": {
-            "prediction": {
-                "start": 40.2,
-                "end": 116.7
-            }
+    {
+        "0": {
+            "downloaded": true,
+            "episode": 1,
+            "introAnnotation": {
+                "end": 115.0,
+                "start": 41.0
+            },
+            "introPrediction": null,
+            "preprocessed": true,
+            "season": 1,
+            "show": "allt jag inte minns",
+            "showId": "allt-jag-inte-minns",
+            "title": "Avsnitt 1",
+            "url": "https://www.svtplay.se/video/23536930/allt-jag-inte-minns/allt-jag-inte-minns-sasong-1-avsnitt-1"
         },
-        "status": "finished",
-        "executionTime": 6.333,
-        "startDelay": 0.033
-    }]
+        ...
+    }
 
 ---
 
-## 5. Rebuild Dataset 
+## Get Videos By Show (and Season) 
 
-This will retrain the model based on all existing annotated videos previously stored. Notice that this is a very long process and may take a few hours to complete. 
+Queries for videos by show id and optinally by season index. Example: `/videos/get/var-tid-ar-nu/1`
 
 #### HTTP Request
-    GET: "/services/request/rebuild"
+
+    GET: "/videos/get/<string:show_id>/<int:season>"
+
+#### HTTP Response
+
+    {
+        "0": { ... }, "1": { ... }, ...
+    }
+
+---
+
+## Annotate Video Intro 
+Allows for manual annotation of video intros. 
+
+#### HTTP Request
+
+    POST: "/videos/set/annotation/intro"
+
+#### Query Parameters
+
+    BODY: { 
+        "url": "https://www.svtplay.se/video/24136938/exit/exit-avsnitt-1" 
+        "start": 50.5,
+        "end": 65.0
+    }
     
 #### HTTP Response 
 
-    {
-        "_id": "rebuild",
-        "process": "rebuild",
-        "args": [
-            ""
-        ],
-        "requested": "2020-01-12T19:20:34.986Z",
-        "result": null,
-        "status": "working",
-        "startDelay": 0.001,
-        "executionTime": 12.185
+    { "success": True }
+
+## Get Video Prediction 
+Returns a prediction of a specified URL, if none exists this request may take some time to complete. 
+
+    GET: "/videos/get/prediction/intro"
+
+#### Query Parameters
+
+    BODY: { "url": "https://www.svtplay.se/video/24136938/exit/exit-avsnitt-1" }
+
+#### HTTP Response 
+
+    {   
+        "intro": {
+            "start": 50.0, "end": 70.0
+        }, 
+        "type": "introPrediction" (or "introAnnotation")
     }
+
+---
+
+## Rebuild Model
+
+Rebuilds the model with all the current annotated videos. 
+
+#### HTTP Request
+
+    POST: "/videos/rebuild"
+
+#### HTTP Response 
+
+  { "success": True }

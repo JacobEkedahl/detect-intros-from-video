@@ -15,19 +15,21 @@ module.exports = class VideosDao {
       * @param {*} limit 
       */
     static findByMultipleQueries(queryArray, page, limit) {
+        var query = {"$and": queryArray }
+        console.log(query)
         return new Promise(function (resolve, reject) {
             MongoClient.connect(URL, function(err, db) {
-                if (err) 
+                if (err) {
                     reject(err);
+                }
                 else {
-                    db.db(DBNAME).collection(collectionKey).find({
-                        "$and": queryArray 
-                    }).skip(page*limit).limit(limit).toArray(function (err, res) {
+                    db.db(DBNAME).collection(collectionKey).find(query).skip(page*limit).limit(limit).toArray(function (err, res) {
                         if (err) {
                             console.log(err);
                             resolve([]);
-                        }                       
-                        resolve(res);
+                        } else {
+                            resolve(res);
+                        }           
                     });
                 }
                 if (db !== null) db.close();

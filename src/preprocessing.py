@@ -46,6 +46,7 @@ def __annotate_intro(video, segments):
         return  
     start = datetime.now()
     annotate_intro.apply_annotated_intro_on_segments(segments, intro)
+    file_handler.save_to_video_file(video[PATH], "intro", intro)
     logging.info("intro annotation complete (%s), time taken: %s" % (intro, datetime.now()  - start))
 
 
