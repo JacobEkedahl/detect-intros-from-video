@@ -11,6 +11,7 @@ import file_handler
 import videoMerger
 from moviepy.editor import VideoFileClip
 
+MAXATTEMPS = 30
 
 def download_video(url):
     command = ["sh", "gui/lib/runSvtPlay.sh", "--config", "gui/lib/svtplay-dl.yaml", url, "--capture_time", "8"]
@@ -26,7 +27,7 @@ def download_video(url):
 
 def try_to_download(command):
     attemps = 0
-    while attemps < 3:
+    while attemps < MAXATTEMPS:
         try:
             output = subprocess.check_call(command) 
             return True
