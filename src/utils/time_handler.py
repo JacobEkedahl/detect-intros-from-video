@@ -50,15 +50,18 @@ def timestamp(time_string):
         hours = int(re.findall(r'(\d+):\d+:\d+,\d+', time_string)[0])
         minutes = int(re.findall(r'\d+:(\d+):\d+,\d+', time_string)[0])
         seconds = int(re.findall(r'\d+:\d+:(\d+),\d+', time_string)[0])
-        milliseconds = int(re.findall(r'\d+:\d+:\d+,(\d+)', time_string)[0])
+        milliseconds = re.findall(r'\d+:\d+:\d+,(\d+)', time_string)[0]
+        milliseconds = int('{:<03}'.format(milliseconds))
     elif '.' in time_string: 
         hours = int(re.findall(r'(\d+):\d+:\d+.\d+', time_string)[0])
         minutes = int(re.findall(r'\d+:(\d+):\d+.\d+', time_string)[0])
         seconds = int(re.findall(r'\d+:\d+:(\d+).\d+', time_string)[0])
         milliseconds = int(re.findall(r'\d+:\d+:\d+.(\d+)', time_string)[0])
+        milliseconds = int('{:<03}'.format(milliseconds))
     else:
         hours = int(re.findall(r'(\d+):\d+:\d+', time_string)[0])
         minutes = int(re.findall(r'\d+:(\d+):\d+', time_string)[0])
         seconds = int(re.findall(r'\d+:\d+:(\d+)', time_string)[0])
         milliseconds = 0
+        
     return (hours*3600 + minutes*60 + seconds) * 1000 + milliseconds
