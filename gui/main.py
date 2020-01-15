@@ -62,7 +62,8 @@ class App:
         # init frame for placing slider and video
         self.videoFrame = Frame(self.root)
         self.videoFrame.grid(row=1, column=0, padx=10, sticky=N+S+W+E)
-
+        pygame.mixer.init()
+        self.audioName = 'current.ogg'
         '''
         self.start = 10
         self.end = 44.5
@@ -74,12 +75,18 @@ class App:
         self.init_play_bar()
         '''
         
-    def load_audio(self):        
-        extract_audio.extract()
+    def load_audio(self):
         print("extracting")
-        pygame.mixer.init()
-        print("init pygame")
-        pygame.mixer.music.load("gui/temp/current.ogg")
+        newName = ''
+        if self.audioName == 'current.ogg':
+            newName = 'other.ogg'
+        else:
+            newName = 'current.ogg'
+
+        extract_audio.extract(newName)
+        pygame.mixer.music.load("gui/temp/" + newName)
+        file_handler.remove_audio(self.audioName)
+        self.audioName = newName
 
     def replace_text_in_box(self, text):
         self.txt.delete(0,END)
@@ -321,8 +328,12 @@ class App:
         url = self.txt.get()
         if not url.startswith("http") or "svtplay" not in url:
             self.replace_text_in_box('http')
-            print("not valid")
+            messagebox.showerror("Not a valid url")
             return
+
+        if '?start=auto' in url:
+            url = url.replace('?start=auto', '')
+            self.replace_text_in_box(url)
 
         self.url = url
         self.clear_video_frame()
@@ -440,8 +451,9 @@ class App:
         if submit_thread.is_alive():
             self.root.after(20, self.check_submit_thread)
         else:
-            self.extract()
+            time.sleep(3)
             print("done loading video")
+            self.extract()
             #progressbar.stop()
 
     # Will only display first frame of the video atm
