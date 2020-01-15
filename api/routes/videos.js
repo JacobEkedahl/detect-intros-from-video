@@ -2,9 +2,9 @@ var express = require('express');
 var router = express.Router();
 const VideosDao = require("../db/videos_dao");
 const constants = require("../db/constants");
-const PyWrapper = require("../python/exec_python")
 
-const DEFEAULT_LIMIT = 200
+
+const DEFEAULT_LIMIT = 100
 
 /**
  * Queries video repository by query arguments. Pages the query result and limits the fetched result to an amount specified by @DEFAULT_LIMIT 
@@ -30,16 +30,19 @@ router.get('/', function(req, res, next) {
   if (req.query.title !== undefined) 
     queries.push({[constants.TITLE]: req.query.title });
 
-  if (req.query.prediction !== undefined) 
-    queries.push({[constants.INTRO_PREDICTION]: { 
-      $exists:  req.query.prediction.toLowerCase() === 'true', $ne: null } 
-    }); // intro prediction exists 
+  if (req.query.prediction !== undefined)
+    if (req.query.prediction.toLowerCase() == "true")  {
+      queries.push({[constants.INTRO_PREDICTION]: { $ne: null } });
+    } else {
+      queries.push({[constants.INTRO_PREDICTION]: null }); 
+    }
 
   if (req.query.annotation !== undefined) 
-    queries.push({[constants.INTRO_ANNOTATION]: {
-      $exists:  req.query.annotation.toLowerCase() === 'true', $ne: null } 
-    }); // intro annotation exists 
-
+    if (req.query.annotation.toLowerCase() == "true")  {
+      queries.push({[constants.INTRO_ANNOTATION]: { $ne: null } });
+    } else {
+      queries.push({[constants.INTRO_ANNOTATION]: null }); 
+    }
   // Page operator    
   var page = 0
   if (req.query.page !== undefined) 
