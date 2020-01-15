@@ -18,6 +18,11 @@ def get_all_unmerged_files():
             files.append(FileInfo(fileName, audioName, videoName ))
     return files
 
+def remove_audio(ending):
+    files = glob.glob(TEMPFOLDERNAME + '/*' + ending)
+    for f in files:
+        os.unlink(f)
+
 def clear_temp():
     files = glob.glob(TEMPFOLDERNAME + '/*')
     for f in files:
