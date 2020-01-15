@@ -14,7 +14,7 @@ from utils import constants, file_handler
 import seaborn; seaborn.set_style('whitegrid')
 seed = constants.START_SEED
 
-DATAFOLDERNAME = "model"
+DATAFOLDERNAME = constants.TEMP_FOLDER_PATH
 HMMMODEL = "hmm.json"
 
 
