@@ -17,11 +17,8 @@
     "http-errors": "^1.7.3",
     "mongodb": "^3.3.3",
     "morgan": "~1.9.1",
-    "node-cache": "^5.1.0",
-    "node-fetch": "^2.6.0",
     "pug": "^2.0.4",
     "python-shell": "^1.0.8",
-    "semaphore": "^1.1.0",
-    "sleep": "^6.1.0"
+    "semaphore": "^1.1.0"
   }
 }

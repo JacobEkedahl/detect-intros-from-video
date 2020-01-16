@@ -48,7 +48,9 @@ def __do_present_start_varians():
 
     # Iterate through all ordered videos 
     startList = []
+    showCount = 0
     for show in dictVideos:
+        showCount = showCount + 1
         print("\n%s" % show)
         for season in dictVideos[show]:
             startListSeason = []
@@ -67,7 +69,8 @@ def __do_present_start_varians():
                 print("Start avg:     %f" % statistics.mean(startListSeason))
                 print("Start median:   %f" % statistics.median(startListSeason))
                 print("Start stdev:   %f" % statistics.stdev(startListSeason))
-
+    print("Show count: %d" % showCount)
+    print("Video count: %d" % len(videos))
 
 
 def __do_present_length_varians():

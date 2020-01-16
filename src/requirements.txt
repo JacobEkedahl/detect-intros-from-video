@@ -7,7 +7,6 @@ opencv-python
 Click
 tqdm        
 pathlib
-opencv-python
 scikit-image
 matplotlib
 ImageHash
