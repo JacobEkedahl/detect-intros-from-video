@@ -47,13 +47,18 @@ def __segment_all_scendetect(forced):
                 scenedetector.detect_scenes(file)
     print("Scendetection was used on %d/%d files." % (count, len(files)))
 
+def __scendetect_entire__dataset():
+    for video in video_repo.find_all_with_intro_annotation():
+        __segment_scendetect(video[video_repo.FULL_PATH_KEY])
+        
+
 def __segment_scendetect(video_file):
     scenedetector.detect_scenes(video_file)
 
 # Compares the scenes with the annotated intro to determine the margin of error between when scene breaks and intro sequence 
 def __get_compare_scenes_to_intro(url, scenes, startStr, endStr):
-    introStart = time_handler.timestamp(startStr)
-    introEnd = time_handler.timestamp(endStr)
+    introStart = startStr
+    introEnd = endStr
     firstScene = None 
     lastScene = None 
     found = False 
@@ -104,20 +109,31 @@ def __get_compare_scenes_to_intro(url, scenes, startStr, endStr):
         'endError': endError,
     }
 
-def __create_scendetect_intro_stats():
+def __get_scenedetect_intro_stats():
     annotatedVideos = video_repo.find_all_with_intro_annotation()
     hasScenesCount = 0
     data = []
     for video in annotatedVideos:
-        if KEY_SCENES in video:
-            hasScenesCount = hasScenesCount + 1
-            intro = video[video_repo.INTRO_ANNOTATION_KEY]
-            result = __get_compare_scenes_to_intro(video['url'], video[KEY_SCENES], intro['start'], intro['end'])
-            if result: 
-                data.append(result)
+        # Premature break as part of the dataset is not fully annotated anymore
+        if "frals-oss-ifran-ondo" in video[video_repo.SHOW_ID_KEY]:
+            break 
+        
+        try: 
+            video_json = file_handler.load_from_video_file(video[video_repo.FULL_PATH_KEY])
+        
+            if KEY_SCENES in video_json:
+                hasScenesCount = hasScenesCount + 1
+                
+                intro = video[video_repo.INTRO_ANNOTATION_KEY]
 
-    with open(SCENEDETECT_STATS_FILE, 'w') as outfile:
-        json.dump(data, outfile, indent=4, sort_keys=False)
+                result = __get_compare_scenes_to_intro(video['url'], video_json[KEY_SCENES], intro['start'], intro['end'])
+                if result: 
+                    print(result)
+        except:
+            print("Exception")
+
+
+    exit()
 
     print("Processed from annotated set: %d/%d\nSegment the remainder to improve the coverage." % (hasScenesCount, len(annotatedVideos)))
 
@@ -180,6 +196,7 @@ def __display_scendetect_stats(startFilter, endFilter):
 
 
 def execute(argv):
+
     if args_helper.is_key_present(argv, "-all"):
         if args_helper.is_key_present(argv, "-force"):
             __segment_all_scendetect(True)
@@ -192,8 +209,12 @@ def execute(argv):
         return 
         
     if args_helper.is_key_present(argv, "-stats"):
-        __create_scendetect_intro_stats()
+
+        __get_scenedetect_intro_stats()
         
+
+        exit()
+
         startFilter = ""
         index = args_helper.get_key_index_first(argv, ["-sf", "-startfilter"])
         if index != -1 and index + 2 < len(argv):

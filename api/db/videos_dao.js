@@ -16,7 +16,6 @@ module.exports = class VideosDao {
       */
     static findByMultipleQueries(queryArray, page, limit) {
         var query = {"$and": queryArray }
-        console.log(query)
         return new Promise(function (resolve, reject) {
             MongoClient.connect(URL, function(err, db) {
                 if (err) {
@@ -26,13 +25,12 @@ module.exports = class VideosDao {
                     db.db(DBNAME).collection(collectionKey).find(query).skip(page*limit).limit(limit).toArray(function (err, res) {
                         if (err) {
                             console.log(err);
-                            resolve([]);
                         } else {
                             resolve(res);
                         }           
                     });
                 }
-                if (db !== null) db.close();
+                if (db !== null && db) db.close();
             });
         });
     }

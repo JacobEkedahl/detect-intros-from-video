@@ -41,7 +41,7 @@ DEFAULT_START_TIME      = 0.0        # 00:00:00.30
 DEFAULT_END_TIME        = constants.VIDEO_START_LEN + 0.30
 DOWNSCALE_FACTOR        = constants.DOWNSCALE_FACTOR
 DATA_KEY                = 'sd_scenes'
-SAVE_TO_FILE = constants.SAVE_TO_FILE 
+SAVE_TO_FILE = True
 PRINT_OUTPUT = False 
 
 

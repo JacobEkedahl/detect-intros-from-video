@@ -21,7 +21,7 @@ INTRO_PREDICTION_DB = video_repo.INTRO_PREDICTION_KEY
 
 START = "start"
 END = "end"
-
+USE_HMM = False 
 
 def __get_intro_annotation(video):
     if INTRO_ANNOTATION_DB in video: 
@@ -51,8 +51,9 @@ def __find_adjacent_videos(inputVideo):
 
 def __compare_video(video):
     start = datetime.now()
-    video_matcher.find_all_matches(video[PATH_DB])
+    foundMatches = video_matcher.find_all_matches(video[PATH_DB])
     logging.info("Video comparison complete, time taken: %s" % (datetime.now()  - start))
+    return foundMatches
 
 
 def __make_time_interval_human_readable(timeInterval):
@@ -104,8 +105,10 @@ def get_video_prediction(targetVideo):
         if targetVideo[URL_DB] == video[URL_DB]:
             targetVideo = video 
 
-    __compare_video(targetVideo)
-    predictions = __predict_video(targetVideo)
+    predictions = __compare_video(targetVideo)
+    
+    if USE_HMM: 
+        predictions = __predict_video(targetVideo)
 
     logging.info("%s\nPrediction: %s\nAnnotation: %s\n" % (
         targetVideo[URL_DB], 

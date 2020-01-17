@@ -23,6 +23,7 @@ import annotations.dataset_annotation as dataset_annotation
 import utils.time_handler as time_handler
 import annotations.dataset_annotation as dataset_annotation
 import db.dataset_manager as dataset_manager
+import matplotlib.pyplot as plt
 
 SHOW = "show"
 SEASON = "s"
@@ -85,10 +86,15 @@ def __do_present_length_varians():
             dictVideos[show][season] = []
         dictVideos[show][season].append(video)
 
+    result = {}
+
     # Iterate through all ordered videos 
     lengthList = []
+    index = 0
+    totalShowVariance = []
     for show in dictVideos:
         print("\n%s" % show)
+        lengthShow = []
         for season in dictVideos[show]:
             print("%02d\n" % season)
             lengthSeason = []
@@ -99,12 +105,48 @@ def __do_present_length_varians():
                 length = intro['end'] - intro['start']
                 lengthList.append(length)
                 lengthSeason.append(length)
+                lengthShow.append(length)
                 print("%s\t%f" % (video['url'], length))
+            
+            
             if len(lengthSeason) > 1:    
                 print("Length avg:     %f" % statistics.mean(lengthSeason))
                 print("Length median:  %f" % statistics.median(lengthSeason))
                 print("Length stdev:   %f" % statistics.stdev(lengthSeason))
+                print("Season variance:   %f" % statistics.variance(lengthSeason))
 
+        if len(lengthShow):
+            variance = statistics.variance(lengthShow)
+            result[str(index)] = { "variance": variance }
+            index = index + 1
+            totalShowVariance.append(variance)
+
+    excluded = 0
+    variansResult = []
+    for i in result: 
+        var = result[str(i)]["variance"]
+        if var >= 5:
+            excluded = excluded + 1
+            print("excluded: %f" % var)
+        else:
+            variansResult.append(var)
+
+
+    avg_var = statistics.mean(variansResult)
+    print("Average variance: %f " % avg_var)
+    stdev_var = statistics.stdev(variansResult)
+    print("stdev variance: %f " % stdev_var)
+    
+    print("Excluded: %d, %f" % (excluded, excluded/len(result)))
+    # Plot show variance
+
+    plt.xlabel('Length variance') 
+    plt.ylabel('Number of shows')
+    plt.grid(True)
+    plt.hist(totalShowVariance, bins=60, fc='blue')
+    plt.show()
+
+        
 
 def __do_manual_annotation(argv):
     start = ""

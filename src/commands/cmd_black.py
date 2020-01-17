@@ -115,6 +115,7 @@ def execute(argv):
       
     file = args_helper.get_value_after_key(argv, "-input", "-i")
     if file != "" and ".mp4" in file: 
-        black.detect_blackness(file)
+        blackSequences, blackFrames = black.detect_blackness(file)
+        print(blackSequences)
         return 
     
