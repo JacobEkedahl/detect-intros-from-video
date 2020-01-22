@@ -91,17 +91,17 @@ def __do_present_length_varians():
     # Iterate through all ordered videos 
     lengthList = []
     index = 0
+    excluded = 0 
     totalShowVariance = []
     for show in dictVideos:
         print("\n%s" % show)
+        continue 
         lengthShow = []
         for season in dictVideos[show]:
             print("%02d\n" % season)
             lengthSeason = []
             for video in dictVideos[show][season]:
                 intro = video[video_repo.INTRO_ANNOTATION_KEY]
-                if intro['start'] == intro['end']:
-                    continue 
                 length = intro['end'] - intro['start']
                 lengthList.append(length)
                 lengthSeason.append(length)
@@ -110,38 +110,48 @@ def __do_present_length_varians():
             
             
             if len(lengthSeason) > 1:    
-                print("Length avg:     %f" % statistics.mean(lengthSeason))
-                print("Length median:  %f" % statistics.median(lengthSeason))
-                print("Length stdev:   %f" % statistics.stdev(lengthSeason))
+                print("Length S avg:     %f" % statistics.mean(lengthSeason))
+                print("Length S median:  %f" % statistics.median(lengthSeason))
+                print("Length S stdev:   %f" % statistics.stdev(lengthSeason))
                 print("Season variance:   %f" % statistics.variance(lengthSeason))
-
+                var = statistics.variance(lengthSeason)
+                if var < 30: 
+                    totalShowVariance.append(var) 
+                else:
+                    excluded = excluded + 1
         if len(lengthShow):
             variance = statistics.variance(lengthShow)
             result[str(index)] = { "variance": variance }
             index = index + 1
-            totalShowVariance.append(variance)
-
-    excluded = 0
-    variansResult = []
-    for i in result: 
-        var = result[str(i)]["variance"]
-        if var >= 5:
-            excluded = excluded + 1
-            print("excluded: %f" % var)
-        else:
-            variansResult.append(var)
-
-
-    avg_var = statistics.mean(variansResult)
-    print("Average variance: %f " % avg_var)
-    stdev_var = statistics.stdev(variansResult)
-    print("stdev variance: %f " % stdev_var)
+            #totalShowVariance.append(variance) 
     
-    print("Excluded: %d, %f" % (excluded, excluded/len(result)))
+    print("EXCLUDED: %d/%d " % (excluded, len(totalShowVariance) + excluded) )
+
+    #variansResult = []
+    #for i in result: 
+    #    var = result[str(i)]["variance"]
+        #if var >= 5:
+        #    excluded = excluded + 1
+         #   print("excluded: %f" % var)
+        #else:
+   #     variansResult.append(var)
+
+
+    print("TOTAL!")
+    print("Length avg:     %f" % statistics.mean(lengthList))
+    print("Length median:  %f" % statistics.median(lengthList))
+    print("Length stdev:   %f" % statistics.stdev(lengthList))
+
+    #avg_var = statistics.mean(variansResult)
+    #print("Average variance: %f " % avg_var)
+    #stdev_var = statistics.stdev(variansResult)
+    #print("stdev variance: %f " % stdev_var)
+    
+    print("Excluded: %d, %f" % (excluded, excluded/(len(result) + excluded)))
     # Plot show variance
 
     plt.xlabel('Length variance') 
-    plt.ylabel('Number of shows')
+    plt.ylabel('Number of seasons')
     plt.grid(True)
     plt.hist(totalShowVariance, bins=60, fc='blue')
     plt.show()

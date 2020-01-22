@@ -29,7 +29,7 @@ if __name__ == "__main__":
     # Because logging is separated into 3 files: prediction.py, rebuild.py and preprocessing.py no log configurations can be in main for those commands. 
     # 
     file_handler.create_folderstructure_if_not_exists()
-
+    
     if (len(s.argv) - 1 < 1):
         print("need more arguments! (--dlv --file nameOfTxtFile numberOfEpisodes)")
         exit()
