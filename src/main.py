@@ -98,7 +98,7 @@ if __name__ == "__main__":
                 print("similarity result: " + str(result))
  
     elif (s.argv[1] == "--dlv"):
-        svtplaywrapper.download_video("https://www.svtplay.se/video/24993622/leif-och-billy/leif-och-billy-sasong-4-avsnitt-6")
+        svtplaywrapper.download_video("https://www.svtplay.se/video/13057343/bonusfamiljen/bonusfamiljen-sasong-1-avsnitt-10")
 
     elif (s.argv[1] == "--seg"):
         cmd_segment.execute(s.argv)

@@ -91,6 +91,8 @@ def get_video_prediction(targetVideo):
     count_failure = 0
     for video in __find_adjacent_videos(targetVideo):
         if not (PREPROCESSED_DB in video and video[PREPROCESSED_DB]):
+        
+            logging.error("not preprocessed video")
             try: 
                 result = preprocessing.preprocess_video(video)
                 if not result: 

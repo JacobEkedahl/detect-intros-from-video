@@ -29,7 +29,6 @@ PREDICTIONURL = BASEURL + "/videos/get/prediction/intro"
 ALLVIDEOSURL = BASEURL + '/videos/get/all'
 SETINTROURL = BASEURL + "/videos/set/annotation/intro"
 
-#"gui/temp/al-pitcher-pa-paus.s01e01.avsnitt-1-converted.mp4"
 class App:
     def __init__(self, root, window_title):
         #clear temp of old downloads, or missdownloads
@@ -64,16 +63,6 @@ class App:
         self.videoFrame.grid(row=1, column=0, padx=10, sticky=N+S+W+E)
         pygame.mixer.init()
         self.audioName = 'current.ogg'
-        '''
-        self.start = 10
-        self.end = 44.5
-        self.predicted_start = 9.5
-        self.predicted_end = 44
-        self.set_new_video()
-        self.init_slider()
-        self.display(self.start)
-        self.init_play_bar()
-        '''
         
     def load_audio(self):
         print("extracting")
@@ -347,22 +336,30 @@ class App:
         headers = {'Content-type': 'application/json'}
         r = requests.post(PREDICTIONURL, data=json.dumps(params), headers=headers)
         data = r.json()
+        self.start = None
+        self.end = None
+        self.predicted_start = None
+        self.predicted_end = None
+
         try:
-            typeOfResponse = data["type"]
-            intro = data["intro"]
-            if typeOfResponse == "introPrediction":
-                print("introprediction")
-                self.start = intro["start"]
-                self.end = intro["end"]
-                self.predicted_start = intro["start"]
-                self.predicted_end = intro["end"]
-            else:
-                print("annotation")
-                self.start = intro["start"]
-                self.end = intro["end"]
-                self.predicted_start = intro["start"]
-                self.predicted_end = intro["end"]
-        except:
+            for intro in data["intros"]:
+                typeOfResponse = intro["type"]
+                start_end = intro["intro"]
+                print(start_end)
+                if typeOfResponse == "introPrediction":
+                    print("introprediction")
+                    self.predicted_start = start_end["start"]
+                    self.predicted_end = start_end["end"]
+                else:
+                    print("annotation")
+                    self.start = start_end["start"]
+                    self.end = start_end["end"]
+
+            if not self.start:
+                self.start = self.predicted_start
+                self.end = self.predicted_end
+        except Exception as e:
+            print(e)
             self.start = 0
             self.end = 5
             self.predicted_start = 0
@@ -454,7 +451,6 @@ class App:
             time.sleep(3)
             print("done loading video")
             self.extract()
-            #progressbar.stop()
 
     # Will only display first frame of the video atm
     def display(self, seconds):

@@ -18,6 +18,7 @@ pomegranate
 seaborn
 schedule
 flask
+scikit-learn
 
 
 

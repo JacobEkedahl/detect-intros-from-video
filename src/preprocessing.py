@@ -2,21 +2,21 @@
     Calling preprocessing.start_schedule() will scrape all videos from svtplay and begin the preprocessing process inbetween the allocated time window defined in constants. 
 """
 
-import logging 
-import time 
-from datetime import datetime, date
-import schedule 
-import multiprocessing
 import logging
+import multiprocessing
 import os
+import time
+from datetime import date, datetime
 
-from utils import constants, file_handler 
-import db.video_repo as video_repo 
-import downloader.scrapesvt as scraper 
-import downloader.svtplaywrapper as dl 
+import db.video_repo as video_repo
+import downloader.scrapesvt as scraper
+import downloader.svtplaywrapper as dl
+import schedule
+from annotations import (annotate, annotate_black, annotate_intro,
+                         annotate_scenes)
+from frame_matcher import video_matcher, video_to_hashes
 from segmenter import blackdetector, scenedetector, simple_segmentor
-from annotations import annotate_black, annotate_scenes,annotate, annotate_intro
-from frame_matcher import video_to_hashes, video_matcher
+from utils import constants, file_handler
 
 START_WORK = constants.SCHEDULED_PREPROCESSING_START
 END_WORK = constants.SCHEDULED_PREPROCESSING_END
@@ -104,6 +104,7 @@ def preprocess_video(video):
 
     initStart = datetime.now()
     logging.info("\n---\nPreprocessing of %s started at: %s", video[URL], initStart)
+    logging.error("is video downloaded " + str(video[WAS_DL]))
     # if video was not downloaded --> download
     if not video[WAS_DL]:
         result = __download_video(video)
@@ -202,4 +203,3 @@ def start_schedule():
     while True:
         schedule.run_pending()
         time.sleep(PENDING_CHECK_INTERVAL)
-

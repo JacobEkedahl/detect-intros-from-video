@@ -1,10 +1,10 @@
-from flask import Flask, request, jsonify, render_template, abort
-import json 
-import logging 
+import json
+import logging
 
-import db.video_repo as video_repo 
+import db.video_repo as video_repo
 import predicting
 import rebuild
+from flask import Flask, abort, jsonify, render_template, request
 
 app = Flask(__name__)
 DEBUG_ON = False 
@@ -156,14 +156,24 @@ def get_video_prediction():
                 video = video_repo.find_by_url(data[URL_DB])
                 if video is not None:
                     if INTRO_ANN_DB in video and video[INTRO_ANN_DB] is not None: 
-                        return __response(OK, {
-                            "intro": video[INTRO_ANN_DB],
-                            "type": INTRO_ANN_KEY
-                        })
-                    return __response(OK, {
-                        "intro": predicting.get_video_prediction(video),
-                        "type": INTRO_PRED_KEY
-                    })
+                        return __response(OK, 
+                        {"intros": [
+                            {
+                                "intro": video[INTRO_ANN_DB],
+                                "type": INTRO_ANN_KEY
+                            },
+                            {
+                                "intro": predicting.get_video_prediction(video),
+                                "type": INTRO_PRED_KEY
+                            }
+                        ]})
+                    return __response(OK, 
+                    {"intros": [
+                        {
+                            "intro": predicting.get_video_prediction(video),
+                            "type": INTRO_PRED_KEY
+                        }
+                    ]})
                 return __response(NOT_FOUND, {"success": False, "message": NO_MATCHING_URL})
             except Exception as e:
                 logging.exception(e)
@@ -186,4 +196,3 @@ def start():
     logging.getLogger().setLevel(logging.DEBUG)
 
     app.run(debug=DEBUG_ON, threaded=True)
-    

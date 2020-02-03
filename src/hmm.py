@@ -4,14 +4,16 @@ import random
 import statistics
 import sys as s
 
+import matplotlib.mlab as mlabnorm
 import matplotlib.pyplot as plt
-import numpy
+import scipy
 
+import seaborn as sns
 from pomegranate import *
+from sklearn.metrics import r2_score
 from stats import prob_calculator
 from utils import constants, file_handler
 
-import seaborn; seaborn.set_style('whitegrid')
 seed = constants.START_SEED
 
 DATAFOLDERNAME = constants.TEMP_FOLDER_PATH
@@ -55,6 +57,7 @@ def get_prediction(video_file):
                     entry.append(0)
             else:
                 entry.append(None)
+                
             if 'matches_intro' in scene:
                 if scene['matches_intro'] == True:
                     entry.append(1)
@@ -62,6 +65,7 @@ def get_prediction(video_file):
                     entry.append(0)
             else:
                 entry.append(None)
+                
             current_scenes.append(numpy.array(entry))
     hmm_predictions = model.predict(current_scenes)
     seq_pred = find_sequences_result(hmm_predictions)
@@ -77,7 +81,10 @@ def get_model(obs, labels):
                                             X=obs,
                                             labels=labels,
                                             state_names=["intro", "non"],
-                                            algorithm='labeled')
+                                            algorithm='viterbi',
+                                            verbose=True)
+
+
 
 
 def evaluate():
@@ -85,18 +92,53 @@ def evaluate():
     total_end = []
     curr_no_pred = []
     single_pred_list = []
+
+    pred_start_list = []
+    pred_end_list = []
+    res_start_list = [] 
+    res_end_list = [] 
+
+    res_end = []
+    true_pos = 0
+    true_neg = 0
+    false_pos = 0
+    false_neg = 0
+
     for i in range(10):
         global seed
         seed = i+3
-        start_err, end_err, fraq_pred, single_pred = startHMM()
+        start_err, end_err, fraq_pred, single_pred, true_positives, true_negatives, false_positives, false_negative, pred_start, pred_end, res_start, res_end = startHMM()
         total_start.extend(start_err)
         total_end.extend(end_err)
         single_pred_list.append(single_pred)
         curr_no_pred.append(fraq_pred)
+        true_pos += true_positives
+        true_neg += true_negatives
+        false_pos += false_positives
+        false_neg += false_negative
+        pred_start_list.extend(pred_start)
+        pred_end_list.extend(pred_end)
+        res_start_list.extend(res_start)
+        res_end_list.extend(res_end)
     print("end result:")
     print("fraq success pred: " + str(statistics.mean(curr_no_pred)))
     print("fraq single pred: " + str(statistics.mean(single_pred_list)))
-    evaluate_result(total_start, total_end)
+    evaluate_result(total_start, total_end, pred_start_list, pred_end_list, res_start_list, res_end_list)
+    evalute_classification(true_pos, true_neg, false_pos, false_neg)
+    plot_error_margin(pred_start_list, pred_end_list, res_start_list, res_end_list)
+
+def evalute_classification(true_pos, true_neg, false_pos, false_neg):
+    ppv  = true_pos/(true_pos + false_pos)
+    tpr = true_pos/(true_pos + false_neg)
+    acc = (true_pos + true_neg) / ((true_pos + true_neg) + (false_pos + false_neg))
+    print("true pos: " +  str(true_pos))
+    print("true_neg: " +  str(true_neg))
+    print("false_pos: " +  str(false_pos))
+    print("false_neg: " +  str(false_neg))
+    print("ppv: " +  str(ppv))
+    print("tpr: " +  str(tpr))
+    print("acc: " +  str(acc))
+    
 
 def get_dataset_for_hmm():
     segFiles = []
@@ -121,6 +163,7 @@ def get_dataset_for_hmm():
                             entry.append(0)
                     else:
                         entry.append(None)
+                        
                     if 'matches_intro' in scene:
                         if scene['matches_intro'] == True:
                             entry.append(1)
@@ -128,6 +171,7 @@ def get_dataset_for_hmm():
                             entry.append(0)
                     else:
                         entry.append(None)
+                        
 
                     current_scenes.append(numpy.array(entry))
                     if not scene['intro']:
@@ -163,12 +207,22 @@ def startHMM():
     trainX, trainY = obs[:len_of_training], labels[:len_of_training]
     testX, testY = obs[-len_of_test:], labels[-len_of_test:]
     model = get_model(trainX, trainY)
+
+    true_positives = 0
+    true_negatives = 0
+    false_positives = 0
+    false_negative = 0
+
+    res_start = []
+    pred_start = []
+    res_end = []
+    pred_end = []
     
     matched_seq = []
     for i in testX:
         temp = []
         for x in i:
-            temp.append(x[1])
+            temp.append(x[0])
         matched_seq.append(temp)
 
     diff_start = []
@@ -180,56 +234,158 @@ def startHMM():
         test = testX[test_i]
         result = testY[test_i]
         seq = numpy.array(test)
-        hmm_predictions = model.predict(seq)
+        hmm_predictions = model.predict(sequence=seq, algorithm='viterbi')
         seq_real = find_sequences(result)
-        try:
+        one_res = []
+        if seq_real:
             one_res = seq_real[0]
+        try:
             seq_pred = find_sequences_result(hmm_predictions)
             seq_pred = clean_sequences(seq_pred)
             closest_pred = {}
-            dist = 1000000
+            dist = 44.5
             dist_end = 10
             predictions += 1
-            
-            if len(seq_pred) != 0:
-                if len(seq_pred) == 1:
+
+            if len(seq_pred) == 0 and len(one_res) == 0:
+                print("success pred")
+                true_negatives += 1
+                single_pred += 1
+                dist = 0
+                dist_end = 0
+            else:
+                if len(one_res) == 0:
+                    print(str(seq_pred))
                     single_pred += 1
-            else:
-                continue
+                    dist = 30
+                    dist_end = 30
+                    
 
-            for pre in seq_pred:
-                diff = abs(pre["start"] - one_res["start"])
-                if diff < dist:
-                    dist_end = abs(pre["end"] - one_res["end"])
-                    closest_pred = pre
-                    dist = diff
+                elif len(seq_pred) >= 1: 
+                    best_start_pred = 0
+                    best_end_pred = 0
+                    avg_length = one_res['end'] - one_res['start']
+                    print(avg_length)
 
-            if dist + dist_end > 20:
-                print("real: " + str(one_res['start']) + " - " + str(one_res["end"]) + ", pred: " + str(seq_pred))
-            else:
-                no_pred += 1
-                diff_start.append(dist)
-                diff_end.append(dist_end)
-        except:
+                    if len(seq_pred) == 1:
+                        closest_pred = seq_pred[0]
+                        single_pred += 1
+                    else:
+                        margin_to_avg = 10000000
+                        for pre in seq_pred:
+                            length_pred = abs(pre['end'] - pre['start'])
+                            diff_length = abs(avg_length - length_pred)
+                            if diff_length < margin_to_avg:
+                                margin_to_avg = diff_length
+                                closest_pred = pre
+
+                    dist = abs(closest_pred["start"] - one_res["start"])
+                    dist_end = abs(closest_pred["end"] - one_res["end"])
+                    best_start_pred = closest_pred["start"]
+                    best_end_pred = closest_pred["end"]
+
+                    pred_start.append(best_start_pred)
+                    pred_end.append(best_end_pred)
+                    if one_res:
+                        res_start.append(one_res["start"])
+                        res_end.append(one_res["end"])
+
+              #  print(str(len(pred_start)) + " - " + str(len(res_start)) + " => " + str(pred_start[len(pred_start) -1]) + ":" + str(res_start[len(res_start) -1]))
+              #  print(str(one_res) + " - " + str(seq_pred))
+        #     print(str(len(pred_end)) + " - " + str(len(res_end)) + " => " + str(pred_start[len(pred_end) -1]) + ":" + str(res_start[len(res_end) -1]))
+                if dist + dist_end > 20:
+                    predVal = '0 - 0'
+                    startOneRes = '0'
+                    endOneRes = '0'
+
+                    if not seq_real:
+                        false_positives +=1
+                    elif not seq_pred:
+                        false_positives +=1
+                    else:
+                        false_negative += 1
+
+                    if seq_pred:
+                        predVal = str(seq_pred)
+                    if one_res:
+                        startOneRes = str(one_res['start'])
+                        endOneRes = str(one_res["end"])
+                    print("real: " + startOneRes + " - " + endOneRes + ", pred: " + predVal)
+                else:
+                    if seq_real or seq_pred: # wont happen
+                        true_positives += 1
+                    no_pred += 1
+                    diff_start.append(dist)
+                    diff_end.append(dist_end)
+        except Exception as e:
             print("no true result in this one")
+            print(e)
+            raise e
             
-    evaluate_result(diff_start, diff_end)
+    print(str(len(pred_start)) + " - " + str(len(res_start)))
+    print(str(len(pred_end)) + " - " + str(len(res_end)))
+    evaluate_result(diff_start, diff_end, pred_start, pred_end, res_start, res_end)
+    evalute_classification(true_positives, true_negatives, false_positives, false_negative)
     fraq_no_pred = no_pred / predictions
     freq_single_pred = single_pred / predictions
     print("fraq: " + str(fraq_no_pred))
-    return diff_start, diff_end, fraq_no_pred, freq_single_pred
+    return diff_start, diff_end, fraq_no_pred, freq_single_pred, true_positives, true_negatives, false_positives, false_negative, pred_start, pred_end, res_start, res_end
 
-def evaluate_result(start_err, end_err):
+def evaluate_result(start_err, end_err, pred_start, pred_end, res_start, res_end):
     avg_start = statistics.mean(start_err)
     avg_end = statistics.mean(end_err)
     med_start = statistics.median(start_err)
     med_end = statistics.median(end_err)
     std_start = statistics.stdev(start_err)
     std_end = statistics.stdev(end_err)
+    r2_start = r2_score(res_start, pred_start)
+    r2_end = r2_score(res_end, pred_end)
+
     print("avg start err: " + str(avg_start) + ", avg end err: " + str(avg_end))
     print("median start err: " + str(med_start) + ", median end err: " + str(med_end))
     print("std start err: " + str(std_start) + ", std end err: " + str(std_end))
+    print("r2 start: " + str(r2_start) + ", r2 end: " + str(r2_end))
 
+def get_margin(pred_list_start, pred_list_end, real_list_start, real_list_end ):
+    margin_start_list = []
+    margin_end_list = []
+    correct_predictions = 0
+    for i in range(len(pred_list_start)):
+        margin_start = pred_list_start[i]- real_list_start[i]
+        margin_end = pred_list_end[i]- real_list_end[i]
+        if abs(margin_start) + abs(margin_end) <= 20:
+            margin_start_list.append(margin_start)
+            margin_end_list.append(margin_end)
+            correct_predictions += 1
+    fraq = correct_predictions / len(pred_list_end)
+    return margin_start_list, margin_end_list, fraq
+
+def plot_error_margin(pred_start, pred_end, res_start, res_end):
+    xstart, xend, fraq = get_margin(pred_start, pred_end, res_start, res_end)
+    xlabels = [xstart, xend]
+
+    colors = ['blue', 'orange']
+    x_title = 'Prediction margin (Seconds)'
+    y_title = 'Probability'
+    titles = ['Start Prediction - Margin of error','End Prediction - Margin of error']
+    fig, axs = plt.subplots(1, 2)
+    axs = axs.ravel()
+    
+    for idx, ax in enumerate(axs):        
+        x = xlabels[idx]
+        (mu, sigma) = scipy.stats.norm.fit(x)
+        print(str(mu))
+        n, bins, patches = ax.hist(xlabels[idx], 60, normed=1, facecolor=colors[idx], alpha=0.75)
+        y = scipy.stats.norm.pdf( bins, mu, sigma)
+
+        ax.plot(bins, y, 'r--', linewidth=2)
+        ax.set_title(titles[idx],fontsize=10)
+        ax.set_xlabel(x_title)
+        ax.set_ylabel(y_title)
+        ax.grid()
+        
+    plt.tight_layout()
+    plt.show()
 
 def find_sequences_result(list_of_ones_and_zeroes):
     found_one = False
@@ -269,9 +425,13 @@ def find_sequences(list_of_ones_and_zeroes):
             curr_seq = {}
     if "end" in curr_seq:
         result.append(curr_seq)
-    if len(result) == 0:
-        print("no result in seq")
     return result
+
+def min_length_sequence(seq):
+    return abs(seq['end'] - seq['start']) > 3
+
+def remove_short_prediction(sequences):
+    return [seq for seq in sequences if min_length_sequence(seq)]
 
 def clean_sequences(sequences):
     newSeq = []
@@ -285,9 +445,9 @@ def clean_sequences(sequences):
                 else:
                     break
             newSeq.append(curr)
-        return newSeq
+        return remove_short_prediction(newSeq)
     else:
-        return sequences
+        return remove_short_prediction(sequences)
 
 if __name__ == "__main__":
     if len(s.argv) > 1:

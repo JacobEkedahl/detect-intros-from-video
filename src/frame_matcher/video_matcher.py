@@ -5,9 +5,10 @@
 # The algorithm used is called hashing                                      #
 
 import json
+import logging
 import pprint
 import statistics
-import logging 
+
 import imagehash
 from PIL import Image
 
@@ -39,9 +40,20 @@ def __intro_has_changed(videofile, newIntro):
         return False 
     return True 
 
+def find_all_matches(file_A):  
+    video_A = str(file_A)    
+    intro_median, matches, matches_intro = get_matches(video_A) 
+    if len(intro_median) != 0 and matches_intro is not None:
+        sequences_intro = get_best_intro(matches_intro)
+        if sequences_intro is not None:
+            ann.annotate_meta_data(sequences_intro, c.DESCRIPTION_MATCHES_INTRO, video_A)
 
-def find_all_matches(file_A):
-    video_A = str(file_A)
+    best_seq = get_best_intro(matches)
+    if best_seq is not None:
+        ann.annotate_meta_data(best_seq, c.DESCRIPTION_MATCHES, video_A)
+    return best_seq
+
+def get_matches(video_A):
     other_files_same_series = file_handler.get_neighboring_videos(video_A)
     matches = {}
     matches_intro = {}
@@ -50,19 +62,18 @@ def find_all_matches(file_A):
     intro_start_median = []
     intros = []
 
-    logging.info("comparing %s with:\n%s" % (file_A, other_files_same_series))
+    logging.info("comparing %s with:\n%s" % (video_A, other_files_same_series))
 
     should_make_new_comparison = ALWAYS_OVERRIDE_PREV_COMPARISON # Default 
 
-    intro_A = extractor.get_intro_from_video(file_A)
+    intro_A = extractor.get_intro_from_video(video_A)
 
-    if __intro_has_changed(file_A, intro_A):
-        logging.info("Intro has changed for A: %s " % file_A)
+    if __intro_has_changed(video_A, intro_A):
+        logging.info("Intro has changed for A: %s " % video_A)
         should_make_new_comparison = True 
-    file_handler.save_to_video_file(file_A, "intro", intro_A)
+    file_handler.save_to_video_file(video_A, "intro", intro_A)
 
     for file_B in other_files_same_series:
-        
         video_B = str(file_B)
         hashes_B = handler.open_obj_from_meta(c.HASH_NAME, video_B)
         intro_B = extractor.get_intro_from_video(video_B)
@@ -75,7 +86,7 @@ def find_all_matches(file_A):
             override_comparison = True # Toggle to make a new comparison
         file_handler.save_to_video_file(file_B, "intro", intro_B)
 
-        video_data = file_handler.load_from_video_file(file_A)
+        video_data = file_handler.load_from_video_file(video_A)
         # This part loads the frame comparison data for videofile A and checks to see if there is already a comparison between A and B. 
         # If no such comparison exists one is created and stored. 
         if "frame_matches" in video_data: 
@@ -96,7 +107,7 @@ def find_all_matches(file_A):
 
         # Overrides any previously existing comparison with a new comparison --> 
         if override_comparison:
-            logging.info("Comparison is being made between %s and %s..." % (file_A, file_B))
+            logging.info("Comparison is being made between %s and %s..." % (video_A, file_B))
             # Extracts frame hash comparison between file A and B.
             frames_matched, frames_matched_intro = comparer.find_all_matches_hash_intro(hashes_A, hashes_B, intro_B, c.HASH_CUTOFF)
             vide_data_matches_other_file = {
@@ -106,7 +117,7 @@ def find_all_matches(file_A):
                 "frames_matched_intro": frames_matched_intro
             }
             video_data_matches[file_B] = vide_data_matches_other_file
-            file_handler.save_to_video_file(file_A, "frame_matches", video_data_matches)
+            file_handler.save_to_video_file(video_A, "frame_matches", video_data_matches)
 
         for matched_item in frames_matched:
             count = matched_item["count"]
@@ -122,17 +133,8 @@ def find_all_matches(file_A):
                 if count not in matches_intro:
                     matches_intro[count] = {"numberMatches": 0, "sec": matched_item["sec"]}
                 matches_intro[count]["numberMatches"] += 1
-            
-    if len(intro_median) != 0 and matches_intro is not None:
-        sequences_intro = get_best_intro(matches_intro)
-        if sequences_intro is not None:
-            ann.annotate_meta_data(sequences_intro, c.DESCRIPTION_MATCHES_INTRO, video_A)
 
-    best_seq = get_best_intro(matches)
-    if best_seq is not None:
-        ann.annotate_meta_data(best_seq, c.DESCRIPTION_MATCHES, video_A)
-    return best_seq
-
+    return intro_median, matches, matches_intro
 
 def get_best_intro(matches):
     sequences = extract_sequences(matches)
