@@ -12,10 +12,9 @@ import db.video_repo as video_repo
 import downloader.scrapesvt as scraper
 import downloader.svtplaywrapper as dl
 import schedule
-from annotations import (annotate, annotate_black, annotate_intro,
-                         annotate_scenes)
+from annotations import annotate, annotate_intro
 from frame_matcher import video_matcher, video_to_hashes
-from segmenter import blackdetector, scenedetector, simple_segmentor
+from segmenter import simple_segmentor
 from utils import constants, file_handler
 
 START_WORK = constants.SCHEDULED_PREPROCESSING_START
@@ -23,8 +22,6 @@ END_WORK = constants.SCHEDULED_PREPROCESSING_END
 PENDING_CHECK_INTERVAL = 10
 
 GENRES = constants.VIDEO_GENRES
-APPLY_BLACK_DETECTION = constants.APPLY_BLACK_DETECTION
-APPLY_SCENE_DETECTION = constants.APPLY_SCENE_DETECTION
 DELETE_VIDEO_FILES_AFTER_EXTRACTION = constants.DELETE_VIDEO_AFTER_EXTRACTION
 SAVE_TO_FILE = constants.SAVE_TO_FILE
 URL = video_repo.URL_KEY
@@ -48,21 +45,6 @@ def __annotate_intro(video, segments):
     annotate_intro.apply_annotated_intro_on_segments(segments, intro)
     file_handler.save_to_video_file(video[PATH], "intro", intro)
     logging.info("intro annotation complete (%s), time taken: %s" % (intro, datetime.now()  - start))
-
-
-def __annotate_detected_scene(video, segments):
-    start = datetime.now()
-    scenes = scenedetector.detect_scenes(video[PATH])
-    annotate_scenes.annotate_detected_scenes(segments, scenes, scenedetector.DATA_KEY)
-    logging.info("scenedetection complete, %d scenes, time taken: %s" % (len(scenes), datetime.now()  - start))
-
-
-def __annotate_detected_blackness(video, segments):
-    start = datetime.now()
-    blackSequences, blackFrames = blackdetector.detect_blackness(video[PATH])
-    annotate_black.annotate_black_sequences(segments, blackdetector.SEQUENCE_KEY, blackSequences)
-    logging.info("blackdetection complete, %d black sequence, %d black frames, time taken: %s" % (len(blackSequences), len(blackFrames), datetime.now()  - start))
-
 
 def __download_video(video):
     try: 
@@ -115,13 +97,6 @@ def preprocess_video(video):
 
     if video_repo.INTRO_ANNOTATION_KEY in video:  
         __annotate_intro(video, segments)
-
-    if APPLY_BLACK_DETECTION: 
-        __annotate_detected_blackness(video, segments)
-
-    if APPLY_SCENE_DETECTION:
-        __annotate_detected_scene(video, segments)
-
     __extract_frame_hashes(video)
 
     if DELETE_VIDEO_FILES_AFTER_EXTRACTION:

@@ -6,7 +6,7 @@ import utils.file_handler as file_handler
 from annotations import annotate_intro
 from downloader import svtplaywrapper
 from frame_matcher import video_matcher, video_to_hashes
-from segmenter import scenedetector, simple_segmentor
+from segmenter import simple_segmentor
 from utils import cleaner, constants, extractor
 
 

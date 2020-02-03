@@ -2,23 +2,15 @@ numpy
 imageio-ffmpeg
 beautifulsoup4
 lxml
-scenedetect[opencv,progress_bar]
-opencv-python                         
-Click
-tqdm        
 pathlib
 opencv-python
-scikit-image
 matplotlib
 ImageHash
-praat-parselmouth
 moviepy
 pymongo
 pomegranate
-seaborn
 schedule
 flask
-scikit-learn
 
 
 

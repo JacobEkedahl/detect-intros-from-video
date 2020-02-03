@@ -8,7 +8,6 @@ import matplotlib.mlab as mlabnorm
 import matplotlib.pyplot as plt
 import scipy
 
-import seaborn as sns
 from pomegranate import *
 from sklearn.metrics import r2_score
 from stats import prob_calculator
@@ -85,8 +84,49 @@ def get_model(obs, labels):
                                             verbose=True)
 
 
+def get_dataset_for_hmm():
+    segFiles = []
+    mp4s = file_handler.get_all_mp4_files()
+    result = []
+    data_labels = []
+    for video_file in mp4s:
+        segFiles.append(file_handler.get_seg_file_from_video(video_file))
+    for seg_file in segFiles:  
+        with open(seg_file) as json_file:
+            count = 0
+            current_scenes = []
+            labels = []
+            data = json.load(json_file)
+            if 'intro' in data['scenes'][0]:
+                for scene in data['scenes']:
+                    entry = []
+                    if 'matches' in scene:
+                        if scene['matches'] == True:
+                            entry.append(1)
+                        else:
+                            entry.append(0)
+                    else:
+                        entry.append(None)
+                        
+                    if 'matches_intro' in scene:
+                        if scene['matches_intro'] == True:
+                            entry.append(1)
+                        else:
+                            entry.append(0)
+                    else:
+                        entry.append(None)
+                        
 
-
+                    current_scenes.append(numpy.array(entry))
+                    if not scene['intro']:
+                        labels.append("non") 
+                    else:
+                        labels.append("intro")
+            if len(current_scenes) != 0:
+                result.append(numpy.array(current_scenes))
+                data_labels.append(labels)
+    return result, data_labels
+    
 def evaluate():
     total_start = []
     total_end = []
@@ -139,50 +179,6 @@ def evalute_classification(true_pos, true_neg, false_pos, false_neg):
     print("tpr: " +  str(tpr))
     print("acc: " +  str(acc))
     
-
-def get_dataset_for_hmm():
-    segFiles = []
-    mp4s = file_handler.get_all_mp4_files()
-    result = []
-    data_labels = []
-    for video_file in mp4s:
-        segFiles.append(file_handler.get_seg_file_from_video(video_file))
-    for seg_file in segFiles:  
-        with open(seg_file) as json_file:
-            count = 0
-            current_scenes = []
-            labels = []
-            data = json.load(json_file)
-            if 'intro' in data['scenes'][0]:
-                for scene in data['scenes']:
-                    entry = []
-                    if 'matches' in scene:
-                        if scene['matches'] == True:
-                            entry.append(1)
-                        else:
-                            entry.append(0)
-                    else:
-                        entry.append(None)
-                        
-                    if 'matches_intro' in scene:
-                        if scene['matches_intro'] == True:
-                            entry.append(1)
-                        else:
-                            entry.append(0)
-                    else:
-                        entry.append(None)
-                        
-
-                    current_scenes.append(numpy.array(entry))
-                    if not scene['intro']:
-                        labels.append("non") 
-                    else:
-                        labels.append("intro")
-            if len(current_scenes) != 0:
-                result.append(numpy.array(current_scenes))
-                data_labels.append(labels)
-    return result, data_labels
-
 def swap_entries(result, data_labels):
     global seed
     random.seed(seed)
@@ -290,9 +286,6 @@ def startHMM():
                         res_start.append(one_res["start"])
                         res_end.append(one_res["end"])
 
-              #  print(str(len(pred_start)) + " - " + str(len(res_start)) + " => " + str(pred_start[len(pred_start) -1]) + ":" + str(res_start[len(res_start) -1]))
-              #  print(str(one_res) + " - " + str(seq_pred))
-        #     print(str(len(pred_end)) + " - " + str(len(res_end)) + " => " + str(pred_start[len(pred_end) -1]) + ":" + str(res_start[len(res_end) -1]))
                 if dist + dist_end > 20:
                     predVal = '0 - 0'
                     startOneRes = '0'

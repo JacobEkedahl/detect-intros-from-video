@@ -19,8 +19,6 @@ if __name__ == "__main__":
             matches_stats.plot_filtering()
         elif s.argv[1] == "--filtering-3":
             matches_stats.plot_last_sequence()
-        elif s.argv[1] == "--filtering":
-            matches_stats.plot_filtering()
         elif s.argv[1] == "--matches-n":
             matches_stats.plot_neighbors_frequencies()
         elif s.argv[1] == "--hash_threshold":

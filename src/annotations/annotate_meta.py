@@ -7,7 +7,7 @@ from . import annotate as ann
 from .annotate import TimeInterval
 
 
-## function for annotating sequences (pitches and matched frames)
+## function for annotating sequences of matched frames
 def annotate_meta_data(sequences, description, video_file):
     if len(sequences) == 0: ## perhaps remove annotations of this type
         return
@@ -25,5 +25,3 @@ def annotate_meta_data(sequences, description, video_file):
         ann.set_presence_of_time_interval_improved(description, data['scenes'], timeIntervals)
     file_handler.save_to_video_file(video_file, "scenes", scenes)
     return scenes 
-
-  
