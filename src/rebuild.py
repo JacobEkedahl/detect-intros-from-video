@@ -2,11 +2,8 @@
 """
     This script will build the model based on the current dataset. This process may take a while to finish...
 
-
     Suggested Future Changes: 
-        - Make the web scraping directly from the video url, making it more decentralized and reduces initial bottleneck.
-
-    
+        - Make the web scraping directly from the video url, making it more decentralized and reduces initial bottleneck.    
 """
 import json
 import logging
@@ -82,7 +79,6 @@ def __predict_video(video):
     return predictions 
 
 def start():
-
     logging.basicConfig(filename='rebuild.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
     logging.getLogger().setLevel(logging.DEBUG)
 

@@ -16,11 +16,10 @@ import annotations.annotate as ann
 import utils.file_handler as file_handler
 from annotations import annotate_meta as ann
 from segmenter import simple_segmentor
-from stats import prob_calculator
 from utils import constants as c
 from utils import extractor
 from utils import object_handler as handler
-from utils import time_handler
+from utils import prob_calculator, time_handler
 
 from . import frame_comparer as comparer
 

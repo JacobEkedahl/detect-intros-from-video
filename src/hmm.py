@@ -10,8 +10,7 @@ import scipy
 
 from pomegranate import *
 from sklearn.metrics import r2_score
-from stats import prob_calculator
-from utils import constants, file_handler
+from utils import constants, file_handler, prob_calculator
 
 seed = constants.START_SEED
 
@@ -126,7 +125,7 @@ def get_dataset_for_hmm():
                 result.append(numpy.array(current_scenes))
                 data_labels.append(labels)
     return result, data_labels
-    
+
 def evaluate():
     total_start = []
     total_end = []

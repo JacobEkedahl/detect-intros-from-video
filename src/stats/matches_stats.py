@@ -6,12 +6,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 import frame_matcher.video_matcher as video_matcher
-import utils.constants as constants
-import utils.extractor as extractor
-import utils.file_handler as file_handler
-import utils.time_handler as time_handler
+from utils import constants, extractor, file_handler, time_handler
 
-COMPFILE = "C:\\Users\\J05\\source\\repos\\detect-intros-from-video\\temp\\videos\\cleo\\cleo.s01e05.avsnitt-5-converted.mp4"
+COMPFILE = constants.STATS_FILE
+ERROR_MSG = "Set STATS_FILE in src/utils/constants to a valid filepath of a video in your dataset!"
 
 def get_x_y(list_of_matches):
     [d['sec'] for d in list_of_matches]
@@ -103,6 +101,10 @@ def plot_sequences_as_rect_axs(axs,fig, rects, rects_intro):
     plt.ylabel('Score')  
 
 def plot_last_sequence():
+    if COMPFILE is None:
+        print(ERROR_MSG)
+        exit()
+
     intro_median, matches, matches_intro = video_matcher.get_matches(COMPFILE)
     matches_best_seq = video_matcher.get_best_intro(matches)
     matches_best_seq_intro = video_matcher.get_best_intro(matches_intro)
@@ -115,6 +117,10 @@ def plot_last_sequence():
 
 
 def plot_sequences():
+    if COMPFILE is None:
+        print(ERROR_MSG)
+        exit()
+
     intro_median, matches, matches_intro = video_matcher.get_matches(COMPFILE)
     sequences_matches = video_matcher.extract_sequences(matches)
     sequences_matches_intro = video_matcher.extract_sequences(matches_intro)
@@ -127,6 +133,10 @@ def plot_sequences():
     plot_sequences_as_rect(rects, rects_intro)
 
 def plot_filtering():
+    if COMPFILE is None:
+        print(ERROR_MSG)
+        exit()
+
     #setup
     x_titles = ['Start time of intro (Seconds)', 'Length of intro (Seconds)']
     y_title = ['Frequency', 'Score']
@@ -172,6 +182,10 @@ def plot_filtering():
     plt.show()
     
 def plot_diff_threshold_hashes():
+    if COMPFILE is None:
+        print(ERROR_MSG)
+        exit()
+
     x_title = 'Time (Seconds)'
     y_title = 'Frequency'
     titles = ['Threshold equals 3','Threshold equals 4','Threshold equals 5','Threshold equals 6']
@@ -199,6 +213,10 @@ def plot_diff_threshold_hashes():
 
 
 def plot_neighbors_frequencies():
+    if COMPFILE is None:
+        print(ERROR_MSG)
+        exit()
+
     x_title = 'Time (Seconds)'
     y_title = 'Frequency'
     titles = ['One neighbour','Two neighbours','Three neighbours','Four neighbours', 'Five neighbours', 'Six neighbours'] 
@@ -225,6 +243,10 @@ def plot_neighbors_frequencies():
     plt.show()
 
 def create_graph_freq():
+    if COMPFILE is None:
+        print(ERROR_MSG)
+        exit()
+
     intro_median, matches, matches_intro = video_matcher.get_matches(COMPFILE)
     data_matches = get_data_for_plotting(matches)
     data_matches_intro = get_data_for_plotting(matches_intro)

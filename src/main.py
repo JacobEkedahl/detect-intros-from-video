@@ -11,14 +11,15 @@ import pipeline
 import predicting
 import preprocessing
 import rebuild
+import stats.intro_stats as intro_stats
+import stats.matches_stats as matches_stats
 import utils.file_handler as file_handler
 from api import app
 from downloader import svtplaywrapper
 from frame_matcher import frame_comparer as comparer
 from frame_matcher import video_matcher as v_matcher
 from frame_matcher import video_to_hashes as vf
-from stats import prob_calculator
-from utils import cleaner, extractor
+from utils import cleaner, extractor, prob_calculator
 
 if __name__ == "__main__":
 
@@ -56,11 +57,6 @@ if __name__ == "__main__":
             os.execl(python, python, ' '.join(s.argv))
             exit()
         exit()
-    elif (s.argv[1] == "--frames"):
-        mp4_files = file_handler.get_all_mp4_files()
-        for mp4_file in mp4_files:
-            vf.save_hashes(str(mp4_file))
-        exit()
     elif (s.argv[1] == "--match"):
         if len(s.argv) > 2:
             if s.argv[2] == "--file":
@@ -93,6 +89,25 @@ if __name__ == "__main__":
     elif(s.argv[1] == "--rebuild"): 
         rebuild.start()
         exit(0)
+        
+    elif s.argv[1] == "--hist-intro":
+        intro_stats.plot_hist_frequency()
+    elif s.argv[1] == "--intro-ss":
+        intro_stats.plot_intros()
+    elif s.argv[1] == "--intro-sizes":
+        intro_stats.plot_hist_sizes()
+    elif s.argv[1] == "--intro":
+        intro_stats.plot_all_intros()
+    elif s.argv[1] == "--filtering-1":
+        matches_stats.plot_frequencies()
+    elif s.argv[1] == "--filtering-2":
+        matches_stats.plot_filtering()
+    elif s.argv[1] == "--filtering-3":
+        matches_stats.plot_last_sequence()
+    elif s.argv[1] == "--matches-n":
+        matches_stats.plot_neighbors_frequencies()
+    elif s.argv[1] == "--hash_threshold":
+        matches_stats.plot_diff_threshold_hashes()
 
     else:
         print("no valid arguments found: " + str(s.argv))

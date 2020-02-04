@@ -1,12 +1,13 @@
 import json
 import os
 
+from db import video_repo
 from segmenter import simple_segmentor
-from stats import prob_calculator
-from utils import extractor, file_handler, time_handler
+from utils import extractor, file_handler, prob_calculator, time_handler
+
 from . import annotate as ann
 from .annotate import TimeInterval
-from db import video_repo
+
 
 def __annotate_intro(video_file, seq):
     segmentationFile = file_handler.get_seg_file_from_video(video_file)
