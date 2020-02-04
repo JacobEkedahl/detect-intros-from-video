@@ -15,11 +15,8 @@ from PIL import Image
 import annotations.annotate as ann
 import utils.file_handler as file_handler
 from annotations import annotate_meta as ann
-from segmenter import simple_segmentor
-from utils import constants as c
-from utils import extractor
-from utils import object_handler as handler
-from utils import prob_calculator, time_handler
+from utils import (constants, extractor, object_handler, prob_calculator,
+                   simple_segmentor, time_handler)
 
 from . import frame_comparer as comparer
 
@@ -45,18 +42,18 @@ def find_all_matches(file_A):
     if len(intro_median) != 0 and matches_intro is not None:
         sequences_intro = get_best_intro(matches_intro)
         if sequences_intro is not None:
-            ann.annotate_meta_data(sequences_intro, c.DESCRIPTION_MATCHES_INTRO, video_A)
+            ann.annotate_meta_data(sequences_intro, constants.DESCRIPTION_MATCHES_INTRO, video_A)
 
     best_seq = get_best_intro(matches)
     if best_seq is not None:
-        ann.annotate_meta_data(best_seq, c.DESCRIPTION_MATCHES, video_A)
+        ann.annotate_meta_data(best_seq, constants.DESCRIPTION_MATCHES, video_A)
     return best_seq
 
 def get_matches(video_A):
     other_files_same_series = file_handler.get_neighboring_videos(video_A)
     matches = {}
     matches_intro = {}
-    hashes_A = handler.open_obj_from_meta(c.HASH_NAME, video_A)
+    hashes_A = object_handler.open_obj_from_meta(constants.HASH_NAME, video_A)
     intro_median = []
     intro_start_median = []
     intros = []
@@ -74,7 +71,7 @@ def get_matches(video_A):
 
     for file_B in other_files_same_series:
         video_B = str(file_B)
-        hashes_B = handler.open_obj_from_meta(c.HASH_NAME, video_B)
+        hashes_B = object_handler.open_obj_from_meta(constants.HASH_NAME, video_B)
         intro_B = extractor.get_intro_from_video(video_B)
 
         override_comparison = should_make_new_comparison # Default 
@@ -99,7 +96,7 @@ def get_matches(video_A):
             frames_matched = vide_data_matches_other_file["frames_matched"]
             frames_matched_intro = vide_data_matches_other_file["frames_matched_intro"]
             # The threshold has changed from the previous comparison
-            if not "threshold" in vide_data_matches_other_file or vide_data_matches_other_file["threshold"] != c.HASH_CUTOFF: 
+            if not "threshold" in vide_data_matches_other_file or vide_data_matches_other_file["threshold"] != constants.HASH_CUTOFF: 
                override_comparison = True 
         else:
             override_comparison = True 
@@ -108,10 +105,10 @@ def get_matches(video_A):
         if override_comparison:
             logging.info("Comparison is being made between %s and %s..." % (video_A, file_B))
             # Extracts frame hash comparison between file A and B.
-            frames_matched, frames_matched_intro = comparer.find_all_matches_hash_intro(hashes_A, hashes_B, intro_B, c.HASH_CUTOFF)
+            frames_matched, frames_matched_intro = comparer.find_all_matches_hash_intro(hashes_A, hashes_B, intro_B, constants.HASH_CUTOFF)
             vide_data_matches_other_file = {
                 "intro": intro_B, 
-                "threshold": c.HASH_CUTOFF,
+                "threshold": constants.HASH_CUTOFF,
                 "frames_matched": frames_matched,
                 "frames_matched_intro": frames_matched_intro
             }
@@ -150,7 +147,7 @@ def remove_preintro_if_present(sequences):
     highest_ranked = sequences[0]
     second_ranked = sequences[1]
     total = highest_ranked["val"] + second_ranked["val"]
-    if second_ranked["val"] / total > c.FRACTION_SIZE_PREINTRO and second_ranked["start"] > highest_ranked["start"] and highest_ranked["start"] < c.PREINTRO_START:
+    if second_ranked["val"] / total > constants.FRACTION_SIZE_PREINTRO and second_ranked["start"] > highest_ranked["start"] and highest_ranked["start"] < constants.PREINTRO_START:
         return second_ranked
     else:
         return highest_ranked
@@ -173,11 +170,11 @@ def extract_sequences(matches):
     for match in list_matches:
         if not current_sequence:
             current_sequence = {"start": match["sec"], "end": None}
-        elif prev_time + c.SEQUENCE_THRESHOLD >= match["sec"]:
+        elif prev_time + constants.SEQUENCE_THRESHOLD >= match["sec"]:
             current_sequence["end"] = match["sec"]
             current_sequence["val"] = statistics.mean(last_seq_max) * (current_sequence["end"] - current_sequence["start"])
         else:
-            if current_sequence["end"] != None and current_sequence["end"] - current_sequence["start"] > c.MIN_LENGTH_SEQUENCE:
+            if current_sequence["end"] != None and current_sequence["end"] - current_sequence["start"] > constants.MIN_LENGTH_SEQUENCE:
                 current_sequence["end"] = end_seq["sec"]
                 recorded_sequences.append(current_sequence)
                 current_sequence = {"start": match["sec"], "end": end_seq["sec"], "val": statistics.mean(last_seq_max) * (end_seq["sec"] - match["sec"])}
@@ -195,11 +192,10 @@ def extract_sequences(matches):
             most_pop = statistics.median(last_seq_max)
         if match["val"] >= most_pop:
             end_seq = match
-    if current_sequence and current_sequence["end"] != None and current_sequence["end"] - current_sequence["start"] > c.MIN_LENGTH_SEQUENCE:
+    if current_sequence and current_sequence["end"] != None and current_sequence["end"] - current_sequence["start"] > constants.MIN_LENGTH_SEQUENCE:
         recorded_sequences.append(current_sequence)
 
     return recorded_sequences
-
 
 ## method for testing the error rate of this intro finder
 def find_errors():

@@ -2,7 +2,7 @@ import json
 
 import utils.time_handler as time
 from annotations.annotate import TimeInterval, set_presence_of_interval
-from segmenter import simple_segmentor
+from utils import simple_segmentor
 
 from . import file_handler
 

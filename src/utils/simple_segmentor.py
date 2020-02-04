@@ -1,8 +1,9 @@
 import json
-import os 
-import logging 
+import logging
+import os
+
 from moviepy.editor import VideoFileClip
-from utils import constants, time_handler, file_handler
+from utils import constants, file_handler, time_handler
 
 SCENES_KEY = 'scenes'
 

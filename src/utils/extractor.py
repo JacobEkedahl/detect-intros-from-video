@@ -5,7 +5,7 @@ from pathlib import Path
 
 import numpy as np
 
-from segmenter import simple_segmentor
+from utils import simple_segmentor
 
 from . import file_handler, time_handler
 

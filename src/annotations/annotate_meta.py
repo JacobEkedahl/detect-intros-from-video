@@ -1,7 +1,6 @@
 import json
 
-from segmenter import simple_segmentor
-from utils import file_handler, time_handler
+from utils import file_handler, simple_segmentor, time_handler
 
 from . import annotate as ann
 from .annotate import TimeInterval

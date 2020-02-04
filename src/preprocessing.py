@@ -14,8 +14,7 @@ import downloader.svtplaywrapper as dl
 import schedule
 from annotations import annotate, annotate_intro
 from frame_matcher import video_matcher, video_to_hashes
-from segmenter import simple_segmentor
-from utils import constants, file_handler
+from utils import constants, file_handler, simple_segmentor
 
 START_WORK = constants.SCHEDULED_PREPROCESSING_START
 END_WORK = constants.SCHEDULED_PREPROCESSING_END

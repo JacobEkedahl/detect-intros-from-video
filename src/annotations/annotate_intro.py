@@ -2,8 +2,8 @@ import json
 import os
 
 from db import video_repo
-from segmenter import simple_segmentor
-from utils import extractor, file_handler, prob_calculator, time_handler
+from utils import (extractor, file_handler, prob_calculator, simple_segmentor,
+                   time_handler)
 
 from . import annotate as ann
 from .annotate import TimeInterval
